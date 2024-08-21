@@ -1,0 +1,169 @@
+/* 全体を中央に配置するためのスタイル */
+.quiz-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Viewport Height */
+  margin: 0 auto;
+  padding: 20px 0; /* 上下にパディングを追加 */
+}
+
+.question-section {
+  padding: 20px;
+  background: #f4f4f4;
+  border-radius: 10px;
+  width: 800px;
+  max-width: 90%; /* 小さい画面に対応 */
+}
+
+h1 {
+  color: #333;
+  font-size: 2em;
+}
+
+.final-score {
+  font-size: 3em;
+  color: #007bff;
+}
+
+h2 {
+  color: #666;
+  font-size: 1.5em;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1em;
+  margin: 5px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+.answer-list {
+  list-style: none;
+  padding: 0;
+}
+
+.answer-list li {
+  margin: 10px 0;
+  font-size: 1.2em;
+}
+
+.correct {
+  color: green;
+}
+
+.wrong {
+  color: red;
+}
+
+.large-feedback {
+  font-size: 2em;
+  color: #007bff;
+}
+
+.answer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 中央揃え */
+}
+
+.option-0 {
+  background-color: rgb(237, 103, 103);
+}
+
+.option-1 {
+  background-color: rgb(98, 202, 98);
+}
+
+.option-2 {
+  background-color: rgb(121, 121, 231);
+}
+
+.option-3 {
+  background-color: rgb(171, 117, 221);
+}
+
+.option-4 {
+  background-color: tomato;
+}
+
+.option-5 {
+  background-color: #ffaa00;
+}
+
+/* ボタンの共通スタイル */
+.quiz-option-button {
+  width: 70%;
+  padding: 10px 20px;
+  font-size: 1em;
+  margin: 5px;
+  cursor: pointer;
+  color: white;
+  border: none;
+  border-radius: 4px;
+
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+/* ホバーアクション */
+.quiz-option-button:hover {
+  /* opacity: 0.8; */
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* スコア画面のスタイル */
+.score-section {
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 1400px;
+  width: 80%;
+}
+
+.answer-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.answer-table thead {
+  background-color: #007bff;
+  color: white;
+}
+
+.answer-table th,
+.answer-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+}
+
+.question {
+  text-align: left;
+}
+
+.correct {
+  background-color: #d4edda;
+}
+
+.wrong {
+  background-color: #f8d7da;
+}
+
+.feedback-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 子要素を中央揃えにする */
+}
+
+.feedback-section p {
+  max-width: 300px; /* テキストの最大幅を設定 */
+  word-wrap: break-word; /* 長い単語を折り返す */
+  white-space: pre-wrap; /* 空白や改行を保持して折り返す */
+  text-align: center; /* テキストを中央揃えにする */
+}

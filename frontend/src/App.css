@@ -167,3 +167,18 @@ button {
   white-space: pre-wrap; /* 空白や改行を保持して折り返す */
   text-align: center; /* テキストを中央揃えにする */
 }
+
+.loading {
+  font-size: 2.5em;
+  color: #007bff;
+  font-weight: bold;
+  animation: blink 1.8s infinite;
+  text-align: center;
+  margin-top: 20px;
+}
+
+@keyframes blink {
+  0% { opacity: 0.2; }
+  50% { opacity: 1.0; }
+  100% { opacity: 0.2; }
+}

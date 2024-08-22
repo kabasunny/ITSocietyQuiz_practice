@@ -25,11 +25,12 @@ function App() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [showScore, setShowScore] = useState<boolean>(false);
   const [quizData, setQuizData] = useState<QuizData[]>([]);
+  const [dataFetched, setDataFetched] = useState<boolean>(false); // データ取得フラグ
 
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/quiz_data');
+        const response = await axios.get('http://localhost:8082/quiz_data');
         const mappedData = response.data.data.map((item: any) => ({
           question: item.Question,
           options: item.Options,
@@ -37,13 +38,24 @@ function App() {
           supplement: item.Supplement,
         }));
         setQuizData(mappedData);
+        setDataFetched(true); // データ取得フラグを更新
       } catch (error) {
         console.error('クイズデータの取得中にエラーが発生しました:', error);
       }
     };
 
     fetchQuizData();
-  }, []);
+
+    const interval = setInterval(() => {
+      if (!dataFetched) {
+        fetchQuizData();
+      } else {
+        clearInterval(interval); // データが取得されたらインターバルをクリア
+      }
+    }, 10000); // 10秒ごとにデータを取得
+
+    return () => clearInterval(interval); // コンポーネントがアンマウントされたときにインターバルをクリア
+  }, [dataFetched]);
 
   const handleAnswer = (answer: string) => {
     const newAnswer: Answer = {
@@ -87,7 +99,10 @@ function App() {
             goToNextQuestion={goToNextQuestion}
           />
         ) : (
-          <div>Loading...</div>
+          <div className="loading">
+            <p>Loading...</p>
+            <p>⁽⁽*( ᐖ )*⁾⁾ ₍₍*( ᐛ )*₎₎</p>
+          </div>
         )
       )}
     </div>
@@ -95,71 +110,3 @@ function App() {
 }
 
 export default App;
-
-
-// import { useState } from 'react';
-// import './App.css';
-// import Quiz from './components/Quiz';
-// import ScoreSection from './components/ScoreSection';
-// import { quizData } from './data/quizData';
-
-// interface Answer {
-//   question: string;
-//   answer: string;
-//   correct: boolean;
-// }
-
-// function App() {
-//   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
-//   const [next, setNext] = useState<boolean>(false);
-//   const [answers, setAnswers] = useState<Answer[]>([]);
-//   const [score, setScore] = useState<number>(0);
-//   const [feedback, setFeedback] = useState<string | null>(null);
-//   const [showScore, setShowScore] = useState<boolean>(false);
-
-//   const handleAnswer = (answer: string) => {
-//     const newAnswer: Answer = {
-//       question: quizData[currentQuestion].question,
-//       answer: answer,
-//       correct: answer === quizData[currentQuestion].correct,
-//     };
-
-//     if (newAnswer.correct) {
-//       setScore((prevScore) => prevScore + 1);
-//       setFeedback("○");
-//     } else {
-//       setFeedback("×");
-//     }
-//     setAnswers([...answers, newAnswer]);
-//     setNext(true);
-//   };
-
-//   const goToNextQuestion = () => {
-//     const nextQuestion = currentQuestion + 1;
-//     if (nextQuestion < quizData.length) {
-//       setCurrentQuestion(nextQuestion);
-//     } else {
-//       setShowScore(true);
-//     }
-//     setNext(false);
-//   };
-
-//   return (
-//     <div className="quiz-container">
-//       {showScore ? (
-//         <ScoreSection score={score} answers={answers} />
-//       ) : (
-//         <Quiz
-//           currentQuestion={currentQuestion}
-//           quizData={quizData}
-//           next={next}
-//           feedback={feedback}
-//           handleAnswer={handleAnswer}
-//           goToNextQuestion={goToNextQuestion}
-//         />
-//       )}
-//     </div>
-//   );
-// }
-
-// export default App;

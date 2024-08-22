@@ -9,20 +9,17 @@ import (
 	"github.com/lib/pq"
 )
 
-// マイグレーションは、独立して行うため、mainで定義している
 func main() {
 	infra.Initialize() //.env ファイルから環境変数を読み込み、アプリケーションにロードするための初期化処理を行う。
 
 	db := infra.SetupDB() //データベース接続を設定し、*gorm.DB オブジェクトを返す。このオブジェクトは、データベース操作を行うためのインターフェースを提供。
 
-	// AutoMigrate:構造体を引数として渡し、構造体に定義されているフィールドに基づいて、データベースにテーブルを作成、更新
-	if err := db.AutoMigrate(&models.QuizData{}); err != nil {
-		panic("Failed to migrate database")
-	}
-
-	// クイズデータを挿入
+	// クイズの初期データを挿入
 	quizData := []models.QuizData{
-		{Question: "悟りの第二段階の状態は？", Options: pq.StringArray{"予流果", "一来果", "不還果", "阿羅漢果"}, Correct: "一来果", Supplement: "欲界の煩悩を断じ終えた位のこと"},
+		{Question: "悟りの第二段階の状態は？",
+			Options:    pq.StringArray{"予流果", "一来果", "不還果", "阿羅漢果"}, // pq.StringArrayは、PostgreSQLのtext[]型（文字列の配列）を扱う
+			Correct:    "一来果",
+			Supplement: "欲界の煩悩を断じ終えた位のこと"},
 		{Question: "四聖諦（ししょうたい）はどれか？", Options: pq.StringArray{"苦諦", "楽諦", "幸諦", "怒諦"}, Correct: "苦諦", Supplement: "四聖諦（ししょうたい）は、仏教における4つの基本的な真理で、苦諦（くたい）、集諦（じったい）、滅諦（めったい）、道諦（どうたい）"},
 		{Question: "テーラワーダ仏教の「テーラワーダ」とは何を意味しますか？", Options: pq.StringArray{"長老の教え", "仏陀の教え", "慈悲の教え", "瞑想の教え"}, Correct: "長老の教え", Supplement: "テーラワーダ」はパーリ語で「長老の教え」を意味します。"},
 		{Question: "初期仏教の教えの目的は何ですか？", Options: pq.StringArray{"信じる者は救われる", "儀式儀礼を行う", "苦しみをなくす", "現世利益を得る"}, Correct: "苦しみをなくす", Supplement: "初期仏教の教えは「苦しみをなくす」ことを目的としています。"},

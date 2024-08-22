@@ -10,5 +10,5 @@ func main() {
 	// log.Println("POSTGRES_USER=", os.Getenv("POSTGRES_USER")) //環境変数POSTGRES_USERの値を取得し、ログに表示
 	db := infra.SetupDB()
 	r := router.SetupRouter(db)
-	r.Run("localhost:8080")
+	r.Run("localhost:8082")
 }

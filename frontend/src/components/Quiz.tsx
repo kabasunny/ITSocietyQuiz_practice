@@ -17,7 +17,7 @@ interface QuizProps {
 const Quiz: React.FC<QuizProps> = ({ currentQuestion, quizData, next, feedback, handleAnswer, goToNextQuestion }) => {
   return (
     <div className='question-section'>
-      <h1>問題 {currentQuestion + 1} / {quizData.length} </h1>
+      <h1>{currentQuestion + 1}問目 (  全{quizData.length}問中 )</h1>
       <h2>{quizData[currentQuestion].question}</h2>
 
       {next ? (

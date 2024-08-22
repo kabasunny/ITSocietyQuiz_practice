@@ -12,7 +12,7 @@
 
 .question-section {
   padding: 20px;
-  background: #f4f4f4;
+  background: #d6d6d0;
   border-radius: 10px;
   width: 800px;
   max-width: 90%; /* 小さい画面に対応 */
@@ -25,11 +25,11 @@ h1 {
 
 .final-score {
   font-size: 3em;
-  color: #007bff;
+  color: #1c61aa;
 }
 
 h2 {
-  color: #666;
+  color: #515070;
   font-size: 1.5em;
 }
 
@@ -38,7 +38,7 @@ button {
   font-size: 1em;
   margin: 5px;
   cursor: pointer;
-  background-color: #007bff;
+  background-color: #3877bb;
   color: white;
   border: none;
   border-radius: 4px;
@@ -78,7 +78,7 @@ button {
 }
 
 .option-1 {
-  background-color: rgb(98, 202, 98);
+  background-color: rgb(79, 187, 151);
 }
 
 .option-2 {
@@ -86,7 +86,7 @@ button {
 }
 
 .option-3 {
-  background-color: rgb(171, 117, 221);
+  background-color: rgb(177, 106, 199);
 }
 
 .option-4 {
@@ -104,7 +104,7 @@ button {
   font-size: 1em;
   margin: 5px;
   cursor: pointer;
-  color: white;
+  color: rgb(224, 224, 219);
   border: none;
   border-radius: 4px;
 
@@ -133,7 +133,7 @@ button {
 }
 
 .answer-table thead {
-  background-color: #007bff;
+  background-color: #d38cc9;
   color: white;
 }
 

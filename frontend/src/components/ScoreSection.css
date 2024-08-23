@@ -4,10 +4,12 @@
   border-radius: 10px;
   max-width: 1400px;
   width: 80%;
+  max-height: 80vh; /* コンテナの最大高さを設定 */
+  overflow-y: auto; /* 垂直方向のスクロールを有効にする */
 }
 
 .final-score {
-  font-size: 3em;
+  font-size: 2em;
   color: royalblue; /* #1c61aa */
 }
 
@@ -21,10 +23,14 @@
   color: white;
 }
 
+.answer-table tbody {
+  color: blue;
+}
+
 .answer-table th,
 .answer-table td {
   border: 1px solid #ddd;
-  padding: 12px;
+  padding: 10px;
 }
 
 .correct {
@@ -33,4 +39,9 @@
 
 .wrong {
   background-color: lightcoral; /* #f8d7da */
+}
+
+/* ○×のサイズを大きくする */
+.judgement {
+  font-size: 2em; /* サイズを調整 */
 }

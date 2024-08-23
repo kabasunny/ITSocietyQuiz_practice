@@ -11,16 +11,16 @@ body {
   
 /* フォームのコンテナ */
 .form-container {
-    background-color: khaki; /* rgb(220, 215, 71) */
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    min-width: 300px; /* 最小幅を指定 */
-    box-sizing: border-box; /* ボックスのサイズを調整 */
-  }
-  
+  background-color: khaki; /* rgb(220, 215, 71) */
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+  width: 300px; /* 固定幅を設定 */
+  min-width: 250px; /* 最小幅を指定 */
+  box-sizing: border-box; /* ボックスのサイズを調整 */
+  overflow: hidden; /* コンテンツがはみ出さないようにする */
+}
+
   /* タイトル */
   h1 {
     color: forestgreen; /* #0e6627 */
@@ -32,9 +32,10 @@ body {
   
   /* フォーム要素のスタイリング */
   label {
+    color: blue; /* blue */
     display: block;
-    font-size: 14px;
-    margin-bottom: 5px;
+    font-size: 16px;
+    margin-bottom: 2px;
   }
   
   input {
@@ -43,15 +44,15 @@ body {
     font-size: 14px;
     border: 1px solid lightskyblue; /* #6da9e4 */
     border-radius: 4px;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     box-sizing: border-box;
   }
   
   /* エラーメッセージ */
   p {
     color: crimson; /* #e3342f */
-    margin: 0 0 15px;
-    font-size: 12px;
+    margin: 0 0 10px;
+    font-size: 15px;
     width: 100%; /* エラーメッセージの幅を100%に設定 */
     box-sizing: border-box; /* ボックスのサイズを調整 */
   }

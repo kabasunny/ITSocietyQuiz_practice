@@ -28,8 +28,9 @@ button {
 }
 
 .large-feedback {
-  font-size: 2em;
+  font-size: 3em;
   color: #007bff;
+  margin: 5px;
 }
 
 .answer-section {
@@ -84,12 +85,14 @@ button {
 }
 
 .feedback-section {
+  color: deeppink;
   display: flex;
   flex-direction: column;
   align-items: center; /* 子要素を中央揃えにする */
 }
 
 .feedback-section p {
+  color: deeppink;
   max-width: 300px; /* テキストの最大幅を設定 */
   word-wrap: break-word; /* 長い単語を折り返す */
   white-space: pre-wrap; /* 空白や改行を保持して折り返す */

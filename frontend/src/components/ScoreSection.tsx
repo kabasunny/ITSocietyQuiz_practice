@@ -32,7 +32,7 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers }) => {
             <tr key={index} className={item.correct ? "correct" : "wrong"}>
               <td>{item.question}</td>
               <td>{item.answer}</td>
-              <td>{item.correct ? "○" : "×"}</td>
+              <td className="judgement">{item.correct ? "○" : "×"}</td>
             </tr>
           ))}
         </tbody>

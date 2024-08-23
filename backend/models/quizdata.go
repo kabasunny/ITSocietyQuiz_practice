@@ -1,3 +1,5 @@
+// テスト用データ
+
 package models
 
 import (

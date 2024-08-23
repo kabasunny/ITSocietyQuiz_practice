@@ -1,6 +1,6 @@
 // Users.ts
 export interface User {
-  employeeId: string; // 型を string に変更
+  empid: string; // 型を string に変更
   username: string;
   email: string;
   password: string;
@@ -10,7 +10,7 @@ export interface User {
 
 export const users: User[] = [
   {
-    employeeId: "EMP1234", // 例: アルファベットを含む社員ID
+    empid: "EMP1234",
     username: "ITSocietyQuiz",
     email: "quize@example.com",
     password: "password",
@@ -18,7 +18,7 @@ export const users: User[] = [
     correct_answers: 8,
   },
   {
-    employeeId: "EMP2345", // 例: アルファベットを含む社員ID
+    empid: "EMP2345",
     username: "ITSocietyQuiz_2",
     email: "quize_2@example.com",
     password: "password_2",

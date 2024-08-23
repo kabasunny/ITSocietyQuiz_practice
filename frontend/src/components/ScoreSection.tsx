@@ -1,4 +1,5 @@
 import React from 'react';
+import './ScoreSection.css';
 
 interface Answer {
   question: string;

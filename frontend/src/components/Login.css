@@ -1,0 +1,78 @@
+/* 全体のスタイリング */
+body {
+    font-family: "Arial", sans-serif;
+    background-color: #ebebeb !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+/* フォームのコンテナ */
+.form-container {
+    background-color: khaki; /* rgb(220, 215, 71) */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    min-width: 300px; /* 最小幅を指定 */
+    box-sizing: border-box; /* ボックスのサイズを調整 */
+  }
+  
+  /* タイトル */
+  h1 {
+    color: forestgreen; /* #0e6627 */
+    margin: 0 0 20px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  /* フォーム要素のスタイリング */
+  label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid lightskyblue; /* #6da9e4 */
+    border-radius: 4px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+  }
+  
+  /* エラーメッセージ */
+  p {
+    color: crimson; /* #e3342f */
+    margin: 0 0 15px;
+    font-size: 12px;
+    width: 100%; /* エラーメッセージの幅を100%に設定 */
+    box-sizing: border-box; /* ボックスのサイズを調整 */
+  }
+
+  
+  /* 送信ボタン */
+  button {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: rebeccapurple; /* #534eeb */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px !important;
+  }
+  
+  button:hover {
+    background-color: mediumslateblue; /* #7427bd */
+  }
+  

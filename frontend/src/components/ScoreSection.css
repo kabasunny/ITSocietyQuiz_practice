@@ -1,0 +1,36 @@
+.score-section {
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 1400px;
+  width: 80%;
+}
+
+.final-score {
+  font-size: 3em;
+  color: royalblue; /* #1c61aa */
+}
+
+.answer-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.answer-table thead {
+  background-color: mediumorchid; /* #d38cc9 */
+  color: white;
+}
+
+.answer-table th,
+.answer-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+}
+
+.correct {
+  background-color: lightgreen; /* #d4edda */
+}
+
+.wrong {
+  background-color: lightcoral; /* #f8d7da */
+}

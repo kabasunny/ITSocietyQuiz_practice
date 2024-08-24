@@ -7,13 +7,13 @@ import (
 	"gorm.io/gorm"
 )
 
-// 初期テスト用
 type IQuestionsRepository interface {
 	FindAll() (*[]models.Questions, error)
 	FindById(QuestionsId uint) (*models.Questions, error)
 	Create(newQuestions models.Questions) (*models.Questions, error)
 	Update(updateQuestions models.Questions) (*models.Questions, error)
 	Delete(QuestionsId uint) error
+	Count() (int64, error) // レコード数を取得するメソッドを追加
 }
 
 type QuestionsMemoryRepository struct {
@@ -72,6 +72,16 @@ func (r *QuestionsRepository) Update(updateQuestions models.Questions) (*models.
 		return nil, result.Error
 	}
 	return &updateQuestions, nil
+}
+
+// 新しいメソッドを追加
+func (r *QuestionsRepository) Count() (int64, error) {
+	var count int64
+	result := r.db.Model(&models.Questions{}).Count(&count)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	return count, nil
 }
 
 func NewQuestionsRepository(db *gorm.DB) IQuestionsRepository {

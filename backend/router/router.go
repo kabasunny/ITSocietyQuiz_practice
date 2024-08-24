@@ -28,7 +28,8 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	// quizDataRouter := r.Group("/quiz_data")
 	quizDataRouter := r.Group("/questions")
 
-	quizDataRouter.GET("", quizDataController.FindAll) // クイズデータ返却メソッド
+	quizDataRouter.GET("", quizDataController.FindAll)              // 全クイズデータ返却メソッド
+	quizDataRouter.GET("oneday", quizDataController.GetOneDaysQuiz) // 1日分のクイズデータ返却メソッド
 	quizDataRouter.GET("/:id", quizDataController.FindById)
 	quizDataRouter.POST("", quizDataController.Create)
 	quizDataRouter.PUT("/:id", quizDataController.Update)

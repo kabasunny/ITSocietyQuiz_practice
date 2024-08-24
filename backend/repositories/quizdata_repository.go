@@ -1,3 +1,5 @@
+// 初期テスト用
+
 package repositories
 
 import (
@@ -7,6 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// 初期テスト用
 type IQuizDataRepository interface {
 	FindAll() (*[]models.QuizData, error)
 	FindById(QuizDataId uint) (*models.QuizData, error)

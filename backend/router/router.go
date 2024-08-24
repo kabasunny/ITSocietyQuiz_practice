@@ -11,18 +11,24 @@ import (
 )
 
 func SetupRouter(db *gorm.DB) *gin.Engine {
+	// 初期テスト用
+	// quizDataRepository := repositories.NewQuizDataRepository(db)
+	// quizDataService := services.NewQuizDataService(quizDataRepository)
+	// quizDataController := controllers.NewQuizDataController(quizDataService)
 
-	quizDataRepository := repositories.NewQuizDataRepository(db)
-	quizDataService := services.NewQuizDataService(quizDataRepository)
-	quizDataController := controllers.NewQuizDataController(quizDataService)
+	quizDataRepository := repositories.NewQuestionsRepository(db)
+	quizDataService := services.NewQuestionsService(quizDataRepository)
+	quizDataController := controllers.NewQuestionsController(quizDataService)
 
 	r := gin.Default()
 
 	r.Use(cors.Default()) //フロントとやり取りする場合は設定したほうがよい。
 
-	quizDataRouter := r.Group("/quiz_data")
+	// 初期テスト用
+	// quizDataRouter := r.Group("/quiz_data")
+	quizDataRouter := r.Group("/questions")
 
-	quizDataRouter.GET("", quizDataController.FindAll)
+	quizDataRouter.GET("", quizDataController.FindAll) // クイズデータ返却メソッド
 	quizDataRouter.GET("/:id", quizDataController.FindById)
 	quizDataRouter.POST("", quizDataController.Create)
 	quizDataRouter.PUT("/:id", quizDataController.Update)

@@ -1,17 +1,15 @@
-// 初期テスト用
-
 package dto
 
-type CreateQuizDataInput struct {
+type CreateQuestionsInput struct {
 	Question   string   `json:"question" binding:"required"`
 	Options    []string `json:"options" binding:"required"`
-	Correct    string   `json:"correct" binding:"required"`
 	Supplement string   `json:"supplement" binding:"required"`
+	Difficulty int      `json:"difficulty" binding:"required"` // 追加
 }
 
-type UpdateQuizDataInput struct {
+type UpdateQuestionsInput struct {
 	Question   *string   `json:"question" binding:"omitempty"`
 	Options    *[]string `json:"options" binding:"omitempty"`
-	Correct    *string   `json:"correct" binding:"omitempty"`
 	Supplement *string   `json:"supplement" binding:"omitempty"`
+	Difficulty *int      `json:"difficulty" binding:"omitempty"` // 追加
 }

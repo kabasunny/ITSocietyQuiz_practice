@@ -17,7 +17,7 @@ func main() {
 	db_op.DropTable()
 
 	// AutoMigrate:構造体を引数として渡し、構造体に定義されているフィールドに基づいて、データベースにテーブルを作成、更新
-	if err := db.AutoMigrate(&models.QuizData{}); err != nil {
+	if err := db.AutoMigrate(&models.Questions{}); err != nil {
 		panic("Failed to migrate database")
 	}
 

@@ -15,6 +15,7 @@ type IQuestionsController interface {
 	Create(ctx *gin.Context)
 	Update(ctx *gin.Context)
 	Delete(ctx *gin.Context)
+	GetOneDaysQuiz(ctx *gin.Context)
 }
 
 type QuestionsController struct {
@@ -110,4 +111,14 @@ func (c *QuestionsController) Delete(ctx *gin.Context) {
 	}
 	ctx.Status(http.StatusOK)
 
+}
+
+func (c *QuestionsController) GetOneDaysQuiz(ctx *gin.Context) {
+	NunmberOfQuestions := uint(5) // 1日あたりの問題数を入力
+	QuizDatas, err := c.service.GetOneDaysQuiz(NunmberOfQuestions)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"data": QuizDatas})
 }

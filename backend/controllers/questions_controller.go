@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type IQuizDataController interface {
+type IQuestionsController interface {
 	FindAll(ctx *gin.Context)
 	FindById(ctx *gin.Context)
 	Create(ctx *gin.Context)
@@ -17,32 +17,32 @@ type IQuizDataController interface {
 	Delete(ctx *gin.Context)
 }
 
-type QuizDataController struct {
-	service services.IQuizDataService
+type QuestionsController struct {
+	service services.IQuestionsService
 }
 
-func NewQuizDataController(service services.IQuizDataService) IQuizDataController {
-	return &QuizDataController{service: service}
+func NewQuestionsController(service services.IQuestionsService) IQuestionsController {
+	return &QuestionsController{service: service}
 }
 
-func (c *QuizDataController) FindAll(ctx *gin.Context) {
-	QuizDatas, err := c.service.FindAll()
+func (c *QuestionsController) FindAll(ctx *gin.Context) {
+	Questions, err := c.service.FindAll()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"data": QuizDatas})
+	ctx.JSON(http.StatusOK, gin.H{"data": Questions})
 }
 
-func (c *QuizDataController) FindById(ctx *gin.Context) {
-	QuizDataId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+func (c *QuestionsController) FindById(ctx *gin.Context) {
+	QuestionsId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
 		return
 	}
-	QuizData, err := c.service.FindById(uint(QuizDataId))
+	Questions, err := c.service.FindById(uint(QuestionsId))
 	if err != nil {
-		if err.Error() == "QuizData not found" {
+		if err.Error() == "Questions not found" {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
 		}
@@ -50,38 +50,38 @@ func (c *QuizDataController) FindById(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": QuizData})
+	ctx.JSON(http.StatusOK, gin.H{"data": Questions})
 }
 
-func (c *QuizDataController) Create(ctx *gin.Context) {
-	var input dto.CreateQuizDataInput
+func (c *QuestionsController) Create(ctx *gin.Context) {
+	var input dto.CreateQuestionsInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	newQuizData, err := c.service.Create(input)
+	newQuestions, err := c.service.Create(input)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusCreated, gin.H{"data": newQuizData})
+	ctx.JSON(http.StatusCreated, gin.H{"data": newQuestions})
 }
 
-func (c *QuizDataController) Update(ctx *gin.Context) {
-	QuizDataId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+func (c *QuestionsController) Update(ctx *gin.Context) {
+	QuestionsId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
 		return
 	}
-	var input dto.UpdateQuizDataInput
+	var input dto.UpdateQuestionsInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	updateQuizData, err := c.service.Update(uint(QuizDataId), input)
+	updateQuestions, err := c.service.Update(uint(QuestionsId), input)
 	if err != nil {
-		if err.Error() == "QuizData not found" {
+		if err.Error() == "Questions not found" {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
 		}
@@ -89,19 +89,19 @@ func (c *QuizDataController) Update(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": updateQuizData})
+	ctx.JSON(http.StatusOK, gin.H{"data": updateQuestions})
 }
 
-func (c *QuizDataController) Delete(ctx *gin.Context) {
-	QuizDataId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+func (c *QuestionsController) Delete(ctx *gin.Context) {
+	QuestionsId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
 		return
 	}
 
-	err = c.service.Delete(uint(QuizDataId))
+	err = c.service.Delete(uint(QuestionsId))
 	if err != nil {
-		if err.Error() == "QuizData not found" {
+		if err.Error() == "Questions not found" {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
 		}

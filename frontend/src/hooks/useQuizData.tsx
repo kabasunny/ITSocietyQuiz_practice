@@ -56,7 +56,7 @@ const useQuizData = () => {
       }, 10000);
 
       return () => clearInterval(interval);
-    } else {
+    } else {  //  process.env.REACT_APP_USE_API === 'false' ローカルデータでの検証
       const mappedTestQuizData = testQuizData.map((item) => {
         const correctAnswer = item.options[0];
         const shuffledOptions = shuffleArray([...item.options]);

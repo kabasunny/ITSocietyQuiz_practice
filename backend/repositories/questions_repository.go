@@ -13,7 +13,7 @@ type IQuestionsRepository interface {
 	Create(newQuestions models.Questions) (*models.Questions, error)
 	Update(updateQuestions models.Questions) (*models.Questions, error)
 	Delete(QuestionsId uint) error
-	Count() (int64, error) // レコード数を取得するメソッドを追加
+	Count() (int64, error) // 格納されたクイズのレコード数を取得するメソッドを追加
 }
 
 type QuestionsMemoryRepository struct {
@@ -74,7 +74,7 @@ func (r *QuestionsRepository) Update(updateQuestions models.Questions) (*models.
 	return &updateQuestions, nil
 }
 
-// 新しいメソッドを追加
+// クイズデータのレコード総数をカウント
 func (r *QuestionsRepository) Count() (int64, error) {
 	var count int64
 	result := r.db.Model(&models.Questions{}).Count(&count)

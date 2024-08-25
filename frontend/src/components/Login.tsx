@@ -1,9 +1,9 @@
 import React from 'react';
-import { useForm } from 'react-hook-form'; //カスタムフック
+import { useForm } from 'react-hook-form'; //カスタムフックでフォームのバリデーションと送信を管理
 import { zodResolver } from '@hookform/resolvers/zod';
 import { validationSchema } from './utils/ValidationSchema';
 import './Login.css';
-import { users } from '../data/Users';
+import { useLogin } from '../hooks/useLogin';
 
 interface LoginProps {
   onLogin: (data: boolean) => void;
@@ -15,35 +15,33 @@ export interface LoginForm {
 }
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
+  const { onSubmit, loading } = useLogin(onLogin);
   const {
-    register, //inputタグに含める
-    handleSubmit,
+    //
+    register, //React Hook Formに登録するための関数、inputタグに含める
+    handleSubmit, // フォームが送信されたときに呼び出される関数
     formState: { errors },
   } = useForm<LoginForm>({
     mode: "onChange", //バリデーション発火のタイミング
     resolver: zodResolver(validationSchema),
   });
-  
-  const onSubmit = (data: LoginForm) => {
-    const loginOK = users.find(u => u.empid === data.empid && u.password === data.password);
-    if (loginOK) {
-      onLogin(true);
-    } else {
-      console.error('社員IDまたはパスワードが間違っています');
-    }
-  };
+ 
 
   return (
     <div className="form-container">
-      <h1>ITSocietyQuiz</h1>
+      {/* 環境変数からタイトルを読み込む */}
+      <h1>{process.env.REACT_APP_TITLE}</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="empid">社員IDを入力してね \( ᐕ )/</label>
+        {/* 社員IDの入力フィールド */}
+        <label htmlFor="empid">社員IDを入力してね \( ᐕ )/</label>
         <input
           type="text"
           id="empid"
           {...register("empid")}
         />
         {errors.empid && <p>{errors.empid.message as React.ReactNode}</p>}
+        
+        {/* パスワードの入力フィールド */}
         <label htmlFor="password">パスワードを入力してね \( ᐛ )/</label>
         <input
           id="password"
@@ -52,8 +50,20 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         />
         {errors.password && <p>{errors.password.message as React.ReactNode}</p>}
 
-        <button type="submit">ログイン</button>
+        {/* ログインボタン、onSubmit取得後にloadingはtrue*/}
+        <button type="submit" disabled={loading}>
+          {loading ? '送信中...' : 'ログイン'}
+        </button>
       </form>
+
+      <p>社員ID: EMP1234</p>
+      <p>パスワード: password</p>
+      
+      <p>OR</p>
+
+      <p>社員ID: EMP2345</p>
+      <p>パスワード: password_2</p>
+
     </div>
   );
 }

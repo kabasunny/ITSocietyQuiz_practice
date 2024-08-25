@@ -14,7 +14,7 @@ type IQuestionsService interface {
 	Create(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error)
 	Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*models.Questions, error)
 	Delete(QuestionsId uint) error
-	GetOneDaysQuiz(NunmberOfQuestions uint) (*[]models.Questions, error)
+	GetOneDaysQuiz(NunmberOfQuestions uint) (*[]models.Questions, error) // 1日分のクイズを取得する
 }
 
 type QuestionsService struct {
@@ -68,7 +68,7 @@ func (s *QuestionsService) Delete(QuestionsId uint) error {
 }
 
 func (s *QuestionsService) GetOneDaysQuiz(NumberOfQuestions uint) (*[]models.Questions, error) {
-	// 総問題数を取得
+	// 問題データ数を取得
 	totalQuestions, err := s.repository.Count()
 	if err != nil {
 		return nil, err
@@ -76,19 +76,21 @@ func (s *QuestionsService) GetOneDaysQuiz(NumberOfQuestions uint) (*[]models.Que
 
 	// ランダムにIDを生成してクイズデータを取得
 	selectedQuestions := make([]models.Questions, 0, NumberOfQuestions)
-	usedIDs := make(map[uint]bool)
+	usedIDs := make(map[uint]bool) // 使用済みの質問IDを追跡するためのマップ、デフォルトはfalse
+	// 将来、忘却アルゴリズムを組み合わせる際、ランダムする前に質問IDを格納
 
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	for uint(len(selectedQuestions)) < NumberOfQuestions {
-		randomID := uint(r.Intn(int(totalQuestions)) + 1)
-		if !usedIDs[randomID] {
-			question, err := s.repository.FindById(randomID)
+	r := rand.New(rand.NewSource(time.Now().UnixNano())) // 現在の時刻から、ランダム数生成器を初期化
+
+	for uint(len(selectedQuestions)) < NumberOfQuestions { // selectedQuestionsの長さがNumberOfQuestionsに達するまでループ
+		randomID := uint(r.Intn(int(totalQuestions)) + 1) // 0からtotalQuestions - 1までのランダムな整数(int)を生成し、1を足す
+		if !usedIDs[randomID] {                           // 質問IDが未使用であれば、以下を行う
+			question, err := s.repository.FindById(randomID) // questionは、ポインタ型
 			if err == nil {
-				selectedQuestions = append(selectedQuestions, *question)
+				selectedQuestions = append(selectedQuestions, *question) // *questionは、値を取り出して渡す
 				usedIDs[randomID] = true
 			}
 		}
 	}
 
-	return &selectedQuestions, nil
+	return &selectedQuestions, nil // selectedQuestionsの参照アドレス値(ポインタ)を返す
 }

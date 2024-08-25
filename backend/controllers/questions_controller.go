@@ -15,7 +15,7 @@ type IQuestionsController interface {
 	Create(ctx *gin.Context)
 	Update(ctx *gin.Context)
 	Delete(ctx *gin.Context)
-	GetOneDaysQuiz(ctx *gin.Context)
+	GetOneDaysQuiz(ctx *gin.Context) // 1日分のクイズを取得する
 }
 
 type QuestionsController struct {

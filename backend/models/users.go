@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 // アプリケーションのデータモデルを表現し、データベースのテーブルを表現するための構造体
 type Users struct {
 	gorm.Model            // ID unit を含む構造体となっている
-	EmployeeID     string `gorm:"type:text;not null"` // employeeId を追加
+	EmpID          string `gorm:"type:text;not null"` // employeeId を追加
 	Username       string `gorm:"type:text;not null"`
 	Email          string `gorm:"type:text;not null"`
 	Password       string `gorm:"type:text;not null"`

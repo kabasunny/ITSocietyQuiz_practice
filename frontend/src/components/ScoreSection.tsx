@@ -15,10 +15,8 @@ interface ScoreSectionProps {
 const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers }) => {
   return (
     <div className='score-section'>
-      <h1>スコア</h1>
-      <h2 className="final-score">
-        {score}問正解 ( 全{answers.length}問中 )
-      </h2>
+      {/* 環境変数からタイトルを読み込む */}
+      <h1>{process.env.REACT_APP_TITLE}</h1>
       <table className="answer-table">
         <thead>
           <tr>
@@ -37,6 +35,9 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers }) => {
           ))}
         </tbody>
       </table>
+      <h2 className="final-score">
+      スコア : {score}問正解 ( 全{answers.length}問中 )
+      </h2>
     </div>
   );
 }

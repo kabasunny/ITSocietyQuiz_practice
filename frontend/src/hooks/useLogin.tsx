@@ -10,16 +10,18 @@ export const useLogin = (onLogin: (login: boolean) => void) => {
     setLoading(true);
     try {
       if (process.env.REACT_APP_USE_API === 'true') {
-        const response = await axios.post('http://localhost:8082/questions/login', data, {
+        const response = await axios.post('http://localhost:8082/login', data, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
         const result = response.data;
-        if (result.success) {
+        // console.log('API Response:', result); // レスポンスデータをログに出力
+        if (response.status >= 200 && response.status < 300) {
+          localStorage.setItem('token', result.token); // トークンを保存
           onLogin(true);
         } else {
-          console.error(result.message);
+          console.error('Error:', response.data.error); // エラーメッセージをログに出力
         }
       } else { // process.env.REACT_APP_USE_API === 'false' ローカルデータでの検証
         const loginOK = users.find(u => u.empid === data.empid && u.password === data.password);

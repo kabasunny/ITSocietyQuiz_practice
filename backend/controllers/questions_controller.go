@@ -114,8 +114,7 @@ func (c *QuestionsController) Delete(ctx *gin.Context) {
 }
 
 func (c *QuestionsController) GetOneDaysQuiz(ctx *gin.Context) {
-	NunmberOfQuestions := uint(5) // 1日あたりの問題数を入力
-	QuizDatas, err := c.service.GetOneDaysQuiz(NunmberOfQuestions)
+	QuizDatas, err := c.service.GetOneDaysQuiz()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
 		return

@@ -14,7 +14,7 @@ type IQuestionsService interface {
 	Create(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error)
 	Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*models.Questions, error)
 	Delete(QuestionsId uint) error
-	GetOneDaysQuiz(NunmberOfQuestions uint) (*[]models.Questions, error) // 1日分のクイズを取得する
+	GetOneDaysQuiz() (*[]models.Questions, error) // 1日分のクイズを取得する
 }
 
 type QuestionsService struct {
@@ -67,7 +67,9 @@ func (s *QuestionsService) Delete(QuestionsId uint) error {
 	return s.repository.Delete(QuestionsId)
 }
 
-func (s *QuestionsService) GetOneDaysQuiz(NumberOfQuestions uint) (*[]models.Questions, error) {
+func (s *QuestionsService) GetOneDaysQuiz() (*[]models.Questions, error) {
+	NumberOfQuestions := uint(5) // 1日あたりの問題数を入力
+
 	// 問題データ数を取得
 	totalQuestions, err := s.repository.Count()
 	if err != nil {

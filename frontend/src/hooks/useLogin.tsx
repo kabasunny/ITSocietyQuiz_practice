@@ -5,6 +5,7 @@ import { users } from '../data/Users'; // ローカルデータをインポー�
 
 export const useLogin = (onLogin: (login: boolean) => void) => {
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(''); // エラーメッセージの状態管理
 
   const onSubmit = async (data: LoginForm) => {
     setLoading(true);
@@ -21,22 +22,22 @@ export const useLogin = (onLogin: (login: boolean) => void) => {
           localStorage.setItem('token', result.token); // トークンを保存
           onLogin(true);
         } else {
-          console.error('Error:', response.data.error); // エラーメッセージをログに出力
+          setErrorMessage('社員IDまたはパスワードが間違っています'); // エラーメッセージを設定
         }
       } else { // process.env.REACT_APP_USE_API === 'false' ローカルデータでの検証
         const loginOK = users.find(u => u.empid === data.empid && u.password === data.password);
         if (loginOK) {
           onLogin(true);
         } else {
-          console.error('社員IDまたはパスワードが間違っています');
+          setErrorMessage('社員IDまたはパスワードが間違っています'); // エラーメッセージを設定
         }
       }
     } catch (error) {
-      console.error('サーバーとの通信に失敗しました', error);
+      setErrorMessage('ログインに失敗しました'); // エラーメッセージを設定
     } finally {
       setLoading(false);
     }
   };
 
-  return { onSubmit, loading };
+  return { onSubmit, loading, errorMessage }; // エラーメッセージを返す
 };

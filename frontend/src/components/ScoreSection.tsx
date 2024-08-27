@@ -10,9 +10,10 @@ interface Answer {
 interface ScoreSectionProps {
   score: number;
   answers: Answer[];
+  onEnd: () => void; // 終了ボタンのためのプロップ
 }
 
-const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers }) => {
+const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers, onEnd }) => {
   return (
     <div className='score-section'>
       {/* 環境変数からタイトルを読み込む */}
@@ -36,8 +37,12 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers }) => {
         </tbody>
       </table>
       <h2 className="final-score">
-      スコア : {score}問正解 ( 全{answers.length}問中 )
+        スコア : {score}問正解 ( 全{answers.length}問中 )
       </h2>
+      {/* 終了ボタン */}
+      <button onClick={onEnd} className="end-button">
+        終了
+      </button>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form'; //カスタムフックでフォームのバリデーションと送信を管理
 import { zodResolver } from '@hookform/resolvers/zod';
 import { validationSchema } from './utils/ValidationSchema';
@@ -15,9 +15,8 @@ export interface LoginForm {
 }
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
-  const { onSubmit, loading } = useLogin(onLogin);
+  const { onSubmit, loading, errorMessage } = useLogin(onLogin);
   const {
-    //
     register, //React Hook Formに登録するための関数、inputタグに含める
     handleSubmit, // フォームが送信されたときに呼び出される関数
     formState: { errors },
@@ -25,7 +24,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     mode: "onChange", //バリデーション発火のタイミング
     resolver: zodResolver(validationSchema),
   });
- 
 
   return (
     <div className="form-container">
@@ -55,6 +53,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           {loading ? '送信中...' : 'ログイン'}
         </button>
       </form>
+
+      {/* エラーメッセージの表示 */}
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
       <p>社員ID: EMP1234</p>
       <p>パスワード: password</p>

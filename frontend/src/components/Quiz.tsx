@@ -20,7 +20,7 @@ const Quiz: React.FC<QuizProps> = ({ currentQuestion, quizData, next, feedback, 
     <div className='question-section'>
       {/* 環境変数からタイトルを読み込む */}
       <h1>{process.env.REACT_APP_TITLE}</h1>
-      <h1>{currentQuestion + 1}問目 (  全{quizData.length}問中 )</h1>
+      <h1>{currentQuestion + 1} 問目 (  全{quizData.length}問中 )</h1>
       <h2>{quizData[currentQuestion].question}</h2>
 
       {next ? (

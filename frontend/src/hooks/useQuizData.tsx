@@ -26,7 +26,6 @@ const useQuizData = () => {
     if (process.env.REACT_APP_USE_API === 'true') {
       const fetchQuizData = async () => {
         try {
-          // const response = await axios.get('http://localhost:8082/quiz_data');
           const response = await axios.get('http://localhost:8082/questions/oneday');
           const mappedData = response.data.data.map((item: any) => {
             const correctAnswer = item.Options[0];

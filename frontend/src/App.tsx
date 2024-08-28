@@ -22,7 +22,7 @@ function App() {
   const quizData = useQuizData();
 
   // ログインが成功したかどうかを受け取り、その結果に基づいてログイン状態
-  const onLogin = (loginOK: boolean) => {
+  const handleLogin = (loginOK: boolean) => {
     setIsLoggedIn(loginOK);
   };
 
@@ -34,47 +34,41 @@ function App() {
       correct: answer === quizData[currentQuestion].correct,
     };
 
-    if (newAnswer.correct) {
+    if (newAnswer.correct) { // 正解なら、スコアに1を足し、フィードバックに○
       setScore((prevScore) => prevScore + 1);
       setFeedback("○");
-    } else {
+    } else { // 不正解なら、フィードバックに×
       setFeedback("×");
     }
     setAnswers([...answers, newAnswer]);
-    setNext(true);
+    setNext(true); // 次の質問に遷移するフラグ(結果を表示して、次のクイズへ)
   };
 
   // 次のクイズに遷移する処理
   const goToNextQuestion = () => {
     const nextQuestion = currentQuestion + 1;
-    if (nextQuestion < quizData.length) {
+    if (nextQuestion < quizData.length) { //次のクイズ追番が、クイズの数より小さい場合
       setCurrentQuestion(nextQuestion);
-    } else {
+    } else { //次のクイズ追番が、クイズの数以上の場合
       handleResultsSubmit(); // 最終画面へ遷移する前に結果を送信
-      setShowScore(true);
+      setShowScore(true); // 最終画面へ遷移する許可
     }
-    setNext(false);
+    setNext(false); // 次の質問に遷移するフラグ(今のクイズが表示される)
   };
 
   // 結果送信の処理
   const handleResultsSubmit = () => {
-    // 実装
-    console.log('結果が送信されました');
+    alert('結果が送信されました');
   };
 
-  // 終了ボタンがクリックされたときの処理
-  const handleEnd = () => {
-    // 実装
-    console.log('クイズが終了しました');
-  };
 
   return (
     <div className="quiz-container">
-      {isLoggedIn ? ( // ログインが認証されている
+      {isLoggedIn ? ( // ログイン認証されている
         showScore ? ( // クイズ全問終了しているので、結果画面を表示し、結果を送信
-          <ScoreSection score={score} answers={answers} onEnd={handleEnd} />
+          <ScoreSection score={score} answers={answers} />
         ) : ( // 未回答クイズ問題有り
-          quizData.length > 0 ? ( // クイズデータが取得されている
+          quizData.length > 0 ? ( // クイズデータが取得されている状態
             <Quiz
               currentQuestion={currentQuestion}
               quizData={quizData}
@@ -90,8 +84,8 @@ function App() {
             </div>
           )
         )
-      ) : ( // ログインが認証されていないので、ログイン画面へ遷移
-        <Login onLogin={onLogin} />
+      ) : ( // ログイン認証されていないので、ログイン画面へ遷移
+        <Login onLogin={handleLogin} />
       )}
     </div>
   );

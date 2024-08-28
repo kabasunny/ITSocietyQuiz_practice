@@ -23,20 +23,20 @@ const Quiz: React.FC<QuizProps> = ({ currentQuestion, quizData, next, feedback, 
       <h1>{currentQuestion + 1} 問目 (  全{quizData.length}問中 )</h1>
       <h2>{quizData[currentQuestion].question}</h2>
 
-      {next ? (
+      {next ? ( // クイズを解き終えている
         <div className='feedback-section'>
           <h2 className='large-feedback'>{feedback}</h2>
           <h3>解答: {quizData[currentQuestion].correct}</h3>
           <p>補足：{quizData[currentQuestion].supplement}</p>
           <button onClick={goToNextQuestion}>次の問題へ</button>
         </div>
-      ) : (
+      ) : ( // これからクイズを解く
         <div className='answer-section'>
           {quizData[currentQuestion].options.map((item, index) => (
             <button 
               key={index}
               onClick={() => handleAnswer(item)}
-              className={`quiz-option-button option-${index}`}
+              className={`quiz-option-button option-${index}`} // cssでindexに対応した装飾
             >
               {item}
             </button>

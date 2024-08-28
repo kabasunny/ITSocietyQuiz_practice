@@ -3,6 +3,7 @@
   padding: 20px;
   border-radius: 10px;
   max-width: 1400px;
+  min-width: 400px;
   width: 80%;
   max-height: 80vh; /* コンテナの最大高さを設定 */
   overflow-y: auto; /* 垂直方向のスクロールを有効にする */

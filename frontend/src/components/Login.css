@@ -15,8 +15,8 @@ body {
   padding: 30px;
   border-radius: 8px;
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
-  width: 300px; /* 固定幅を設定 */
-  min-width: 250px; /* 最小幅を指定 */
+  width: 400px; /* 固定幅を設定 */
+  min-width: 300px; /* 最小幅を指定 */
   box-sizing: border-box; /* ボックスのサイズを調整 */
   overflow: hidden; /* コンテンツがはみ出さないようにする */
 }

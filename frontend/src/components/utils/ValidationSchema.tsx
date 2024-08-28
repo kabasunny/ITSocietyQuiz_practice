@@ -7,6 +7,7 @@ export const validationSchema = z.object({
     .min(6, "社員IDは6文字以上で入力してください (ꐦ`•ω•´)"),
   
   //余計なバリデーションを残しておくと、うまくログインできなくなる
+  
   // name: z
   //   .string()
   //   .min(1, "名前は必須です (╬＾ω＾)")

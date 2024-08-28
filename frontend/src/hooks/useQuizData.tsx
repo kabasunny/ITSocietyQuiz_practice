@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { quizData as testQuizData } from '../data/quizData';
+import { questions as testQuizData } from '../data/Questions';
 
 interface QuizData {
   question: string;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ScoreSection.css';
 
 interface Answer {
@@ -10,10 +10,15 @@ interface Answer {
 interface ScoreSectionProps {
   score: number;
   answers: Answer[];
-  onEnd: () => void; // 終了ボタンのためのプロップ
 }
 
-const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers, onEnd }) => {
+const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers }) => {
+  const [isEnded, setIsEnded] = useState<boolean>(false); // 終了状態を管理
+
+  const handleEndClick = () => {
+    setIsEnded(true);
+  };
+
   return (
     <div className='score-section'>
       {/* 環境変数からタイトルを読み込む */}
@@ -39,10 +44,13 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers, onEnd }) =>
       <h2 className="final-score">
         スコア : {score}問正解 ( 全{answers.length}問中 )
       </h2>
-      {/* 終了ボタン */}
-      <button onClick={onEnd} className="end-button">
-        終了
-      </button>
+      {isEnded ? (
+        <h1 className="end-message">本日の学習は終了です٩( 'ω' )و</h1>
+      ) : (
+        <button onClick={handleEndClick} className="end-button">
+          終了
+        </button>
+      )}
     </div>
   );
 }

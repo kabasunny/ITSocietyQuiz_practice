@@ -1,17 +1,15 @@
 package models
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
-// アプリケーションのデータモデルを表現し、データベースのテーブルを表現するための構造体
+// Answers構造体は、クイズの回答を表現する
 type Answers struct {
-	gorm.Model           // ID unit を含む構造体となっている
-	EmployeeID string    `gorm:"not null;constraint:OnDelete:CASCADE"`
-	QuestionID uint      `gorm:"not null;constraint:OnDelete:CASCADE"`
-	Answer     int       `gorm:"not null"`
-	IsCorrect  bool      `gorm:"not null"`
-	Timestamp  time.Time `gorm:"not null"`
+	gorm.Model        // IDフィールドを含む構造体
+	EmpID      string `gorm:"not null;constraint:OnDelete:CASCADE"`
+	QuestionID uint   `gorm:"not null;constraint:OnDelete:CASCADE"` // 外部キーとしてQuestionIDを設定
+	Answer     int    `gorm:"not null"`
+	// IsCorrect  bool      `gorm:"not null"` // Answer == 0 ならば正解
+	// Timestamp time.Time `gorm:"not null"` // GROMのCreatedAt time.Timeを使用する
 }

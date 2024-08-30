@@ -5,11 +5,12 @@ import (
 	"gorm.io/gorm"
 )
 
-// アプリケーションのデータモデルを表現し、データベースのテーブルを表現するための構造体
+// Questions構造体は、クイズの質問を表現する
 type Questions struct {
-	gorm.Model                // ID unit を含む構造体となっている
+	gorm.Model                // IDフィールドを含む構造体
+	QuestionID string         `gorm:"unique"`
 	Question   string         `gorm:"type:text;not null"`
-	Options    pq.StringArray `gorm:"type:text[];not null"` //Options[0]を正解とする
+	Options    pq.StringArray `gorm:"type:text[];not null"` // Options[0]を正解とする
 	Supplement string         `gorm:"type:text;not null"`
 	Difficulty int            `gorm:"type:integer;not null"`
 }

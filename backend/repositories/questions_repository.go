@@ -59,7 +59,7 @@ func (r *QuestionsRepository) FindById(QuestionsId uint) (*models.Questions, err
 	result := r.db.First(&Questions, QuestionsId)
 	if result.Error != nil {
 		if result.Error.Error() == "record not found" {
-			return nil, errors.New("Questions not found")
+			return nil, errors.New("questions not found")
 		}
 		return nil, result.Error
 	}

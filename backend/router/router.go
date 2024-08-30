@@ -22,11 +22,18 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	loginService := services.NewLoginService(loginRepository)
 	loginController := controllers.NewLoginController(loginService)
 
+	// 解答格納用
+	answersRepository := repositories.NewAnswersRepository(db)
+	answersService := services.NewAnswersService(answersRepository)
+	answersController := controllers.NewAnswersController(answersService)
+
 	r := gin.Default()
 
 	r.Use(cors.Default()) //フロントとやり取りする場合は設定したほうがよい。
 
 	r.POST("/login", loginController.Login)
+
+	r.POST("/answers", answersController.SaveAnswers)
 
 	quizDataRouter := r.Group("/questions")
 

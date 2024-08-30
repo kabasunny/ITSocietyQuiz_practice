@@ -49,6 +49,7 @@ func CreateToken(empID string, Username string) (*string, error) {
 		"sub":      empID,
 		"username": Username,
 		"exp":      time.Now().Add(time.Hour).Unix(),
+		// "exp": time.Now().Add(time.Minute).Unix(), // exp有効性確認
 	}) // Unixタイムスタンプは、1970年1月1日のUTC午前0時0分0秒からの経過秒数を表すため、int64型では約292億年分の秒数をカバー
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY"))) // 秘密鍵で署名する

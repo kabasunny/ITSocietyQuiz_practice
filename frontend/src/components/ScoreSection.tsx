@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import './ScoreSection.css';
-
-interface Answer {
-  question: string;
-  answer: string;
-  correct: boolean;
-}
+import { Answer } from '../types';
 
 interface ScoreSectionProps {
   score: number;
@@ -35,7 +30,7 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers }) => {
           {answers.map((item, index) => (
             <tr key={index} className={item.correct ? "correct" : "wrong"}>
               <td>{item.question}</td>
-              <td>{item.answer}</td>
+              <td>{item.answer.text}</td>
               <td className="judgement">{item.correct ? "○" : "×"}</td>
             </tr>
           ))}

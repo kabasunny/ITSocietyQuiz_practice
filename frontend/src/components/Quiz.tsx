@@ -1,19 +1,6 @@
 import React from 'react';
 import './Quiz.css';
-
-interface QuizProps {
-  currentQuestion: number;
-  quizData: {
-    question: string;
-    correct: string;
-    supplement: string;
-    options: string[];
-  }[];
-  next: boolean;
-  feedback: string | null;
-  handleAnswer: (answer: string) => void;
-  goToNextQuestion: () => void;
-}
+import { Option, QuizProps } from '../types';
 
 const Quiz: React.FC<QuizProps> = ({ currentQuestion, quizData, next, feedback, handleAnswer, goToNextQuestion }) => {
   return (
@@ -36,9 +23,9 @@ const Quiz: React.FC<QuizProps> = ({ currentQuestion, quizData, next, feedback, 
             <button 
               key={index}
               onClick={() => handleAnswer(item)}
-              className={`quiz-option-button option-${index}`} // cssでindexに対応した装飾
+              className={`quiz-option-button option-${item.index}`} // cssでindexに対応した装飾
             >
-              {item}
+              {item.text}
             </button>
           ))}
         </div>

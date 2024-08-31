@@ -1,54 +1,21 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { questions as testQuizData } from '../data/Questions';
-
-interface QuizData {
-  question: string;
-  options: string[];
-  correct: string;
-  supplement: string;
-}
+import { QuizData } from '../types';
+import shuffleArray from './utils/shuffleArray';
+import fetchQuizData from './utils/fetchQuizData';
 
 const useQuizData = () => {
   const [quizData, setQuizData] = useState<QuizData[]>([]);
   const [dataFetched, setDataFetched] = useState<boolean>(false);
 
-  const shuffleArray = (array: any[]) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
-
   useEffect(() => {
     console.log('REACT_APP_USE_API:', process.env.REACT_APP_USE_API);
     if (process.env.REACT_APP_USE_API === 'true') {
-      const fetchQuizData = async () => {
-        try {
-          const response = await axios.get('http://localhost:8082/questions/oneday');
-          const mappedData = response.data.data.map((item: any) => {
-            const correctAnswer = item.Options[0];
-            const shuffledOptions = shuffleArray([...item.Options]);
-            return {
-              question: item.Question,
-              options: shuffledOptions,
-              correct: correctAnswer,
-              supplement: item.Supplement,
-            };
-          });
-          setQuizData(mappedData);
-          setDataFetched(true);
-        } catch (error) {
-          console.error('クイズデータの取得中にエラーが発生しました:', error);
-        }
-      };
-
-      fetchQuizData();
+      fetchQuizData(setQuizData, setDataFetched);
 
       const interval = setInterval(() => {
         if (!dataFetched) {
-          fetchQuizData();
+          fetchQuizData(setQuizData, setDataFetched);
         } else {
           clearInterval(interval);
         }
@@ -58,7 +25,11 @@ const useQuizData = () => {
     } else {  //  process.env.REACT_APP_USE_API === 'false' ローカルデータでの検証
       const mappedTestQuizData = testQuizData.map((item) => {
         const correctAnswer = item.options[0];
-        const shuffledOptions = shuffleArray([...item.options]);
+        const optionsWithIndex = item.options.map((option: string, index: number) => ({
+          text: option,
+          index: index
+        }));
+        const shuffledOptions = shuffleArray([...optionsWithIndex]);
         return {
           ...item,
           options: shuffledOptions,

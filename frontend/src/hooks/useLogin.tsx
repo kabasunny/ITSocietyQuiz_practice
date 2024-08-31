@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { LoginForm } from '../components/Login';
+import { LoginForm } from '../types';
 import { users } from '../data/Users'; // ローカルデータをインポート
 
 export const useLogin = (onLogin: (login: boolean) => void) => {
@@ -16,9 +16,9 @@ export const useLogin = (onLogin: (login: boolean) => void) => {
             'Content-Type': 'application/json',
           },
         });
-        const result = response.data;
         // console.log('API Response:', result); // レスポンスデータをログに出力
         if (response.status >= 200 && response.status < 300) {
+          const result = response.data;
           localStorage.setItem('token', result.token); // トークンを保存
           onLogin(true);
         } else {

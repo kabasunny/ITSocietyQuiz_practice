@@ -22,12 +22,12 @@ function App() {
 
   return (
     <div className="quiz-container">
-      {isLoggedIn ? (
-        showScore ? (
-          <ScoreSection score={score} answers={answers} />
-        ) : (
-          quizData.length > 0 ? (
-            <Quiz
+      {isLoggedIn ? ( // ログイン済みのとき
+        showScore ? ( // クイズを解き終えている
+          <ScoreSection score={score} answers={answers} /> // スコアを表示
+        ) : ( // クイズ解き終えていない
+          quizData.length > 0 ? ( // クイズデータ取得済み
+            <Quiz // クイズ出題コンポーネント
               currentQuestion={currentQuestion}
               quizData={quizData}
               next={next}
@@ -39,8 +39,8 @@ function App() {
                 currentQuestion, setCurrentQuestion, quizData, () => handleResultsSubmit(answers), setShowScore, setNext
               )}
             />
-          ) : (
-            <div className="loading">
+          ) : ( // クイズデータがないとき、待ち画面
+            <div className="loading"> 
               <p>Loading...</p>
               <p>⁽⁽*( ᐖ )*⁾⁾ ₍₍*( ᐛ )*₎₎</p>
             </div>

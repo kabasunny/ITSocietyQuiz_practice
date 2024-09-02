@@ -16,10 +16,13 @@ const Quiz: React.FC<QuizProps> = ({ currentQuestion, quizData, next, feedback, 
           <h3>解答: {quizData[currentQuestion].correct}</h3>
           <p>補足：{quizData[currentQuestion].supplement}</p>
           <button onClick={goToNextQuestion}>次の問題へ</button>
+          <p><br />60分以内に全問解答できない場合は、全問不正解になります。</p>
         </div>
       ) : ( // これからクイズを解く
         <div className='answer-section'>
+          <>
           {quizData[currentQuestion].options.map((item, index) => (
+            
             <button 
               key={index}
               onClick={() => handleAnswer(item)}
@@ -28,6 +31,8 @@ const Quiz: React.FC<QuizProps> = ({ currentQuestion, quizData, next, feedback, 
               {item.text}
             </button>
           ))}
+            <p><br />60分以内に全問解答できない場合は、全問不正解になります。</p>
+          </>
         </div>
       )}
     </div>

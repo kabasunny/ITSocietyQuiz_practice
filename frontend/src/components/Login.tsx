@@ -40,14 +40,20 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         />
         {errors.password && <p>{errors.password.message as React.ReactNode}</p>}
 
-        {/* ログインボタン、onSubmit取得後にloadingはtrue*/}
-        <button type="submit" disabled={loading}>
-          {loading ? '送信中...' : 'ログイン'}
+         {/* ログインボタン、onSubmit取得後にloadingはtrue*/}
+         <button type="submit" disabled={loading}>
+          {loading ? '送信中...' : (
+            <>
+              ログイン<br />& スタート！
+            </>
+          )}
         </button>
       </form>
 
       {/* エラーメッセージの表示 */}
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+
+      <p><br />60分以内に全問解答できない場合は、全問不正解になります。</p>
 
       <p>社員ID: EMP1234</p>
       <p>パスワード: password</p>

@@ -14,7 +14,7 @@ import (
 
 type IAnswersService interface {
 	SaveAnswers(input dto.AnswersInput, tokenString string) error
-	ValidateToken(input *dto.AnswersInput, tokenString string) (bool, error)
+	ValidateToken(tokenString string) (string, bool, error)
 }
 
 type AnswersService struct {
@@ -26,15 +26,15 @@ func NewAnswersService(repository repositories.IAnswersRepository) IAnswersServi
 }
 
 func (s *AnswersService) SaveAnswers(input dto.AnswersInput, tokenString string) error {
-	// トークンの検証
-	valid, err := s.ValidateToken(&input, tokenString)
-	if err != nil || !valid { // nillでないか、trueでない場合
+	// トークンの検証とEmpIDの抽出
+	empID, valid, err := s.ValidateToken(tokenString)
+	if err != nil || !valid { // nilでないか、trueでない場合
 		return err
 	}
 
 	// 回答の保存
 	answers := models.Answers{
-		EmpID:      input.EmpID,
+		EmpID:      empID,
 		QuestionID: input.QuestionID,
 		Answer:     input.Answer,
 		// Timestamp:  input.Timestamp,
@@ -48,10 +48,10 @@ func (s *AnswersService) SaveAnswers(input dto.AnswersInput, tokenString string)
 }
 
 // トークンの検証メソッド
-func (s *AnswersService) ValidateToken(input *dto.AnswersInput, tokenString string) (bool, error) {
+func (s *AnswersService) ValidateToken(tokenString string) (string, bool, error) {
 	// Bearer トークンの形式を確認
 	if !strings.HasPrefix(tokenString, "Bearer ") {
-		return false, fmt.Errorf("invalid token format")
+		return "", false, fmt.Errorf("invalid token format")
 	}
 
 	// Bearer プレフィックスを取り除く
@@ -64,7 +64,7 @@ func (s *AnswersService) ValidateToken(input *dto.AnswersInput, tokenString stri
 		return []byte(os.Getenv("SECRET_KEY")), nil
 	})
 	if err != nil {
-		return false, fmt.Errorf("failed to parse token: %v", err)
+		return "", false, fmt.Errorf("failed to parse token: %v", err)
 	}
 
 	// トークンのクレームを検証
@@ -74,19 +74,14 @@ func (s *AnswersService) ValidateToken(input *dto.AnswersInput, tokenString stri
 		exp, expOk := claims["exp"].(float64)
 
 		if !subOk || !expOk {
-			return false, fmt.Errorf("invalid token claims")
-		}
-
-		// empID の検証
-		if sub != input.EmpID {
-			return false, fmt.Errorf("invalid empID")
+			return "", false, fmt.Errorf("invalid token claims")
 		}
 
 		// 有効期限の確認
 		if time.Unix(int64(exp), 0).Before(time.Now()) {
-			return false, fmt.Errorf("token has expired")
+			return "", false, fmt.Errorf("token has expired")
 		}
-		return true, nil
+		return sub, true, nil
 	}
-	return false, fmt.Errorf("invalid token")
+	return "", false, fmt.Errorf("invalid token")
 }

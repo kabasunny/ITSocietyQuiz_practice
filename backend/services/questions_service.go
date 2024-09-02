@@ -14,7 +14,7 @@ type IQuestionsService interface {
 	Create(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error)
 	Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*models.Questions, error)
 	Delete(QuestionsId uint) error
-	GetOneDaysQuiz() (*[]models.Questions, error) // 1日分のクイズを取得する
+	GetOneDaysQuiz() (*[]dto.QuizData, error) // 1日分のクイズを取得する
 }
 
 type QuestionsService struct {
@@ -67,7 +67,7 @@ func (s *QuestionsService) Delete(QuestionsId uint) error {
 	return s.repository.Delete(QuestionsId)
 }
 
-func (s *QuestionsService) GetOneDaysQuiz() (*[]models.Questions, error) {
+func (s *QuestionsService) GetOneDaysQuiz() (*[]dto.QuizData, error) {
 	NumberOfQuestions := uint(5) // 1日あたりの問題数を入力
 
 	// 問題データ数を取得
@@ -79,7 +79,6 @@ func (s *QuestionsService) GetOneDaysQuiz() (*[]models.Questions, error) {
 	// ランダムにIDを生成してクイズデータを取得
 	selectedQuestions := make([]models.Questions, 0, NumberOfQuestions)
 	usedIDs := make(map[uint]bool) // 使用済みの質問IDを追跡するためのマップ、デフォルトはfalse
-	// 将来、忘却アルゴリズムを組み合わせる際、ランダムする前に質問IDを格納
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano())) // 現在の時刻から、ランダム数生成器を初期化
 
@@ -94,5 +93,16 @@ func (s *QuestionsService) GetOneDaysQuiz() (*[]models.Questions, error) {
 		}
 	}
 
-	return &selectedQuestions, nil // selectedQuestionsの参照アドレス値(ポインタ)を返す
+	// DTOに変換
+	quizData := make([]dto.QuizData, len(selectedQuestions))
+	for i, question := range selectedQuestions {
+		quizData[i] = dto.QuizData{
+			Question:   question.Question,
+			Options:    question.Options,
+			Supplement: question.Supplement,
+			Difficulty: question.Difficulty,
+		}
+	}
+
+	return &quizData, nil // quizDataの参照アドレス値(ポインタ)を返す
 }

@@ -1,7 +1,7 @@
 import { Answer } from '../../types';
 
 const handleResultsSubmit = (answers: Answer[]) => {
-  const jwt = localStorage.getItem('token');
+  const jwt = localStorage.getItem('token'); // ログイン時にAPIから取得したトークン
   if (jwt) {
     const result = {
       answers: answers,

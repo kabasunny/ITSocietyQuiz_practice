@@ -21,7 +21,8 @@ const useQuizData = () => {
         }
       }, 10000);
 
-      return () => clearInterval(interval);
+      return () => clearInterval(interval); // useEffect フックのクリーンアップ関数
+
     } else {  //  process.env.REACT_APP_USE_API === 'false' ローカルデータでの検証
       const mappedTestQuizData = testQuizData.map((item) => {
         const correctAnswer = item.options[0];

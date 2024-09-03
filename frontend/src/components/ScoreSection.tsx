@@ -30,7 +30,7 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers }) => {
           {answers.map((item, index) => (
             <tr key={index} className={item.correct ? "correct" : "wrong"}>
               <td>{item.question}</td>
-              <td>{item.answer.text}</td>
+              <td>{item.answer_text}</td>
               <td className="judgement">{item.correct ? "○" : "×"}</td>
             </tr>
           ))}

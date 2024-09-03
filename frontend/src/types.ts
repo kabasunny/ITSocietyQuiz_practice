@@ -13,14 +13,18 @@ export interface Option {
 }
 
 export interface Answer {
+  question_id: number;
   question: string;
-  answer: Option;
+  answer_id: number;
+  answer_text: string;
   correct: boolean;
 }
 
+
 export interface QuizData {
+  id: number; // GORM.Modelから
   question: string;
-  options: Option[];
+  options: Option[]; // 選択肢シャッフル後も、インデックスを保持する目的
   correct: string;
   supplement: string;
 }

@@ -12,7 +12,9 @@ func main() {
 
 	db := infra.SetupDB() //データベース接続を設定し、*gorm.DB オブジェクトを返す。このオブジェクトは、データベース操作を行うためのインターフェースを提供。
 
-	insertData := data.GetHashedUsersList() // data.～を切り替えて、データ挿入。ユーザーの登録時はパスワードをハッシュ化するので、関数を呼ぶ
+	insertData := data.QuestionsList
+
+	// insertData := data.GetHashedUsersList() // data.～を切り替えて、データ挿入。ユーザーの登録時はパスワードをハッシュ化するので、関数を呼ぶ
 
 	for _, data := range insertData {
 		if err := db.Create(&data).Error; err != nil {

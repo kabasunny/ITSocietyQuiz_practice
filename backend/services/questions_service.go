@@ -76,9 +76,9 @@ func (s *QuestionsService) GetOneDaysQuiz() (*[]dto.QuizData, error) {
 		return nil, err
 	}
 
-	// ランダムにIDを生成してクイズデータを取得
-	selectedQuestions := make([]models.Questions, 0, NumberOfQuestions)
-	usedIDs := make(map[uint]bool) // 使用済みの質問IDを追跡するためのマップ、デフォルトはfalse
+	// 仮実装として、ランダムにIDを生成してクイズデータを取得
+	selectedQuestions := make([]models.Questions, 0, NumberOfQuestions) // スライスの初期化
+	usedIDs := make(map[uint]bool)                                      // 使用済みの質問IDを追跡するためのマップ、デフォルトはfalse
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano())) // 現在の時刻から、ランダム数生成器を初期化
 
@@ -97,10 +97,10 @@ func (s *QuestionsService) GetOneDaysQuiz() (*[]dto.QuizData, error) {
 	quizData := make([]dto.QuizData, len(selectedQuestions))
 	for i, question := range selectedQuestions {
 		quizData[i] = dto.QuizData{
+			ID:         question.ID,
 			Question:   question.Question,
 			Options:    question.Options,
 			Supplement: question.Supplement,
-			Difficulty: question.Difficulty,
 		}
 	}
 

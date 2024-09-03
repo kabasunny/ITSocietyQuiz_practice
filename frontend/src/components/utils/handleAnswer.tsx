@@ -12,9 +12,11 @@ const handleAnswer = (
   answers: Answer[]
 ) => {
   const newAnswer: Answer = {
+    question_id: quizData[currentQuestion].id,
     question: quizData[currentQuestion].question,
-    answer: answer,
-    correct: answer.text === quizData[currentQuestion].correct,
+    answer_id: answer.index,
+    answer_text: answer.text,
+    correct: answer.index === 0,
   };
 
   if (newAnswer.correct) {

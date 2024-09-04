@@ -1,11 +1,6 @@
 // Questions.ts
-export interface Question {
-    id: number; // GORM.Modelから
-    question: string;
-    options: string[];
-    supplement: string;
-    difficulty: number;
-  }
+
+import { Question } from '../types';
   
   export const questions: Question[] = [
     {

@@ -1,8 +1,6 @@
 // Roles.ts
-export interface Role {
-    id: number;
-    role_name: string;
-  }
+
+import { Role } from '../types';
   
   export const roles: Role[] = [
     {

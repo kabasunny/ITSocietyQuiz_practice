@@ -1,12 +1,6 @@
 // Users.ts
-export interface User {
-  empid: string; // 型を string に変更
-  username: string;
-  email: string;
-  password: string;
-  total_questions: number;
-  correct_answers: number;
-}
+
+import { User } from '../types';
 
 export const users: User[] = [
   {

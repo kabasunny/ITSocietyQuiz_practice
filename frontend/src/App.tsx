@@ -18,6 +18,7 @@ function App() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [showScore, setShowScore] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  // const [isSubmitAnsewr, setIsSubmitAnsewr] = useState<boolean>(false);
   const quizData = useQuizData();
 
   return (
@@ -32,11 +33,11 @@ function App() {
               quizData={quizData}
               next={next}
               feedback={feedback}
-              handleAnswer={(answer: Option) => handleAnswer(
-                answer, quizData, currentQuestion, setScore, setFeedback, setAnswers, setNext, answers
+              handleAnswer={(selectedAnswer: Option) => handleAnswer(
+                selectedAnswer, quizData, currentQuestion, setScore, setFeedback, setAnswers, setNext, answers
               )}
               goToNextQuestion={() => goToNextQuestion(
-                currentQuestion, setCurrentQuestion, quizData, () => handleResultsSubmit(answers), setShowScore, setNext
+                currentQuestion, setCurrentQuestion, quizData, () => handleResultsSubmit(answers), setShowScore, setNext, //setIsSubmitAnsewr
               )}
             />
           ) : ( // クイズデータがないとき、待ち画面

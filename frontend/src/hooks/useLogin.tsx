@@ -7,11 +7,11 @@ export const useLogin = (onLogin: (login: boolean) => void) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(''); // エラーメッセージの状態管理
 
-  const onSubmit = async (data: LoginForm) => {
+  const onSubmit = async (loginForm: LoginForm) => {
     setLoading(true);
     try {
       if (process.env.REACT_APP_USE_API === 'true') {
-        const response = await axios.post('http://localhost:8082/login', data, {
+        const response = await axios.post('http://localhost:8082/login', loginForm, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -25,7 +25,7 @@ export const useLogin = (onLogin: (login: boolean) => void) => {
           setErrorMessage('社員IDまたはパスワードが間違っています'); // エラーメッセージを設定
         }
       } else { // process.env.REACT_APP_USE_API === 'false' ローカルデータでの検証
-        const loginOK = users.find(u => u.empid === data.empid && u.password === data.password);
+        const loginOK = users.find(user => user.empid === loginForm.empid && user.password === loginForm.password);
         if (loginOK) {
           onLogin(true);
         } else {

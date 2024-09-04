@@ -36,7 +36,7 @@ func (s *AnswersService) SaveAnswers(input dto.AnswersInput, tokenString string)
 	answers := models.Answers{
 		EmpID:      empID,
 		QuestionID: input.QuestionID,
-		Answer:     input.Answer,
+		AnswerID:   input.AnswerID,
 		// Timestamp:  input.Timestamp,
 	}
 	err = s.repository.CreateAnswers(answers)

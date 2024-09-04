@@ -1,6 +1,6 @@
 import React from 'react';
 import './Quiz.css';
-import { Option, QuizProps } from '../types';
+import { QuizProps } from '../types';
 
 const Quiz: React.FC<QuizProps> = ({ currentQuestion, quizData, next, feedback, handleAnswer, goToNextQuestion }) => {
   return (
@@ -21,14 +21,14 @@ const Quiz: React.FC<QuizProps> = ({ currentQuestion, quizData, next, feedback, 
       ) : ( // これからクイズを解く
         <div className='answer-section'>
           <>
-          {quizData[currentQuestion].options.map((item, index) => (
+          {quizData[currentQuestion].options.map((option, index) => (
             
             <button 
               key={index}
-              onClick={() => handleAnswer(item)}
-              className={`quiz-option-button option-${item.index}`} // cssでindexに対応した装飾
+              onClick={() => handleAnswer(option)}
+              className={`quiz-option-button option-${option.index}`} // cssでindexに対応した装飾
             >
-              {item.text}
+              {option.text}
             </button>
           ))}
             <p><br />60分以内に全問解答できない場合は、全問不正解になります。</p>

@@ -7,7 +7,8 @@ const goToNextQuestion = (
   quizData: QuizData[],
   handleResultsSubmit: () => void,
   setShowScore: Dispatch<SetStateAction<boolean>>,
-  setNext: Dispatch<SetStateAction<boolean>>
+  setNext: Dispatch<SetStateAction<boolean>>,
+  //setIsSubmitAnsewr: Dispatch<SetStateAction<boolean>>
 ) => {
   const nextQuestion = currentQuestion + 1;
   if (nextQuestion < quizData.length) { // 1日のクイズ数は5問を想定

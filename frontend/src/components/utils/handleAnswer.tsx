@@ -1,9 +1,9 @@
-import { Answer, Option } from '../../types';
+import { Answer, Option, QuizData } from '../../types';
 import { Dispatch, SetStateAction } from 'react';
 
 const handleAnswer = (
-  answer: Option,
-  quizData: any[],
+  selectedAnswer: Option,
+  quizData: QuizData[],
   currentQuestion: number,
   setScore: Dispatch<SetStateAction<number>>,
   setFeedback: Dispatch<SetStateAction<string | null>>,
@@ -14,9 +14,9 @@ const handleAnswer = (
   const newAnswer: Answer = {
     question_id: quizData[currentQuestion].id,
     question: quizData[currentQuestion].question,
-    answer_id: answer.index,
-    answer_text: answer.text,
-    correct: answer.index === 0,
+    answer_id: selectedAnswer.index,
+    answer_text: selectedAnswer.text,
+    correct: selectedAnswer.index === 0,
   };
 
   if (newAnswer.correct) {

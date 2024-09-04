@@ -29,7 +29,14 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 
 	r := gin.Default()
 
-	r.Use(cors.Default()) //フロントとやり取りする場合は設定したほうがよい。
+	// カスタムCORS設定を追加
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3005"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 
 	r.POST("/login", loginController.Login)
 
@@ -45,5 +52,4 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	quizDataRouter.DELETE("/:id", quizDataController.Delete)
 
 	return r
-
 }

@@ -21,8 +21,8 @@ func NewAnswersController(service services.IAnswersService) IAnswersController {
 }
 
 func (c *AnswersController) SaveAnswers(ctx *gin.Context) {
-	var input dto.AnswersInput
-	if err := ctx.ShouldBindJSON(&input); err != nil {
+	var inputs []dto.AnswersInput
+	if err := ctx.ShouldBindJSON(&inputs); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -35,14 +35,16 @@ func (c *AnswersController) SaveAnswers(ctx *gin.Context) {
 	}
 
 	// 回答の保存
-	err := c.service.SaveAnswers(input, token)
-	if err != nil {
-		if err.Error() == "invalid token" || err.Error() == "invalid empID" || err.Error() == "token has expired" {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+	for _, input := range inputs {
+		err := c.service.SaveAnswers(input, token)
+		if err != nil {
+			if err.Error() == "invalid token" || err.Error() == "invalid empID" || err.Error() == "token has expired" {
+				ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+				return
+			}
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "Answers saved successfully"})

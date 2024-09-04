@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import './ScoreSection.css';
-import { Answer } from '../types';
-
-interface ScoreSectionProps {
-  score: number;
-  answers: Answer[];
-}
+import { Answer, ScoreSectionProps } from '../types';
 
 const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers }) => {
   const [isEnded, setIsEnded] = useState<boolean>(false); // 終了状態を管理
@@ -27,11 +22,11 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers }) => {
           </tr>
         </thead>
         <tbody>
-          {answers.map((item, index) => (
-            <tr key={index} className={item.correct ? "correct" : "wrong"}>
-              <td>{item.question}</td>
-              <td>{item.answer_text}</td>
-              <td className="judgement">{item.correct ? "○" : "×"}</td>
+          {answers.map((answer, index) => (
+            <tr key={index} className={answer.correct ? "correct" : "wrong"}>
+              <td>{answer.question}</td>
+              <td>{answer.answer_text}</td>
+              <td className="judgement">{answer.correct ? "○" : "×"}</td>
             </tr>
           ))}
         </tbody>

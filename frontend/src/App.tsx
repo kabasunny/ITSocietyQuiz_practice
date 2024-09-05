@@ -8,7 +8,7 @@ import { Answer, Option } from './types';
 import handleLogin from './components/utils/handleLogin';
 import handleAnswer from './components/utils/handleAnswer';
 import goToNextQuestion from './components/utils/goToNextQuestion';
-import handleResultsSubmit from './components/utils/handleResultsSubmit';
+import submitAnswers from './components/utils/submitAnswers';
 
 function App() {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
@@ -18,14 +18,14 @@ function App() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [showScore, setShowScore] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  // const [isSubmitAnsewr, setIsSubmitAnsewr] = useState<boolean>(false);
+  const [isSubmitAnsewr, setIsSubmitAnsewr] = useState<boolean>(false);
   const quizData = useQuizData();
 
   return (
     <div className="quiz-container">
       {isLoggedIn ? ( // ログイン済みのとき
         showScore ? ( // クイズを解き終えている
-          <ScoreSection score={score} answers={answers} /> // スコアを表示
+          <ScoreSection score={score} answers={answers} isSubmitAnsewr={isSubmitAnsewr} /> // スコアを表示
         ) : ( // クイズ解き終えていない
           quizData.length > 0 ? ( // クイズデータ取得済み
             <Quiz // クイズ出題コンポーネント
@@ -37,7 +37,7 @@ function App() {
                 selectedAnswer, quizData, currentQuestion, setScore, setFeedback, setAnswers, setNext, answers
               )}
               goToNextQuestion={() => goToNextQuestion(
-                currentQuestion, setCurrentQuestion, quizData, () => handleResultsSubmit(answers), setShowScore, setNext, //setIsSubmitAnsewr
+                currentQuestion, setCurrentQuestion, quizData, answers, submitAnswers, setShowScore, setNext, setIsSubmitAnsewr
               )}
             />
           ) : ( // クイズデータがないとき、待ち画面

@@ -1,7 +1,11 @@
 import axios from 'axios';
 import { Answer, ResAnswer } from '../../types';
+import { Dispatch, SetStateAction } from 'react';
 
-const handleResultsSubmit = async (answers: Answer[]) => {
+const submitAnswers = async (
+  answers: Answer[],
+  setIsSubmitAnsewr: Dispatch<SetStateAction<boolean>>
+) => {
   const jwt = localStorage.getItem('token'); // ログイン時にAPIから取得したトークン
   if (jwt) {
     // Answer を ResAnswer に変換
@@ -17,9 +21,8 @@ const handleResultsSubmit = async (answers: Answer[]) => {
           'Content-Type': 'application/json'
         }
       });
-      // alert(`結果が送信されました。\nレスポンス: ${JSON.stringify(response.data, null, 2)}`);
+      setIsSubmitAnsewr(true); // 成功時にsetIsSubmitAnsewr(true)を呼び出す
     } catch (error) {
-      
       alert('結果の送信中にエラーが発生しました。');
     }
   } else {
@@ -27,4 +30,4 @@ const handleResultsSubmit = async (answers: Answer[]) => {
   }
 };
 
-export default handleResultsSubmit;
+export default submitAnswers;

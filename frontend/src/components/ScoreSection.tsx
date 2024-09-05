@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ScoreSection.css';
-import { Answer, ScoreSectionProps } from '../types';
+import { ScoreSectionProps } from '../types';
 
-const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers }) => {
+const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers, isSubmitAnsewr }) => {
   const [isEnded, setIsEnded] = useState<boolean>(false); // 終了状態を管理
 
+  // useEffect(() => {
+  //   if (isSubmitAnsewr) {
+  //     alert('回答が送信されました！');
+  //   }
+  // }, [isSubmitAnsewr]);
+
   const handleEndClick = () => {
-    setIsEnded(true);
+    if (isSubmitAnsewr) {
+      setIsEnded(true);
+    } else {
+      alert('データ送信に失敗しました');
+    }
   };
 
   return (

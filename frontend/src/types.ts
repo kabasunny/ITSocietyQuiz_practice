@@ -56,8 +56,8 @@ export interface ResAnswer {
 export interface ScoreSectionProps {
   score: number;
   answers: Answer[];
+  isSubmitAnsewr: boolean; // 追加
 }
-
 // ユーザー関連のインターフェース
 export interface Role {
   id: number;

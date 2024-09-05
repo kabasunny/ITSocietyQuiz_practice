@@ -4,8 +4,13 @@ import (
 	"backend/dto"
 	"backend/models"
 	"backend/repositories"
+	"fmt"
 	"math/rand"
+	"os"
+	"strings"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type IQuestionsService interface {
@@ -14,7 +19,7 @@ type IQuestionsService interface {
 	Create(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error)
 	Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*models.Questions, error)
 	Delete(QuestionsId uint) error
-	GetOneDaysQuiz() (*[]dto.QuizData, error) // 1日分のクイズを取得する
+	GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, error) // 1日分のクイズを取得する
 }
 
 type QuestionsService struct {
@@ -67,7 +72,14 @@ func (s *QuestionsService) Delete(QuestionsId uint) error {
 	return s.repository.Delete(QuestionsId)
 }
 
-func (s *QuestionsService) GetOneDaysQuiz() (*[]dto.QuizData, error) {
+func (s *QuestionsService) GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, error) {
+	// トークンの検証とEmpIDの抽出
+	empID, valid, err := s.ValidateToken(tokenString)
+	if err != nil || !valid { // nilでないか、trueでない場合
+		return nil, err
+	}
+	fmt.Print(empID) //ダミー、すぐ消す
+
 	NumberOfQuestions := uint(5) // 1日あたりの問題数を入力
 
 	// 問題データ数を取得
@@ -105,4 +117,43 @@ func (s *QuestionsService) GetOneDaysQuiz() (*[]dto.QuizData, error) {
 	}
 
 	return &quizData, nil // quizDataの参照アドレス値(ポインタ)を返す
+}
+
+// トークンの検証メソッド
+func (s *QuestionsService) ValidateToken(tokenString string) (string, bool, error) {
+	// Bearer トークンの形式を確認
+	if !strings.HasPrefix(tokenString, "Bearer ") {
+		return "", false, fmt.Errorf("invalid token format")
+	}
+
+	// Bearer プレフィックスを取り除く
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok { // jwt.SigningMethodHS256 で生成されたトークンを、HMAC 系列で検証
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(os.Getenv("SECRET_KEY")), nil
+	})
+	if err != nil {
+		return "", false, fmt.Errorf("failed to parse token: %v", err)
+	}
+
+	// トークンのクレームを検証
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// クレームの内容を確認
+		sub, subOk := claims["sub"].(string)
+		exp, expOk := claims["exp"].(float64)
+
+		if !subOk || !expOk {
+			return "", false, fmt.Errorf("invalid token claims")
+		}
+
+		// 有効期限の確認
+		if time.Unix(int64(exp), 0).Before(time.Now()) {
+			return "", false, fmt.Errorf("token has expired")
+		}
+		return sub, true, nil
+	}
+	return "", false, fmt.Errorf("invalid token")
 }

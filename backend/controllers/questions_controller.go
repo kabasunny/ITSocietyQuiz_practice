@@ -114,10 +114,13 @@ func (c *QuestionsController) Delete(ctx *gin.Context) {
 }
 
 func (c *QuestionsController) GetOneDaysQuiz(ctx *gin.Context) {
-	QuizDatas, err := c.service.GetOneDaysQuiz()
+	// トークンの確認
+	tokenString := ctx.GetHeader("Authorization")
+
+	QuizDatas, err := c.service.GetOneDaysQuiz(tokenString)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"data": QuizDatas})
+	ctx.JSON(http.StatusOK, gin.H{"quizdata": QuizDatas})
 }

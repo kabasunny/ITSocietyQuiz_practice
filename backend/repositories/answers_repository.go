@@ -8,9 +8,11 @@ import (
 )
 
 type IAnswersRepository interface {
-	CreateAnswers(Answers models.Answers) error
-	FindByEmpID(empID string) (*models.Answers, error)
-	FindByQuestionID(QuestionID int) (*models.Answers, error)
+	CreateAnswers(Answers models.Answers) error                             // 新しい回答をデータベースに保存
+	FindByEmpID(empID string) (*models.Answers, error)                      // 指定されたemp_idに基づいて回答を検索
+	FindByQuestionID(QuestionID int) (*models.Answers, error)               // 指定されたquestion_idに基づいて回答を検索
+	UpdateStreakCount(answer *models.Answers) error                         // 連続正解数を更新
+	GetLatestAnswer(empID string, questionID uint) (*models.Answers, error) // 指定されたemp_idとquestion_idに基づいて最新の回答を取得
 }
 
 type AnswersRepository struct {
@@ -51,4 +53,14 @@ func (r *AnswersRepository) FindByQuestionID(QuestionID int) (*models.Answers, e
 		return nil, result.Error
 	}
 	return &Answers, nil
+}
+
+func (r *AnswersRepository) UpdateStreakCount(answer *models.Answers) error {
+	return r.db.Save(answer).Error
+}
+
+func (r *AnswersRepository) GetLatestAnswer(empID string, questionID uint) (*models.Answers, error) {
+	var answer models.Answers
+	err := r.db.Where("emp_id = ? AND question_id = ?", empID, questionID).Order("created_at desc").First(&answer).Error
+	return &answer, err
 }

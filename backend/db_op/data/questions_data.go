@@ -1,4 +1,4 @@
-package data
+package data // テスト用データ
 
 import (
 	"backend/models"

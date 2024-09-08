@@ -9,7 +9,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// ValidateTokenは、JWTトークンを検証し、トークンのクレームからユーザーIDを抽出します
+// ValidateTokenは、JWTトークンを検証し、トークンのクレームからユーザーIDを抽出
 func ValidateToken(tokenString string) (string, bool, error) {
 	// Bearer トークンの形式を確認
 	if !strings.HasPrefix(tokenString, "Bearer ") {
@@ -19,12 +19,15 @@ func ValidateToken(tokenString string) (string, bool, error) {
 	// Bearer プレフィックスを取り除く
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok { // jwt.SigningMethodHS256 で生成されたトークンを、HMAC 系列で検証
+	// トークン検証用関数
+	keyFunc := func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(os.Getenv("SECRET_KEY")), nil
-	})
+		return []byte(os.Getenv("SECRET_KEY")), nil // jwt.Parse 関数が返された秘密鍵を使用して、トークンを検証するため、取得した秘密鍵をバイトスライスに変換し返す
+	}
+
+	token, err := jwt.Parse(tokenString, keyFunc)
 	if err != nil {
 		return "", false, fmt.Errorf("failed to parse token: %v", err)
 	}
@@ -33,7 +36,7 @@ func ValidateToken(tokenString string) (string, bool, error) {
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		// クレームの内容を確認
 		sub, subOk := claims["sub"].(string)
-		exp, expOk := claims["exp"].(float64)
+		exp, expOk := claims["exp"].(float64) // JSONの数値はすべて float64 として扱われるため、直接 int64 にキャストすることはできない
 
 		if !subOk || !expOk {
 			return "", false, fmt.Errorf("invalid token claims")

@@ -8,7 +8,7 @@ import (
 )
 
 type IAnswersRepository interface {
-	CreateAnswers(Answers models.Answers) error                             // 新しい回答をデータベースに保存
+	CreateAnswers(answers *models.Answers) error                            // 新しい回答をデータベースに保存
 	FindByEmpID(empID string) (*models.Answers, error)                      // 指定されたemp_idに基づいて回答を検索
 	FindByQuestionID(QuestionID int) (*models.Answers, error)               // 指定されたquestion_idに基づいて回答を検索
 	UpdateStreakCount(answer *models.Answers) error                         // 連続正解数を更新
@@ -23,8 +23,8 @@ func NewAnswersRepository(db *gorm.DB) IAnswersRepository {
 	return &AnswersRepository{db: db}
 }
 
-func (r *AnswersRepository) CreateAnswers(Answers models.Answers) error {
-	result := r.db.Create(&Answers)
+func (r *AnswersRepository) CreateAnswers(answers *models.Answers) error {
+	result := r.db.Create(&answers)
 	if result.Error != nil {
 		return result.Error
 	}

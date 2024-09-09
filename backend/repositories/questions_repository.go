@@ -9,11 +9,15 @@ import (
 
 type IQuestionsRepository interface {
 	FindAll() (*[]models.Questions, error)
-	FindById(QuestionsId uint) (*models.Questions, error)
+	FindById(QuestionsId uint) (*models.Questions, error) // 単一の質問IDに基づいて、questionsテーブルからデータを取得する場合
 	Create(newQuestions models.Questions) (*models.Questions, error)
 	Update(updateQuestions models.Questions) (*models.Questions, error)
 	Delete(QuestionsId uint) error
-	Count() (int64, error) // 格納されたクイズのレコード数を取得するメソッドを追加
+	Count() (int64, error)                                             // 格納されたクイズのレコード数を取得するメソッドを追加
+	GetTopQuestionsByEmpID(empID string, limit int) ([]uint, error)    // answersテーブルからlimit件の質問IDを取得し、優先度順に並べる
+	GetCurrentQIDByEmpID(empID string) (uint, error)                   // usersテーブルからcurrentq_idを取得する
+	UpdateCurrentQID(empID string, newQID uint) error                  // usersテーブルのcurrentq_idを更新する
+	GetQuestionDetails(questionIDs []uint) ([]models.Questions, error) // 複数の質問IDに基づいて、questionsテーブルからデータを取得する場合
 }
 
 type QuestionsMemoryRepository struct {
@@ -22,6 +26,10 @@ type QuestionsMemoryRepository struct {
 
 type QuestionsRepository struct {
 	db *gorm.DB
+}
+
+func NewQuestionsRepository(db *gorm.DB) IQuestionsRepository {
+	return &QuestionsRepository{db: db}
 }
 
 func (r *QuestionsRepository) Create(newQuestions models.Questions) (*models.Questions, error) {
@@ -84,6 +92,64 @@ func (r *QuestionsRepository) Count() (int64, error) {
 	return count, nil
 }
 
-func NewQuestionsRepository(db *gorm.DB) IQuestionsRepository {
-	return &QuestionsRepository{db: db}
+// answersテーブルからlimit件の質問IDを取得し、優先度順に並べる
+func (r *QuestionsRepository) GetTopQuestionsByEmpID(empID string, limit int) ([]uint, error) {
+	var questionIDs []uint
+	query := `
+WITH LatestAnswers AS (
+    SELECT 
+        question_id,
+        streak_count,
+        ROW_NUMBER() OVER (PARTITION BY question_id ORDER BY created_at DESC) AS rn
+    FROM 
+        answers
+    WHERE 
+        emp_id = ?
+    LIMIT ?
+)
+SELECT 
+    question_id
+FROM 
+    LatestAnswers
+WHERE 
+    rn = 1 AND streak_count IN (0, 1, 2)
+ORDER BY 
+    streak_count DESC,
+    question_id ASC
+LIMIT 5;
+    `
+	result := r.db.Raw(query, empID, limit).Scan(&questionIDs)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return questionIDs, nil
+}
+
+// usersテーブルからcurrentq_idを取得する
+func (r *QuestionsRepository) GetCurrentQIDByEmpID(empID string) (uint, error) {
+	var currentQID uint
+	result := r.db.Model(&models.Users{}).Where("emp_id = ?", empID).Select("currentq_id").Scan(&currentQID)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	return currentQID, nil
+}
+
+// usersテーブルのcurrentq_idを更新する
+func (r *QuestionsRepository) UpdateCurrentQID(empID string, newQID uint) error {
+	result := r.db.Model(&models.Users{}).Where("emp_id = ?", empID).Update("currentq_id", newQID)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+// questionsテーブルから、詳細データを取得する
+func (r *QuestionsRepository) GetQuestionDetails(questionIDs []uint) ([]models.Questions, error) {
+	var questions []models.Questions
+	result := r.db.Where("id IN (?)", questionIDs).Find(&questions)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return questions, nil
 }

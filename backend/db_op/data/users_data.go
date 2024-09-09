@@ -1,24 +1,15 @@
 package data // テスト用データ
 
 import (
+	"backend/models"
 	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Usersのデータモデルを表現する構造体
-type User struct {
-	EmpID          string
-	Username       string
-	Email          string
-	Password       string
-	TotalQuestions int
-	CorrectAnswers int
-}
-
 // Usersのデータを格納する変数
 // ユーザーのデータ登録時は、パスワードハッシュ化するので、下方に定義した関数を呼び出す
-var UsersList = []User{
+var UsersList = []models.Users{
 	{
 		EmpID:          "EMP1234",
 		Username:       "ITSocietyQuiz",
@@ -38,8 +29,8 @@ var UsersList = []User{
 }
 
 // ハッシュ化されたパスワードを持つ新しいUsersListを返却する関数
-func GetHashedUsersList() []User {
-	var hashedUsersList []User
+func GetHashedUsersList() []models.Users {
+	var hashedUsersList []models.Users
 
 	for _, user := range UsersList {
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
@@ -49,7 +40,7 @@ func GetHashedUsersList() []User {
 			return nil
 		}
 
-		hashedUser := User{
+		hashedUser := models.Users{
 			EmpID:          user.EmpID,
 			Username:       user.Username,
 			Email:          user.Email,

@@ -27,9 +27,15 @@ func main() {
 
 	// 部分インデックスの作成、questionsテーブルのマイグレーション時に使用
 	// tx := db.Exec(`
-	//     CREATE UNIQUE INDEX unique_user_question_id
-	//     ON questions(user_question_id)
-	//     WHERE user_question_id IS NOT NULL;
+	//     DO $$
+	//     BEGIN
+	//         IF NOT EXISTS (SELECT 1 FROM pg_class WHERE relname = 'unique_user_question_id') THEN
+	//             CREATE UNIQUE INDEX unique_user_question_id
+	//             ON questions(user_question_id)
+	//             WHERE user_question_id IS NOT NULL;
+	//         END IF;
+	//     END
+	//     $$;
 	// `)
 	// if tx.Error != nil {
 	// 	log.Fatal("Failed to create partial index: ", tx.Error)

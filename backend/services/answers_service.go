@@ -30,15 +30,15 @@ func (s *AnswersService) SaveAnswers(input dto.AnswersInput, tokenString string)
 		return err
 	}
 
-	// 最新の回答を取得
+	// 直近の回答を取得
 	latestAnswer, err := s.repository.GetLatestAnswer(empID, input.QuestionID)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) { // 特定のエラーErrRecordNotFoundは無視
 		return err
 	}
 
 	// 連続正解数の更新
 	streakCount := uint(0)
-	if latestAnswer != nil {
+	if latestAnswer != nil { // 初回解答時は、nil
 		if input.AnswerID == 0 {
 			streakCount = latestAnswer.StreakCount + 1
 		} else {
@@ -48,13 +48,13 @@ func (s *AnswersService) SaveAnswers(input dto.AnswersInput, tokenString string)
 
 	// 回答の保存
 	answers := models.Answers{
-		EmpID:       empID,
-		QuestionID:  input.QuestionID,
-		AnswerID:    input.AnswerID,
-		StreakCount: streakCount,
+		EmpID:       empID,            // トークンから抽出
+		QuestionID:  input.QuestionID, // 引数から
+		AnswerID:    input.AnswerID,   // 引数から
+		StreakCount: streakCount,      // 更新後の値
 	}
 
-	err = s.repository.CreateAnswers(answers)
+	err = s.repository.CreateAnswers(&answers)
 	if err != nil {
 		return err
 	}

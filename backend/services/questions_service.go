@@ -5,9 +5,6 @@ import (
 	"backend/models"
 	"backend/repositories"
 	"backend/utils" // ValidateToken(tokenString string) (string, bool, error)
-	"fmt"
-	"math/rand"
-	"time"
 )
 
 type IQuestionsService interface {
@@ -72,39 +69,44 @@ func (s *QuestionsService) Delete(QuestionsId uint) error {
 func (s *QuestionsService) GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, error) {
 	// トークンの検証とEmpIDの抽出
 	empID, valid, err := utils.ValidateToken(tokenString)
-	if err != nil || !valid { // nilでないか、trueでない場合
+	if err != nil || !valid {
 		return nil, err
 	}
-	fmt.Print(empID) //ダミー、すぐ消す
 
-	NumberOfQuestions := uint(5) // 1日あたりの問題数を入力
-
-	// 問題データ数を取得
-	totalQuestions, err := s.repository.Count()
+	// 1. answersテーブルからデータを取得
+	selectedQuestions, err := s.repository.GetTopQuestionsByEmpID(empID, 105)
 	if err != nil {
 		return nil, err
 	}
 
-	// 仮実装として、ランダムにIDを生成してクイズデータを取得
-	selectedQuestions := make([]models.Questions, 0, NumberOfQuestions) // スライスの初期化
-	usedIDs := make(map[uint]bool)                                      // 使用済みの質問IDを追跡するためのマップ、デフォルトはfalse
+	// 2. 不足分のquestion_idを補完
+	if len(selectedQuestions) < 5 {
+		currentQID, err := s.repository.GetCurrentQIDByEmpID(empID)
+		if err != nil {
+			return nil, err
+		}
 
-	r := rand.New(rand.NewSource(time.Now().UnixNano())) // 現在の時刻から、ランダム数生成器を初期化
+		for len(selectedQuestions) < 5 {
+			currentQID++
+			selectedQuestions = append(selectedQuestions, currentQID)
+		}
 
-	for uint(len(selectedQuestions)) < NumberOfQuestions { // selectedQuestionsの長さがNumberOfQuestionsに達するまでループ
-		randomID := uint(r.Intn(int(totalQuestions)) + 1) // 0からtotalQuestions - 1までのランダムな整数(int)を生成し、1を足す
-		if !usedIDs[randomID] {                           // 質問IDが未使用であれば、以下を行う
-			question, err := s.repository.FindById(randomID) // questionは、ポインタ型
-			if err == nil {
-				selectedQuestions = append(selectedQuestions, *question) // *questionは、値を取り出して渡す
-				usedIDs[randomID] = true
-			}
+		// 3. usersテーブルのcurrentq_idを更新
+		err = s.repository.UpdateCurrentQID(empID, currentQID)
+		if err != nil {
+			return nil, err
 		}
 	}
 
+	// 4. selectedQuestionsから詳細データを取得
+	quizDetails, err := s.repository.GetQuestionDetails(selectedQuestions)
+	if err != nil {
+		return nil, err
+	}
+
 	// DTOに変換
-	quizData := make([]dto.QuizData, len(selectedQuestions))
-	for i, question := range selectedQuestions {
+	quizData := make([]dto.QuizData, len(quizDetails))
+	for i, question := range quizDetails {
 		quizData[i] = dto.QuizData{
 			ID:         question.ID,
 			Question:   question.Question,
@@ -113,8 +115,55 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, 
 		}
 	}
 
-	return &quizData, nil // quizDataの参照アドレス値(ポインタ)を返す
+	return &quizData, nil
 }
+
+// func (s *QuestionsService) GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, error) {
+// 	// トークンの検証とEmpIDの抽出
+// 	empID, valid, err := utils.ValidateToken(tokenString)
+// 	if err != nil || !valid { // nilでないか、trueでない場合
+// 		return nil, err
+// 	}
+// 	fmt.Print(empID) //ダミー、すぐ消す
+
+// 	NumberOfQuestions := uint(5) // 1日あたりの問題数を設定
+
+// 	// 問題データ数を取得
+// 	totalQuestions, err := s.repository.Count()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	// 仮実装として、ランダムにIDを生成してクイズデータを取得
+// 	selectedQuestions := make([]models.Questions, 0, NumberOfQuestions) // スライスの初期化
+// 	usedIDs := make(map[uint]bool)                                      // 使用済みの質問IDを追跡するためのマップ、デフォルトはfalse
+
+// 	r := rand.New(rand.NewSource(time.Now().UnixNano())) // 現在の時刻から、ランダム数生成器を初期化
+
+// 	for uint(len(selectedQuestions)) < NumberOfQuestions { // selectedQuestionsの長さがNumberOfQuestionsに達するまでループ
+// 		randomID := uint(r.Intn(int(totalQuestions)) + 1) // 0からtotalQuestions - 1までのランダムな整数(int)を生成し、1を足す
+// 		if !usedIDs[randomID] {                           // 質問IDが未使用であれば、以下を行う
+// 			question, err := s.repository.FindById(randomID) // questionは、ポインタ型
+// 			if err == nil {
+// 				selectedQuestions = append(selectedQuestions, *question) // *questionは、値を取り出して渡す
+// 				usedIDs[randomID] = true
+// 			}
+// 		}
+// 	}
+
+// 	// DTOに変換
+// 	quizData := make([]dto.QuizData, len(selectedQuestions))
+// 	for i, question := range selectedQuestions {
+// 		quizData[i] = dto.QuizData{
+// 			ID:         question.ID,
+// 			Question:   question.Question,
+// 			Options:    question.Options,
+// 			Supplement: question.Supplement,
+// 		}
+// 	}
+
+// 	return &quizData, nil // quizDataの参照アドレス値(ポインタ)を返す
+// }
 
 // // トークンの検証メソッド utilsにて共通化処理とする
 // func (s *QuestionsService) ValidateToken(tokenString string) (string, bool, error) {

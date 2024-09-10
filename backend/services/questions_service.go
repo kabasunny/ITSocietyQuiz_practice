@@ -5,6 +5,7 @@ import (
 	"backend/models"
 	"backend/repositories"
 	"backend/utils" // ValidateToken(tokenString string) (string, bool, error)
+	"log"
 )
 
 type IQuestionsService interface {
@@ -16,12 +17,22 @@ type IQuestionsService interface {
 	GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, error) // 1日分のクイズを取得する
 }
 
+const (
+	DailyQuestionCount = 5  // 一日当たりの問題数
+	PastDaysRange      = 21 // 検索範囲の何日分
+)
+
 type QuestionsService struct {
-	repository repositories.IQuestionsRepository
+	repository         repositories.IQuestionsRepository
+	dailyQuestionCount uint // 一日当たりの問題数
+	pastDaysRange      uint // 検索範囲の何日分
 }
 
 func NewQuestionsService(repository repositories.IQuestionsRepository) IQuestionsService {
-	return &QuestionsService{repository: repository}
+	return &QuestionsService{repository: repository,
+		dailyQuestionCount: DailyQuestionCount,
+		pastDaysRange:      PastDaysRange,
+	}
 }
 
 func (s *QuestionsService) FindAll() (*[]models.Questions, error) {
@@ -37,7 +48,7 @@ func (s *QuestionsService) Create(createQuestionsInput dto.CreateQuestionsInput)
 		Question:   createQuestionsInput.Question,
 		Options:    createQuestionsInput.Options,
 		Supplement: createQuestionsInput.Supplement,
-		Difficulty: createQuestionsInput.Difficulty, // 追加
+		Difficulty: createQuestionsInput.Difficulty,
 	}
 	return s.repository.Create(newQuestions)
 }
@@ -57,7 +68,7 @@ func (s *QuestionsService) Update(QuestionsId uint, updateQuestionsInput dto.Upd
 		targetQuestions.Supplement = *updateQuestionsInput.Supplement
 	}
 	if updateQuestionsInput.Difficulty != nil {
-		targetQuestions.Difficulty = *updateQuestionsInput.Difficulty // 追加
+		targetQuestions.Difficulty = *updateQuestionsInput.Difficulty
 	}
 	return s.repository.Update(*targetQuestions)
 }
@@ -73,8 +84,16 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, 
 		return nil, err
 	}
 
+	// SQLクエリを読み込む
+	query, err := utils.LoadSQLFile("./services/queries/select_questions_excluding_streak_3.sql")
+	if err != nil {
+		log.Fatalf("Failed to load SQL file: %v", err)
+	}
+	// query := ""
+
 	// 1. answersテーブルからデータを取得
-	selectedQuestions, err := s.repository.GetTopQuestionsByEmpID(empID, 105)
+	questionLimit := s.dailyQuestionCount * s.pastDaysRange // 検索レコード数 = 一日の問題数 × 検索範囲日数
+	selectedQuestions, err := s.repository.GetTopQuestionsByEmpID(query, empID, questionLimit, s.dailyQuestionCount)
 	if err != nil {
 		return nil, err
 	}
@@ -117,89 +136,3 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, 
 
 	return &quizData, nil
 }
-
-// func (s *QuestionsService) GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, error) {
-// 	// トークンの検証とEmpIDの抽出
-// 	empID, valid, err := utils.ValidateToken(tokenString)
-// 	if err != nil || !valid { // nilでないか、trueでない場合
-// 		return nil, err
-// 	}
-// 	fmt.Print(empID) //ダミー、すぐ消す
-
-// 	NumberOfQuestions := uint(5) // 1日あたりの問題数を設定
-
-// 	// 問題データ数を取得
-// 	totalQuestions, err := s.repository.Count()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	// 仮実装として、ランダムにIDを生成してクイズデータを取得
-// 	selectedQuestions := make([]models.Questions, 0, NumberOfQuestions) // スライスの初期化
-// 	usedIDs := make(map[uint]bool)                                      // 使用済みの質問IDを追跡するためのマップ、デフォルトはfalse
-
-// 	r := rand.New(rand.NewSource(time.Now().UnixNano())) // 現在の時刻から、ランダム数生成器を初期化
-
-// 	for uint(len(selectedQuestions)) < NumberOfQuestions { // selectedQuestionsの長さがNumberOfQuestionsに達するまでループ
-// 		randomID := uint(r.Intn(int(totalQuestions)) + 1) // 0からtotalQuestions - 1までのランダムな整数(int)を生成し、1を足す
-// 		if !usedIDs[randomID] {                           // 質問IDが未使用であれば、以下を行う
-// 			question, err := s.repository.FindById(randomID) // questionは、ポインタ型
-// 			if err == nil {
-// 				selectedQuestions = append(selectedQuestions, *question) // *questionは、値を取り出して渡す
-// 				usedIDs[randomID] = true
-// 			}
-// 		}
-// 	}
-
-// 	// DTOに変換
-// 	quizData := make([]dto.QuizData, len(selectedQuestions))
-// 	for i, question := range selectedQuestions {
-// 		quizData[i] = dto.QuizData{
-// 			ID:         question.ID,
-// 			Question:   question.Question,
-// 			Options:    question.Options,
-// 			Supplement: question.Supplement,
-// 		}
-// 	}
-
-// 	return &quizData, nil // quizDataの参照アドレス値(ポインタ)を返す
-// }
-
-// // トークンの検証メソッド utilsにて共通化処理とする
-// func (s *QuestionsService) ValidateToken(tokenString string) (string, bool, error) {
-// 	// Bearer トークンの形式を確認
-// 	if !strings.HasPrefix(tokenString, "Bearer ") {
-// 		return "", false, fmt.Errorf("invalid token format")
-// 	}
-
-// 	// Bearer プレフィックスを取り除く
-// 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
-
-// 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-// 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok { // jwt.SigningMethodHS256 で生成されたトークンを、HMAC 系列で検証
-// 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-// 		}
-// 		return []byte(os.Getenv("SECRET_KEY")), nil
-// 	})
-// 	if err != nil {
-// 		return "", false, fmt.Errorf("failed to parse token: %v", err)
-// 	}
-
-// 	// トークンのクレームを検証
-// 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-// 		// クレームの内容を確認
-// 		sub, subOk := claims["sub"].(string)
-// 		exp, expOk := claims["exp"].(float64)
-
-// 		if !subOk || !expOk {
-// 			return "", false, fmt.Errorf("invalid token claims")
-// 		}
-
-// 		// 有効期限の確認
-// 		if time.Unix(int64(exp), 0).Before(time.Now()) {
-// 			return "", false, fmt.Errorf("token has expired")
-// 		}
-// 		return sub, true, nil
-// 	}
-// 	return "", false, fmt.Errorf("invalid token")
-// }

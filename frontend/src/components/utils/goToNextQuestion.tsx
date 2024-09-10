@@ -12,7 +12,7 @@ const goToNextQuestion = (
   setIsSubmitAnsewr: Dispatch<SetStateAction<boolean>>
 ) => {
   const nextQuestion = currentQuestion + 1;
-  if (nextQuestion < quizData.length) { // 1日のクイズ数は5問を想定
+  if (nextQuestion < quizData.length) { // API側で、1日のクイズ数は5問を想定
     setCurrentQuestion(nextQuestion);
   } else {
     submitAnswers(answers, setIsSubmitAnsewr); // APIに結果を送信

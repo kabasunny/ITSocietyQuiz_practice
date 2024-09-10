@@ -26,7 +26,8 @@ const Quiz: React.FC<QuizProps> = ({ currentQuestion, quizData, next, feedback, 
             <button 
               key={index}
               onClick={() => handleAnswer(option)}
-              className={`quiz-option-button option-${option.index}`} // cssでindexに対応した装飾
+              //className={`quiz-option-button option-${index}`} // cssでindexに対応した装飾
+              className={`quiz-option-button option-${option.index}`} // 答えが　赤色
             >
               {option.text}
             </button>

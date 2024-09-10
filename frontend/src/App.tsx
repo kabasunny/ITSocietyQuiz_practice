@@ -19,7 +19,7 @@ function App() {
   const [showScore, setShowScore] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isSubmitAnsewr, setIsSubmitAnsewr] = useState<boolean>(false);
-  const quizData = useQuizData();
+  const quizData = useQuizData(isLoggedIn);
 
   return (
     <div className="quiz-container">

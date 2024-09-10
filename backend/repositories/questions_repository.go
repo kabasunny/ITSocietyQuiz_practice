@@ -95,30 +95,30 @@ func (r *QuestionsRepository) Count() (int64, error) {
 // answersテーブルからlimit件の質問IDを取得し、優先度順に並べる
 func (r *QuestionsRepository) GetTopQuestionsByEmpID(query string, empID string, limit uint, dailyQuestionCount uint) ([]uint, error) {
 	var questionIDs []uint
-	query2 := `
-	WITH LatestAnswers AS (
-	    SELECT
-	        question_id,
-	        streak_count,
-	        ROW_NUMBER() OVER (PARTITION BY question_id ORDER BY created_at DESC) AS rn
-	    FROM
-	        answers
-	    WHERE
-	        emp_id = ?
-	    LIMIT ?
-	)
-	SELECT
-	    question_id
-	FROM
-	    LatestAnswers
-	WHERE
-	    rn = 1 AND streak_count IN (0, 1, 2)
-	ORDER BY
-	    streak_count DESC,
-	    question_id ASC
-	LIMIT ?;
-	    `
-	result := r.db.Raw(query2, empID, limit, dailyQuestionCount).Scan(&questionIDs)
+	// query2 := `
+	// WITH LatestAnswers AS (
+	//     SELECT
+	//         question_id,
+	//         streak_count,
+	//         ROW_NUMBER() OVER (PARTITION BY question_id ORDER BY created_at DESC) AS rn
+	//     FROM
+	//         answers
+	//     WHERE
+	//         emp_id = ?
+	//     LIMIT ?
+	// )
+	// SELECT
+	//     question_id
+	// FROM
+	//     LatestAnswers
+	// WHERE
+	//     rn = 1 AND streak_count IN (0, 1, 2)
+	// ORDER BY
+	//     streak_count DESC,
+	//     question_id ASC
+	// LIMIT ?;
+	//     `
+	result := r.db.Raw(query, empID, limit, dailyQuestionCount).Scan(&questionIDs)
 	if result.Error != nil {
 		return nil, result.Error
 	}

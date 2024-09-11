@@ -10,6 +10,7 @@ import (
 type ILoginRepository interface {
 	CreateUsers(Users models.Users) error
 	FindUsers(empID string) (*models.Users, error)
+	FindUsersRole(empID string) ([]models.Users_roles, error) // ユーザーの役割（権限）を取得、とりあえずスライスを返す
 }
 
 type LoginRepository struct {
@@ -38,4 +39,13 @@ func (r *LoginRepository) FindUsers(empID string) (*models.Users, error) {
 		return nil, result.Error
 	}
 	return &Users, nil
+}
+
+func (r *LoginRepository) FindUsersRole(empID string) ([]models.Users_roles, error) {
+	var roles []models.Users_roles
+	result := r.db.Where("emp_id = ?", empID).Find(&roles)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return roles, nil
 }

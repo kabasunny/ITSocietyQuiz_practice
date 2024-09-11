@@ -12,7 +12,7 @@ import (
 )
 
 type ILoginService interface {
-	Login(empID string, password string) (*string, error)
+	Login(empID string, password string) (*string, bool, error)
 	GetUsersFromToken(tokenString string) (*models.Users, error)
 }
 
@@ -24,24 +24,39 @@ func NewLoginService(repository repositories.ILoginRepository) ILoginService {
 	return &LoginService{repository: repository}
 }
 
-func (s *LoginService) Login(empID string, password string) (*string, error) {
+func (s *LoginService) Login(empID string, password string) (*string, bool, error) {
 	foundUsers, err := s.repository.FindUsers(empID) // IDからユーザーを検索
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	// foundUsers.Passwordはハッシュに変換されている
 	err = bcrypt.CompareHashAndPassword([]byte(foundUsers.Password), []byte(password)) // パスワードが一致するか検証
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	token, err := CreateToken(foundUsers.EmpID, foundUsers.Username) // トークンの生成
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
-	return token, nil
+	// ユーザーの役割を取得
+	roles, err := s.repository.FindUsersRole(empID)
+	if err != nil {
+		return nil, false, err
+	}
+
+	// ユーザーの役割を確認
+	isAdmin := false
+	for _, role := range roles {
+		if role.RoleID == 1 { // 1が管理者のRoleIDであると仮定
+			isAdmin = true
+			break
+		}
+	}
+
+	return token, isAdmin, nil // 管理者フラグを返す
 }
 
 func CreateToken(empID string, Username string) (*string, error) {

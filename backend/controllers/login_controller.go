@@ -27,7 +27,7 @@ func (c *LoginController) Login(ctx *gin.Context) {
 		return
 	}
 
-	token, err := c.service.Login(input.EmpID, input.Password)
+	token, isAdmin, err := c.service.Login(input.EmpID, input.Password)
 	if err != nil {
 		if err.Error() == "user not found" {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -35,5 +35,10 @@ func (c *LoginController) Login(ctx *gin.Context) {
 		}
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
-	ctx.JSON(http.StatusOK, gin.H{"token": token})
+
+	response := dto.LoginResponse{
+		Token: *token,
+		Admin: isAdmin,
+	}
+	ctx.JSON(http.StatusOK, response) // DTOを使用してレスポンス
 }

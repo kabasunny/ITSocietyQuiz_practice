@@ -3,7 +3,7 @@ import axios from 'axios';
 import { LoginForm } from '../types';
 import { users } from '../data/Users'; // ローカルデータをインポート
 
-export const useLogin = (onLogin: (login: boolean) => void) => {
+export const useLogin = (onLogin: (loginOK: boolean, isAdmin: boolean) => void) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(''); // エラーメッセージの状態管理
 
@@ -11,30 +11,25 @@ export const useLogin = (onLogin: (login: boolean) => void) => {
     setLoading(true);
     try {
       if (process.env.REACT_APP_USE_API === 'true') {
-        // if (false) {
         const response = await axios.post('http://localhost:8082/login', loginForm, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
-        // console.log('API Response:', result); // レスポンスデータをログに出力
         if (response.status >= 200 && response.status < 300) {
           const result = response.data;
           localStorage.setItem('token', result.token); // トークンを保存
-          onLogin(true);
+          onLogin(true, result.admin); // adminフラグを渡す
         } else {
           setErrorMessage('社員IDまたはパスワードが間違っています'); // エラーメッセージを設定
+          onLogin(false, false);
         }
-      } else { // process.env.REACT_APP_USE_API === 'false' ローカルデータでの検証
-        const loginOK = users.find(user => user.empid === loginForm.empid && user.password === loginForm.password);
-        if (loginOK) {
-          onLogin(true);
-        } else {
-          setErrorMessage('社員IDまたはパスワードが間違っています'); // エラーメッセージを設定
-        }
+      } else { // ローカルデータでの検証はとりあえず消しますか
+        
       }
     } catch (error) {
       setErrorMessage('ログインに失敗しました'); // エラーメッセージを設定
+      onLogin(false, false);
     } finally {
       setLoading(false);
     }

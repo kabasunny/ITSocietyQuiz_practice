@@ -21,13 +21,14 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     <div className="form-container">
       {/* 環境変数からタイトルを読み込む */}
       <h1>{process.env.REACT_APP_TITLE}</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
         {/* 社員IDの入力フィールド */}
         <label htmlFor="empid">社員IDを入力してね \( ᐕ )/</label>
         <input
           type="text"
           id="empid"
           {...register("empid")}
+          autoComplete="off"
         />
         {errors.empid && <p>{errors.empid.message as React.ReactNode}</p>}
         
@@ -37,6 +38,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           id="password"
           type="password"
           {...register("password")}
+          autoComplete="off"
         />
         {errors.password && <p>{errors.password.message as React.ReactNode}</p>}
 
@@ -53,16 +55,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       {/* エラーメッセージの表示 */}
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
-      <p><br />60分以内に全問解答できない場合は、全問不正解になります。</p>
-
-      <p>社員ID: EMP1234</p>
-      <p>パスワード: password</p>
-      
-      <p>OR</p>
-
-      <p>社員ID: EMP2345</p>
-      <p>パスワード: password_2</p>
-
+      <p><br />60分以内に全問解答できない場合は、<br/>全問不正解になります。</p>
     </div>
   );
 }

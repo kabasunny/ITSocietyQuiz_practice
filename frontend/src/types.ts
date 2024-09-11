@@ -1,7 +1,8 @@
 // ログイン関連のインターフェース
 export interface LoginProps {
-  onLogin: (data: boolean) => void;
+  onLogin: (loginOK: boolean, isAdmin: boolean) => void;
 }
+
 
 export interface LoginForm {
   empid: string;

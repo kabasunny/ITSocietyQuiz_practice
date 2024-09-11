@@ -8,3 +8,9 @@ type Users_roles struct {
 	EmpID  string `gorm:"not null;constraint:OnDelete:CASCADE"`
 	RoleID uint   `gorm:"not null;constraint:OnDelete:CASCADE"`
 }
+
+// ロールIDの定数を定義
+const (
+	RoleAdmin = 1 // 管理者
+	RoleUser  = 2 // 一般
+)

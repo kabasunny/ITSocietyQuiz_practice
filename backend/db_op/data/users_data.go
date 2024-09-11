@@ -26,6 +26,14 @@ var UsersList = []models.Users{
 		TotalQuestions: 0,
 		CorrectAnswers: 0,
 	},
+	{
+		EmpID:          "ADM1234",
+		Username:       "ITSocietyQuiz_adm",
+		Email:          "quize_adm@example.com",
+		Password:       "password_adm",
+		TotalQuestions: 0,
+		CorrectAnswers: 0,
+	},
 }
 
 // ハッシュ化されたパスワードを持つ新しいUsersListを返却する関数

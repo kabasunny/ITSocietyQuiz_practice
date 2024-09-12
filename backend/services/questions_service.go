@@ -78,8 +78,8 @@ func (s *QuestionsService) Delete(QuestionsId uint) error {
 }
 
 func (s *QuestionsService) GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, error) {
-	// 5秒間の遅延。フロントの画面の遷移確認用
-	// time.Sleep(5 * time.Second)
+	// 2秒間の遅延。フロントの画面の遷移確認用
+	// time.Sleep(1 * time.Second)
 
 	// トークンの検証とEmpIDの抽出
 	empID, valid, err := utils.ValidateToken(tokenString)

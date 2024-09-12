@@ -1,7 +1,7 @@
 /* 全体のスタイリング */
 body {
     font-family: "Arial", sans-serif;
-    background-color: #ebebeb !important;
+    background-color: #dcdcdc;  /* !important を削除 */
     display: flex;
     justify-content: center;
     align-items: center;

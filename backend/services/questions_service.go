@@ -113,11 +113,12 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, 
 			selectedQuestions = append(selectedQuestions, currentQID)
 		}
 
-		// 3. usersテーブルのcurrentq_idを更新
-		err = s.repository.UpdateCurrentQID(empID, currentQID)
-		if err != nil {
-			return nil, err
-		}
+		// 3. usersテーブルのcurrentq_idを更新 // answesテーブル更新時に行う
+		// err = s.repository.UpdateCurrentQID(empID, currentQID)
+		// if err != nil {
+		// 	return nil, err
+		// }
+
 	}
 
 	// 4. selectedQuestionsから詳細データを取得
@@ -138,4 +139,5 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, 
 	}
 
 	return &quizData, nil
+
 }

@@ -12,7 +12,7 @@ import (
 )
 
 type ILoginService interface {
-	Login(empID string, password string) (*string, bool, error)
+	Login(empID string, password string) (*string, bool, int64, error)
 	GetUsersFromToken(tokenString string) (*models.Users, error)
 }
 
@@ -24,39 +24,41 @@ func NewLoginService(repository repositories.ILoginRepository) ILoginService {
 	return &LoginService{repository: repository}
 }
 
-func (s *LoginService) Login(empID string, password string) (*string, bool, error) {
-	foundUsers, err := s.repository.FindUsers(empID) // IDからユーザーを検索
+func (s *LoginService) Login(empID string, password string) (*string, bool, int64, error) {
+	foundUsers, err := s.repository.FindUsers(empID)
 	if err != nil {
-		return nil, false, err
+		return nil, false, 0, err
 	}
 
-	// foundUsers.Passwordはハッシュに変換されている
-	err = bcrypt.CompareHashAndPassword([]byte(foundUsers.Password), []byte(password)) // パスワードが一致するか検証
+	err = bcrypt.CompareHashAndPassword([]byte(foundUsers.Password), []byte(password))
 	if err != nil {
-		return nil, false, err
+		return nil, false, 0, err
 	}
 
-	token, err := CreateToken(foundUsers.EmpID, foundUsers.Username) // トークンの生成
+	token, err := CreateToken(foundUsers.EmpID, foundUsers.Username)
 	if err != nil {
-		return nil, false, err
+		return nil, false, 0, err
 	}
 
-	// ユーザーの役割を取得
 	roles, err := s.repository.FindUsersRole(empID)
 	if err != nil {
-		return nil, false, err
+		return nil, false, 0, err
 	}
 
-	// ユーザーの役割を確認
 	isAdmin := false
 	for _, role := range roles {
-		if role.RoleID == 1 { // 1が管理者のRoleIDであると仮定
+		if role.RoleID == 1 {
 			isAdmin = true
 			break
 		}
 	}
 
-	return token, isAdmin, nil // 管理者フラグを返す
+	todaysAnswersCount, err := s.repository.FindTodaysAnswersCount(empID)
+	if err != nil {
+		return nil, false, 0, err
+	}
+
+	return token, isAdmin, todaysAnswersCount, nil
 }
 
 func CreateToken(empID string, Username string) (*string, error) {

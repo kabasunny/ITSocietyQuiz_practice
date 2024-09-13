@@ -3,6 +3,7 @@ package repositories
 import (
 	"backend/models"
 	"errors"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -11,6 +12,7 @@ type ILoginRepository interface {
 	CreateUsers(Users models.Users) error
 	FindUsers(empID string) (*models.Users, error)
 	FindUsersRole(empID string) ([]models.Users_roles, error) // ユーザーの役割（権限）を取得、とりあえずスライスを返す
+	FindTodaysAnswersCount(empID string) (int64, error)       // 本日作成された回答数を取得、受験要否に使用
 }
 
 type LoginRepository struct {
@@ -48,4 +50,14 @@ func (r *LoginRepository) FindUsersRole(empID string) ([]models.Users_roles, err
 		return nil, result.Error
 	}
 	return roles, nil
+}
+
+func (r *LoginRepository) FindTodaysAnswersCount(empID string) (int64, error) {
+	var count int64
+	today := time.Now().Format("2006-01-02")
+	result := r.db.Model(&models.Answers{}).Where("emp_id = ? AND DATE(created_at) = ?", empID, today).Count(&count)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	return count, nil
 }

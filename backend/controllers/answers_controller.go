@@ -35,16 +35,14 @@ func (c *AnswersController) SaveAnswers(ctx *gin.Context) {
 	}
 
 	// 回答の保存
-	for _, input := range inputs {
-		err := c.service.SaveAnswers(input, token)
-		if err != nil {
-			if err.Error() == "invalid token" || err.Error() == "invalid empID" || err.Error() == "token has expired" {
-				ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-				return
-			}
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	err := c.service.SaveAnswers(inputs, token)
+	if err != nil {
+		if err.Error() == "invalid token" || err.Error() == "invalid empID" || err.Error() == "token has expired" {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "Answers saved successfully"})

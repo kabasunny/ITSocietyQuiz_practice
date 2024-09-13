@@ -16,7 +16,6 @@ type IQuestionsRepository interface {
 	Count() (int64, error)                                                                                  // 格納されたクイズのレコード数を取得するメソッドを追加
 	GetTopQuestionsByEmpID(query string, empID string, limit uint, dailyQuestionCount uint) ([]uint, error) // answersテーブルからlimit件の質問IDを取得し、優先度順に並べる
 	GetCurrentQIDByEmpID(empID string) (uint, error)                                                        // usersテーブルからcurrentq_idを取得する
-	UpdateCurrentQID(empID string, newQID uint) error                                                       // usersテーブルのcurrentq_idを更新する
 	GetQuestionDetails(questionIDs []uint) ([]models.Questions, error)                                      // 複数の質問IDに基づいて、questionsテーブルからデータを取得する場合
 }
 
@@ -95,28 +94,6 @@ func (r *QuestionsRepository) Count() (int64, error) {
 // answersテーブルからlimit件の質問IDを取得し、優先度順に並べる
 func (r *QuestionsRepository) GetTopQuestionsByEmpID(query string, empID string, limit uint, dailyQuestionCount uint) ([]uint, error) {
 	var questionIDs []uint
-	// query2 := `
-	// WITH LatestAnswers AS (
-	//     SELECT
-	//         question_id,
-	//         streak_count,
-	//         ROW_NUMBER() OVER (PARTITION BY question_id ORDER BY created_at DESC) AS rn
-	//     FROM
-	//         answers
-	//     WHERE
-	//         emp_id = ?
-	//     LIMIT ?
-	// )
-	// SELECT
-	//     question_id
-	// FROM
-	//     LatestAnswers
-	// WHERE
-	//     rn = 1 AND streak_count IN (0, 1, 2)
-	// ORDER BY
-	//     streak_count DESC,
-	//     question_id ASC
-	// LIMIT ?;
 	//     `
 	result := r.db.Raw(query, empID, limit, dailyQuestionCount).Scan(&questionIDs)
 	if result.Error != nil {
@@ -133,15 +110,6 @@ func (r *QuestionsRepository) GetCurrentQIDByEmpID(empID string) (uint, error) {
 		return 0, result.Error
 	}
 	return currentQID, nil
-}
-
-// usersテーブルのcurrentq_idを更新する
-func (r *QuestionsRepository) UpdateCurrentQID(empID string, newQID uint) error {
-	result := r.db.Model(&models.Users{}).Where("emp_id = ?", empID).Update("current_q_id", newQID)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
 }
 
 // questionsテーブルから、詳細データを取得する

@@ -8,6 +8,7 @@ type LoginInput struct {
 
 // フロントにトークンと管理者フラグの返却用
 type LoginResponse struct {
-	Token string `json:"token"`
-	Admin bool   `json:"admin"`
+	Token       string `json:"token"`
+	Admin       bool   `json:"admin"`
+	TodaysCount int64  `json:"todays_count"`
 }

@@ -14,7 +14,7 @@ type IQuestionsService interface {
 	Create(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error)
 	Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*models.Questions, error)
 	Delete(QuestionsId uint) error
-	GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, error) // 1日分のクイズを取得する
+	GetOneDaysQuiz(tokenString string, todaysCount uint) (*[]dto.QuizData, error) // 1日分のクイズを取得する
 }
 
 const (
@@ -77,7 +77,7 @@ func (s *QuestionsService) Delete(QuestionsId uint) error {
 	return s.repository.Delete(QuestionsId)
 }
 
-func (s *QuestionsService) GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, error) {
+func (s *QuestionsService) GetOneDaysQuiz(tokenString string, todaysCount uint) (*[]dto.QuizData, error) {
 	// 2秒間の遅延。フロントの画面の遷移確認用
 	// time.Sleep(1 * time.Second)
 
@@ -92,17 +92,18 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, 
 	if err != nil {
 		log.Fatalf("Failed to load SQL file: %v", err)
 	}
-	// query := ""
+
+	necessaryQuestions := s.dailyQuestionCount - todaysCount // 日に必要な問題数
 
 	// 1. answersテーブルからデータを取得
 	questionLimit := s.dailyQuestionCount * s.pastDaysRange // 検索レコード数 = 一日の問題数 × 検索範囲日数
-	selectedQuestions, err := s.repository.GetTopQuestionsByEmpID(query, empID, questionLimit, s.dailyQuestionCount)
+	selectedQuestions, err := s.repository.GetTopQuestionsByEmpID(query, empID, questionLimit, necessaryQuestions)
 	if err != nil {
 		return nil, err
 	}
 
 	// 2. 不足分のquestion_idを補完
-	if len(selectedQuestions) < 5 {
+	if len(selectedQuestions) < int(necessaryQuestions) {
 		currentQID, err := s.repository.GetCurrentQIDByEmpID(empID)
 		if err != nil {
 			return nil, err
@@ -113,7 +114,7 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string) (*[]dto.QuizData, 
 			selectedQuestions = append(selectedQuestions, currentQID)
 		}
 
-		// 3. usersテーブルのcurrentq_idを更新 // answesテーブル更新時に行う
+		// 3. usersテーブルのcurrentq_idを更新 // バグになるため、answesテーブル更新時に行う
 		// err = s.repository.UpdateCurrentQID(empID, currentQID)
 		// if err != nil {
 		// 	return nil, err

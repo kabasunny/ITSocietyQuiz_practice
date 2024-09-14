@@ -14,7 +14,7 @@ type IQuestionsRepository interface {
 	Update(updateQuestions models.Questions) (*models.Questions, error)
 	Delete(QuestionsId uint) error
 	Count() (int64, error)                                                                                  // 格納されたクイズのレコード数を取得するメソッドを追加
-	GetTopQuestionsByEmpID(query string, empID string, limit uint, dailyQuestionCount uint) ([]uint, error) // answersテーブルからlimit件の質問IDを取得し、優先度順に並べる
+	GetTopQuestionsByEmpID(query string, empID string, limit uint, necessaryQuestions uint) ([]uint, error) // answersテーブルからlimit件の質問IDを取得し、優先度順に並べる
 	GetCurrentQIDByEmpID(empID string) (uint, error)                                                        // usersテーブルからcurrentq_idを取得する
 	GetQuestionDetails(questionIDs []uint) ([]models.Questions, error)                                      // 複数の質問IDに基づいて、questionsテーブルからデータを取得する場合
 }
@@ -92,10 +92,10 @@ func (r *QuestionsRepository) Count() (int64, error) {
 }
 
 // answersテーブルからlimit件の質問IDを取得し、優先度順に並べる
-func (r *QuestionsRepository) GetTopQuestionsByEmpID(query string, empID string, limit uint, dailyQuestionCount uint) ([]uint, error) {
+func (r *QuestionsRepository) GetTopQuestionsByEmpID(query string, empID string, limit uint, necessaryQuestions uint) ([]uint, error) {
 	var questionIDs []uint
 	//     `
-	result := r.db.Raw(query, empID, limit, dailyQuestionCount).Scan(&questionIDs)
+	result := r.db.Raw(query, empID, limit, necessaryQuestions).Scan(&questionIDs)
 	if result.Error != nil {
 		return nil, result.Error
 	}

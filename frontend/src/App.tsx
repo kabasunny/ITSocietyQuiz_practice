@@ -29,7 +29,8 @@ function App() {
   const [isAdmin, setIsAdmin] = useState<boolean>(false); // 管理者フラグの状態管理
     
   const [isSubmitAnsewr, setIsSubmitAnsewr] = useState<boolean>(false);
-  const quizData = useQuizData(isLoggedIn); // バグ修正、ログイン済みでないとリクエストできない
+  const [todaysFinish, setTodaysFinish] = useState<boolean>(false); // 日のノルマフラグの状態管理
+  const quizData = useQuizData(isLoggedIn, setTodaysFinish); // バグ修正、ログイン済みでないとリクエストできない
 
   const navigate = useNavigate();
 
@@ -45,27 +46,33 @@ function App() {
         isAdmin ? ( // 管理者の場合
           <AdminScreen isAdmin={isAdmin} onAdminLogout={() => handleAdminLogout(setIsLoggedIn, setIsAdmin, navigate)} /> // 管理者用画面を表示
         ) : (
-          showScore ? (
-            <ScoreSection score={score} answers={answers} isSubmitAnsewr={isSubmitAnsewr} />
+          todaysFinish ? ( // 日のノルマが達成された場合
+            <div className="quota-met">
+              <h1>本日の受験は終了しました</h1><h1>┌┤´д`├┐ﾀﾞﾙ～</h1>
+            </div>
           ) : (
-            quizData.length > 0 ? (
-              <Quiz
-                currentQuestion={currentQuestion}
-                quizData={quizData}
-                next={next}
-                feedback={feedback}
-                handleAnswer={(selectedAnswer: Option) => handleAnswer(
-                  selectedAnswer, quizData, currentQuestion, setScore, setFeedback, setAnswers, setNext, answers
-                )}
-                goToNextQuestion={() => goToNextQuestion(
-                  currentQuestion, setCurrentQuestion, quizData, answers, submitAnswers, setShowScore, setNext, setIsSubmitAnsewr
-                )}
-              />
+            showScore ? (
+              <ScoreSection score={score} answers={answers} isSubmitAnsewr={isSubmitAnsewr} />
             ) : (
-              <div className="loading">
-                <p>Loading...</p>
-                <p>⁽⁽*( ᐖ )*⁾⁾ ₍₍*( ᐛ )*₎₎</p>
-              </div>
+              quizData.length > 0 ? (
+                <Quiz
+                  currentQuestion={currentQuestion}
+                  quizData={quizData}
+                  next={next}
+                  feedback={feedback}
+                  handleAnswer={(selectedAnswer: Option) => handleAnswer(
+                    selectedAnswer, quizData, currentQuestion, setScore, setFeedback, setAnswers, setNext, answers
+                  )}
+                  goToNextQuestion={() => goToNextQuestion(
+                    currentQuestion, setCurrentQuestion, quizData, answers, submitAnswers, setShowScore, setNext, setIsSubmitAnsewr
+                  )}
+                />
+              ) : (
+                <div className="loading">
+                  <p>Loading...</p>
+                  <p>⁽⁽*( ᐖ )*⁾⁾ ₍₍*( ᐛ )*₎₎</p>
+                </div>
+              )
             )
           )
         )

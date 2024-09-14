@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { LoginForm } from '../types';
-import { users } from '../data/Users'; // ローカルデータをインポート
 
 export const useLogin = (onLogin: (loginOK: boolean, isAdmin: boolean) => void) => {
   const [loading, setLoading] = useState(false);

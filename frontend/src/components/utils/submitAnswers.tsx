@@ -22,6 +22,7 @@ const submitAnswers = async (
             'Content-Type': 'application/json'
           }
         });
+        console.log('APIレスポンス:', response.data); // レスポンスデータをログに出力
         setIsSubmitAnsewr(true); // 成功時にsetIsSubmitAnsewr(true)を呼び出す
       } catch (error) {
         alert('結果の送信中にエラーが発生しました。');

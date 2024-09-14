@@ -14,7 +14,7 @@ type IQuestionsService interface {
 	Create(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error)
 	Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*models.Questions, error)
 	Delete(QuestionsId uint) error
-	GetOneDaysQuiz(tokenString string, todaysCount uint) (*[]dto.QuizData, error) // 1日分のクイズを取得する
+	GetOneDaysQuiz(tokenString string, todaysCount uint) (*[]dto.QuizData, bool, error) // 1日分のクイズを取得する
 }
 
 const (
@@ -77,14 +77,21 @@ func (s *QuestionsService) Delete(QuestionsId uint) error {
 	return s.repository.Delete(QuestionsId)
 }
 
-func (s *QuestionsService) GetOneDaysQuiz(tokenString string, todaysCount uint) (*[]dto.QuizData, error) {
+func (s *QuestionsService) GetOneDaysQuiz(tokenString string, todaysCount uint) (*[]dto.QuizData, bool, error) {
 	// 2秒間の遅延。フロントの画面の遷移確認用
 	// time.Sleep(1 * time.Second)
 
 	// トークンの検証とEmpIDの抽出
 	empID, valid, err := utils.ValidateToken(tokenString)
 	if err != nil || !valid {
-		return nil, err
+		return nil, false, err
+	}
+
+	necessaryQuestions := s.dailyQuestionCount - todaysCount // 日に必要な問題数
+
+	// 日のノルマが達成されたかどうかを確認
+	if necessaryQuestions <= 0 {
+		return nil, true, nil
 	}
 
 	// SQLクエリを読み込む
@@ -93,23 +100,21 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string, todaysCount uint) 
 		log.Fatalf("Failed to load SQL file: %v", err)
 	}
 
-	necessaryQuestions := s.dailyQuestionCount - todaysCount // 日に必要な問題数
-
 	// 1. answersテーブルからデータを取得
 	questionLimit := s.dailyQuestionCount * s.pastDaysRange // 検索レコード数 = 一日の問題数 × 検索範囲日数
 	selectedQuestions, err := s.repository.GetTopQuestionsByEmpID(query, empID, questionLimit, necessaryQuestions)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	// 2. 不足分のquestion_idを補完
 	if len(selectedQuestions) < int(necessaryQuestions) {
 		currentQID, err := s.repository.GetCurrentQIDByEmpID(empID)
 		if err != nil {
-			return nil, err
+			return nil, false, err
 		}
 
-		for len(selectedQuestions) < 5 {
+		for len(selectedQuestions) < int(necessaryQuestions) {
 			currentQID++
 			selectedQuestions = append(selectedQuestions, currentQID)
 		}
@@ -117,7 +122,7 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string, todaysCount uint) 
 		// 3. usersテーブルのcurrentq_idを更新 // バグになるため、answesテーブル更新時に行う
 		// err = s.repository.UpdateCurrentQID(empID, currentQID)
 		// if err != nil {
-		// 	return nil, err
+		//  return nil, err
 		// }
 
 	}
@@ -125,7 +130,7 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string, todaysCount uint) 
 	// 4. selectedQuestionsから詳細データを取得
 	quizDetails, err := s.repository.GetQuestionDetails(selectedQuestions)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	// DTOに変換
@@ -139,6 +144,5 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string, todaysCount uint) 
 		}
 	}
 
-	return &quizData, nil
-
+	return &quizData, false, nil
 }

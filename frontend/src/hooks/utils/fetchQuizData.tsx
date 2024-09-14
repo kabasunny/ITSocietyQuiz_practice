@@ -1,7 +1,12 @@
 import axios from 'axios';
 import { Question } from '../../types';
 
-const fetchQuizData = async (): Promise<Question[]> => {
+interface QuizResponse {
+  quizdata: Question[] | null;
+  todays_finish: boolean;
+}
+
+const fetchQuizData = async (): Promise<QuizResponse> => {
   try {
     const jwt = localStorage.getItem('token'); // ログイン時にAPIから取得したトークン
     const todaysCount = localStorage.getItem('todays_count'); // ローカルストレージからtodays_countを取得
@@ -12,10 +17,16 @@ const fetchQuizData = async (): Promise<Question[]> => {
       }
     });
 
-    return response.data.quizdata;
+    return {
+      quizdata: response.data.quizdata,
+      todays_finish: response.data.todays_finish
+    };
   } catch (error) {
     console.error('クイズデータの取得中にエラーが発生しました:', error);
-    return [];
+    return {
+      quizdata: null,
+      todays_finish: false
+    };
   }
 };
 

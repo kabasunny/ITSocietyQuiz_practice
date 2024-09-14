@@ -3,7 +3,6 @@ package controllers
 import (
 	"backend/dto"
 	"backend/services"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -119,19 +118,25 @@ func (c *QuestionsController) GetOneDaysQuiz(ctx *gin.Context) {
 	tokenString := ctx.GetHeader("Authorization")
 
 	// クエリパラメータからtodays_countを取得
-	todaysCount := ctx.Query("todays_count")
+	todaysCountStr := ctx.Query("todays_count")
 
-	QuizDatas, err := c.service.GetOneDaysQuiz(tokenString)
+	// todays_count を uint に変換
+	todaysCountInt, err := strconv.Atoi(todaysCountStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid todays_count"})
+		return
+	}
+
+	todaysCount := uint(todaysCountInt)
+
+	QuizDatas, err := c.service.GetOneDaysQuiz(tokenString, todaysCount)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
 		return
 	}
 
-	// ログにtodays_countを出力（必要に応じて）
-	fmt.Printf("Received todays_count: %s\n", todaysCount)
-
 	ctx.JSON(http.StatusOK, gin.H{
 		"quizdata":     QuizDatas,
-		"todays_count": todaysCount, // レスポンスにtodays_countを含める
+		"todays_count": todaysCountStr, // レスポンスにtodays_countを含める
 	})
 }

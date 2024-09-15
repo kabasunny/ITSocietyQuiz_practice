@@ -31,6 +31,11 @@ func (s *AnswersService) SaveAnswers(inputs []dto.AnswersInput, tokenString stri
 
 	var answersBatch []models.Answers
 
+	currentQID, err := s.repository.GetCurrentQIDByEmpID(empID)
+	if err != nil {
+		return err
+	}
+
 	for _, input := range inputs {
 		latestAnswer, err := s.repository.GetLatestAnswer(empID, input.QuestionID)
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -51,10 +56,19 @@ func (s *AnswersService) SaveAnswers(inputs []dto.AnswersInput, tokenString stri
 			StreakCount: streakCount,
 		}
 
+		if answers.QuestionID > currentQID {
+			currentQID = answers.QuestionID
+		}
+
 		answersBatch = append(answersBatch, answers)
 	}
 
 	err = s.repository.CreateAnswersBatch(answersBatch)
+	if err != nil {
+		return err
+	}
+
+	err = s.repository.UpdateCurrentQID(empID, currentQID)
 	if err != nil {
 		return err
 	}

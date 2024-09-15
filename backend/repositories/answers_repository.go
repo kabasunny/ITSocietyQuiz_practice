@@ -14,6 +14,7 @@ type IAnswersRepository interface {
 	UpdateStreakCount(answer *models.Answers) error                         // 連続正解数を更新
 	GetLatestAnswer(empID string, questionID uint) (*models.Answers, error) // 指定されたemp_idとquestion_idに基づいて最新の回答を取得
 	UpdateCurrentQID(empID string, newQID uint) error                       // usersテーブルのcurrentq_idを更新する
+	GetCurrentQIDByEmpID(empID string) (uint, error)                        // usersテーブルからcurrentq_idを取得する
 }
 
 type AnswersRepository struct {
@@ -86,4 +87,14 @@ func (r *AnswersRepository) UpdateCurrentQID(empID string, newQID uint) error {
 		return result.Error
 	}
 	return nil
+}
+
+// usersテーブルからcurrentq_idを取得する
+func (r *AnswersRepository) GetCurrentQIDByEmpID(empID string) (uint, error) {
+	var currentQID uint
+	result := r.db.Model(&models.Users{}).Where("emp_id = ?", empID).Select("current_q_id").Scan(&currentQID)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	return currentQID, nil
 }

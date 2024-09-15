@@ -27,7 +27,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           type="text"
           id="empid"
           {...register("empid")}
-          autoComplete="off"
+          // autoComplete="off"
+          autoComplete="new-password"
         />
         {errors.empid && <p>{errors.empid.message as React.ReactNode}</p>}
         
@@ -37,7 +38,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           id="password"
           type="password"
           {...register("password")}
-          autoComplete="off"
+          // autoComplete="off"
+          autoComplete="new-password"
         />
         {errors.password && <p>{errors.password.message as React.ReactNode}</p>}
 

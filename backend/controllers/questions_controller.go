@@ -135,6 +135,8 @@ func (c *QuestionsController) GetOneDaysQuiz(ctx *gin.Context) {
 		return
 	}
 
+	// todaysfinish = false // テスト時の制限解除はサービス側で行う
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"quizdata":      QuizDatas,
 		"todays_finish": todaysfinish, // レスポンスにtodays_finishを含める

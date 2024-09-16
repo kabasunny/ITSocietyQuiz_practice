@@ -34,6 +34,12 @@ func (c *LoginController) Login(ctx *gin.Context) {
 			return
 		}
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if token == nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Token is nil"})
+		return
 	}
 
 	response := dto.LoginResponse{

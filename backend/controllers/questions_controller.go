@@ -129,14 +129,16 @@ func (c *QuestionsController) GetOneDaysQuiz(ctx *gin.Context) {
 
 	todaysCount := uint(todaysCountInt)
 
-	QuizDatas, err := c.service.GetOneDaysQuiz(tokenString, todaysCount)
+	QuizDatas, todaysfinish, err := c.service.GetOneDaysQuiz(tokenString, todaysCount)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
 		return
 	}
 
+	// todaysfinish = false // テスト時の制限解除はサービス側で行う
+
 	ctx.JSON(http.StatusOK, gin.H{
-		"quizdata":     QuizDatas,
-		"todays_count": todaysCountStr, // レスポンスにtodays_countを含める
+		"quizdata":      QuizDatas,
+		"todays_finish": todaysfinish, // レスポンスにtodays_finishを含める
 	})
 }

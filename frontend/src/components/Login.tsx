@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { useForm } from 'react-hook-form'; //カスタムフックでフォームのバリデーションと送信を管理
 import { zodResolver } from '@hookform/resolvers/zod';
 import { validationSchema } from './utils/ValidationSchema';
@@ -28,7 +27,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           type="text"
           id="empid"
           {...register("empid")}
-          autoComplete="off"
+          // autoComplete="off"
+          autoComplete="new-password"
         />
         {errors.empid && <p>{errors.empid.message as React.ReactNode}</p>}
         
@@ -38,7 +38,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           id="password"
           type="password"
           {...register("password")}
-          autoComplete="off"
+          // autoComplete="off"
+          autoComplete="new-password"
         />
         {errors.password && <p>{errors.password.message as React.ReactNode}</p>}
 

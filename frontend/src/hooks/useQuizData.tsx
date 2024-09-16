@@ -1,25 +1,24 @@
 import { useState, useEffect } from 'react';
-import { questions as testQuizData } from '../data/Questions';
 import { QuizData } from '../types';
 import fetchQuizData from './utils/fetchQuizData';
 import mapQuizData from './utils/mapQuizData';
 
-const useQuizData = (isLoggedIn: boolean) => {
+const useQuizData = (isLoggedIn: boolean, setTodaysFinish: (finish: boolean) => void) => {
   const [quizData, setQuizData] = useState<QuizData[]>([]);
   const [dataFetched, setDataFetched] = useState<boolean>(false);
 
   useEffect(() => {
     if (isLoggedIn) {
-      console.log('REACT_APP_USE_API:', process.env.REACT_APP_USE_API);
       const fetchData = async () => {
-        let data;
-        if (process.env.REACT_APP_USE_API === 'true') {
-          data = await fetchQuizData();
-        } else {
-          data = testQuizData;
+        const response = await fetchQuizData();
+        if (response.todays_finish) {
+          setTodaysFinish(true);
+          return; // ノルマが達成されている場合は早期にリターン
         }
-        const mappedData = mapQuizData(data);
-        setQuizData(mappedData);
+        if (response.quizdata) {
+          const mappedData = mapQuizData(response.quizdata);
+          setQuizData(mappedData);
+        }
         setDataFetched(true);
       };
 
@@ -33,7 +32,7 @@ const useQuizData = (isLoggedIn: boolean) => {
 
       return () => clearInterval(interval); // useEffect フックのクリーンアップ関数
     }
-  }, [isLoggedIn, dataFetched]);
+  }, [isLoggedIn, dataFetched, setTodaysFinish]);
 
   return quizData;
 };

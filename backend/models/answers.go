@@ -8,8 +8,8 @@ import (
 type Answers struct {
 	gorm.Model             // IDフィールドを含む構造体
 	EmpID          string  `gorm:"not null;constraint:OnDelete:CASCADE"`
-	QuestionID     uint    `gorm:"not null;constraint:OnDelete:CASCADE;foreignKey:QuestionID;references:ID"`        // 外部キーとしてGORMのIDをQuestionIDを設定
-	UserQuestionID *string `gorm:"constraint:OnDelete:CASCADE;foreignKey:UserQuestionID;references:UserQuestionID"` // ユーザー管理用の質問ID、NULLを許容
+	QuestionID     uint    `gorm:"not null;constraint:OnDelete:CASCADE;foreignKey:QuestionID;references:ID"` // 外部キーとしてGORMのIDをQuestionIDを設定
+	UserQuestionID *string // ユーザー管理用の質問ID、NULLを許容
 	AnswerID       uint    `gorm:"not null"`
 	StreakCount    uint    `gorm:"not null;default:0"` // 連続正解数を保持するフィールド、出題時に使用する
 	// IsCorrect  bool      `gorm:"not null"` // Answer == 0 ならば正解

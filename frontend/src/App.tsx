@@ -15,7 +15,7 @@ import AddQuestion from './components/admin/AddQuestion';
 import UpdateDeleteQuestion from './components/admin/EditQuestion';
 import UserManagement from './components/admin/UserManagement';
 import Statistics from './components/admin/Statistics';
-import handleAdminLogout from './components/admin/utils/handleAdminLogout'; // handleAdminLogoutをインポート
+import handleAdminLogout from './hooks/utils/handleLogout'; // handleAdminLogoutをインポート
 
 function App() {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
@@ -24,19 +24,34 @@ function App() {
   const [score, setScore] = useState<number>(0);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [showScore, setShowScore] = useState<boolean>(false);
-  
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // ログイン状態の管理
   const [isAdmin, setIsAdmin] = useState<boolean>(false); // 管理者フラグの状態管理
-    
+
   const [isSubmitAnsewr, setIsSubmitAnsewr] = useState<boolean>(false);
   const [todaysFinish, setTodaysFinish] = useState<boolean>(false); // 日のノルマフラグの状態管理
-  const quizData = useQuizData(isLoggedIn, setTodaysFinish); // バグ修正、ログイン済みでないとリクエストできない
 
   const navigate = useNavigate();
+  const token = sessionStorage.getItem('token'); // トークンを取得
+
+  // トークンに基づいてログイン状態を設定
+  useEffect(() => {
+    if (token) {
+      setIsLoggedIn(true);
+      const admin = sessionStorage.getItem('admin') === 'true';
+      const todaysCount = sessionStorage.getItem('todays_count') === 'true';
+      setIsAdmin(admin);
+      setTodaysFinish(todaysCount);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [token]); // `token` が変更されたときにのみ実行
+
+  // 常に useQuizData を呼び出すが、結果を条件付きで使用する
+  const quizData = useQuizData(isLoggedIn, todaysFinish, isAdmin, setTodaysFinish);
 
   useEffect(() => {
     if (!isLoggedIn) {
-      navigate('/'); // ログインしていない場合はホームページにリダイレクト
+      navigate('/'); // トークンがない場合はログインページにリダイレクト
     }
   }, [isLoggedIn, navigate]);
 
@@ -49,6 +64,7 @@ function App() {
           todaysFinish ? ( // 日のノルマが達成された場合
             <div className="quota-met">
               <h1>本日の受験は終了しました</h1><h1>┌┤´д`├┐ﾀﾞﾙ～</h1>
+              <button className="logout-button" onClick={() => handleAdminLogout(setIsLoggedIn, setIsAdmin, navigate)}>ログアウト</button>
             </div>
           ) : (
             showScore ? (

@@ -17,8 +17,9 @@ export const useLogin = (onLogin: (loginOK: boolean, isAdmin: boolean) => void) 
         });
         if (response.status >= 200 && response.status < 300) {
           const result = response.data;
-          localStorage.setItem('token', result.token); // トークンを保存
-          localStorage.setItem('todays_count', result.todays_count); // 本日の実施済みクイズ数を保存
+          sessionStorage.setItem('token', result.token); // トークンを保存
+          sessionStorage.setItem('admin', result.admin); // 管理者かどうか
+          sessionStorage.setItem('todays_count', result.todays_count); // 本日の実施済みクイズ数を保存
           onLogin(true, result.admin); // adminフラグを渡す
         } else {
           setErrorMessage('社員IDまたはパスワードが間違っています'); // エラーメッセージを設定

@@ -3,12 +3,12 @@ import { QuizData } from '../types';
 import fetchQuizData from './utils/fetchQuizData';
 import mapQuizData from './utils/mapQuizData';
 
-const useQuizData = (isLoggedIn: boolean, setTodaysFinish: (finish: boolean) => void) => {
+const useQuizData = (isLoggedIn: boolean, todaysFinish: boolean, isAdmin: boolean, setTodaysFinish: (finish: boolean) => void) => {
   const [quizData, setQuizData] = useState<QuizData[]>([]);
   const [dataFetched, setDataFetched] = useState<boolean>(false);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && !isAdmin) {
       const fetchData = async () => {
         const response = await fetchQuizData();
         if (response.todays_finish) {
@@ -25,7 +25,7 @@ const useQuizData = (isLoggedIn: boolean, setTodaysFinish: (finish: boolean) => 
       fetchData(); // 初回レンダリング時にデータをフェッチ
 
       const interval = setInterval(() => {
-        if (!dataFetched) {
+        if (!dataFetched && !todaysFinish && !isAdmin) {
           fetchData();
         }
       }, 10000);

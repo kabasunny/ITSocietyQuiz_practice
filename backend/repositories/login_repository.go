@@ -54,10 +54,12 @@ func (r *LoginRepository) FindUsersRole(empID string) ([]models.Users_roles, err
 
 func (r *LoginRepository) FindTodaysAnswersCount(empID string) (int64, error) {
 	var count int64
-	today := time.Now().Format("2006-01-02")
+	loc, _ := time.LoadLocation("Asia/Tokyo")
+	today := time.Now().In(loc).Format("2006-01-02")
 	result := r.db.Model(&models.Answers{}).Where("emp_id = ? AND DATE(created_at) = ?", empID, today).Count(&count)
 	if result.Error != nil {
 		return 0, result.Error
 	}
+
 	return count, nil
 }

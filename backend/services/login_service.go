@@ -53,12 +53,12 @@ func (s *LoginService) Login(empID string, password string) (*string, bool, int6
 		}
 	}
 
-	todaysAnswersCount, err := s.repository.FindTodaysAnswersCount(empID)
+	todaysCount, err := s.repository.FindTodaysAnswersCount(empID)
 	if err != nil {
 		return nil, false, 0, err
 	}
 
-	return token, isAdmin, todaysAnswersCount, nil
+	return token, isAdmin, todaysCount, nil
 }
 
 func CreateToken(empID string, Username string) (*string, error) {

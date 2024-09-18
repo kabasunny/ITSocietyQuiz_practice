@@ -6,8 +6,7 @@ const submitAnswers = async (
   answers: Answer[],
   setIsSubmitAnsewr: Dispatch<SetStateAction<boolean>>
 ) => {
-  if (process.env.REACT_APP_USE_API === 'true') {
-    const jwt = localStorage.getItem('token'); // ログイン時にAPIから取得したトークン
+    const jwt = sessionStorage.getItem('token'); // ログイン時にAPIから取得したトークン
     if (jwt) {
       // Answer を ResAnswer に変換
       const resAnswers: ResAnswer[] = answers.map(answer => ({
@@ -30,10 +29,7 @@ const submitAnswers = async (
     } else {
       alert('トークンが見つかりません');
     }
-  } else {
-    setIsSubmitAnsewr(true);
-    console.log('API送信は無効化されています');
-  }
+ 
 };
 
 export default submitAnswers;

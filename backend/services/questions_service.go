@@ -87,12 +87,12 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string, todaysCount uint) 
 		return nil, false, err
 	}
 
-	todaysCount = 0 // テスト時の制限解除。当日分の回数がリセットされ制限がかからなくなる
+	// todaysCount = 0 // テスト時の制限解除。当日分の回数がリセットされ制限がかからなくなる
 
 	necessaryQuestions := s.dailyQuestionCount - todaysCount // 日に必要な問題数
 
 	// 日のノルマが達成されたかどうかを確認
-	if necessaryQuestions <= 0 {
+	if int(necessaryQuestions) <= 0 {
 		return nil, true, nil
 	}
 
@@ -120,7 +120,6 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string, todaysCount uint) 
 			currentQID++
 			selectedQuestions = append(selectedQuestions, currentQID)
 		}
-
 	}
 
 	// 4. selectedQuestionsから詳細データを取得

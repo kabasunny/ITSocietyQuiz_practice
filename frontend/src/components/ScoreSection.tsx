@@ -17,6 +17,8 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers, isSubmitAns
     } else {
       alert('データ送信に失敗しました');
     }
+    sessionStorage.setItem('currentQuestion', JSON.stringify(0)); // 終了ボタンを押すとリセット
+    sessionStorage.setItem('answers', JSON.stringify(null)); 
   };
 
   return (

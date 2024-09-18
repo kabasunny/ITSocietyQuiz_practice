@@ -29,6 +29,8 @@ function App() {
 
   const [isSubmitAnsewr, setIsSubmitAnsewr] = useState<boolean>(false);
   const [todaysFinish, setTodaysFinish] = useState<boolean>(false); // 日のノルマフラグの状態管理
+  
+  const quizData = useQuizData(isLoggedIn, todaysFinish, isAdmin, setTodaysFinish);
 
   const navigate = useNavigate();
   const token = sessionStorage.getItem('token'); // トークンを取得
@@ -46,14 +48,25 @@ function App() {
     }
   }, [token]); // `token` が変更されたときにのみ実行
 
-  // 常に useQuizData を呼び出すが、結果を条件付きで使用する
-  const quizData = useQuizData(isLoggedIn, todaysFinish, isAdmin, setTodaysFinish);
 
   useEffect(() => {
     if (!isLoggedIn) {
       navigate('/'); // トークンがない場合はログインページにリダイレクト
     }
   }, [isLoggedIn, navigate]);
+
+   // コンポーネントがマウントされたときにセッションから `currentQuestion` を復元する
+   useEffect(() => {
+    const savedCurrentQuestion = sessionStorage.getItem('currentQuestion');
+    if (savedCurrentQuestion) {
+      setCurrentQuestion(JSON.parse(savedCurrentQuestion));
+    }
+    const savedAnswers = sessionStorage.getItem('answers');
+    if (savedAnswers) {
+      setAnswers(JSON.parse(savedAnswers));
+    }
+    setNext(false);
+  }, []);
 
   return (
     <div className="quiz-container">

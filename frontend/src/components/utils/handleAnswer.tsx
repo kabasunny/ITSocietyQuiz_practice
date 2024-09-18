@@ -25,7 +25,9 @@ const handleAnswer = (
   } else {
     setFeedback("×");
   }
-  setAnswers([...answers, newAnswer]);
+  const updatedAnswers = [...answers, newAnswer];
+  setAnswers(updatedAnswers);
+  sessionStorage.setItem('answers', JSON.stringify(updatedAnswers)); // セッションストレージに保存
   setNext(true);
 };
 

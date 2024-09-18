@@ -8,15 +8,31 @@ interface QuizResponse {
 
 const fetchQuizData = async (): Promise<QuizResponse> => {
   try {
+    // まずセッションストレージに保存されているデータを確認
+    const storedQuizData = sessionStorage.getItem('quizdata');
+    const storedTodaysFinish = sessionStorage.getItem('todays_finish');
+    
+    // 既にデータがある場合、そのまま返す
+    if (storedQuizData && storedTodaysFinish) {
+      return {
+        quizdata: JSON.parse(storedQuizData),
+        todays_finish: JSON.parse(storedTodaysFinish) === 'true',
+      };
+    }
+
+    // セッションストレージにデータがない場合、APIリクエストを行う
     const jwt = sessionStorage.getItem('token'); // ログイン時にAPIから取得したトークン
     const todaysCount = sessionStorage.getItem('todays_count'); // ローカルストレージからtodays_countを取得
-    
 
-    const response = await axios.get(`http://localhost:8082/questions/oneday?todays_count=${todaysCount}`, { // とりあえず本日の回答済みクイズ数をURLパラメータに入れる
+    const response = await axios.get(`http://localhost:8082/questions/oneday?todays_count=${todaysCount}`, {
       headers: {
         'Authorization': `Bearer ${jwt}`
       }
     });
+
+    // 取得したデータをセッションストレージに保存
+    sessionStorage.setItem('quizdata', JSON.stringify(response.data.quizdata));
+    sessionStorage.setItem('todays_finish', JSON.stringify(response.data.todays_finish));
 
     return {
       quizdata: response.data.quizdata,

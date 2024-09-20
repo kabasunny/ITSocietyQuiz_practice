@@ -1,4 +1,6 @@
-// ログイン関連のインターフェース
+
+import { NavigateFunction } from 'react-router-dom';
+
 export interface LoginProps {
   onLogin: (loginOK: boolean, isAdmin: boolean) => void;
 }
@@ -57,8 +59,15 @@ export interface ResAnswer {
 export interface ScoreSectionProps {
   score: number;
   answers: Answer[];
-  isSubmitAnsewr: boolean; // 追加
+  isSubmitAnsewr: boolean;
+  handleLogout: (setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>, setIsAdmin: React.Dispatch<React.SetStateAction<boolean>>, setIsSubmitAnsewr: React.Dispatch<React.SetStateAction<boolean>>, navigate: NavigateFunction) => void;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsAdmin: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsSubmitAnsewr: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowScore: React.Dispatch<React.SetStateAction<boolean>>;
+  navigate: NavigateFunction;
 }
+
 // ユーザー関連のインターフェース
 export interface Role {
   id: number;

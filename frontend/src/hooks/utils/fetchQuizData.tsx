@@ -6,14 +6,14 @@ interface QuizResponse {
   todays_finish: boolean;
 }
 
-const fetchQuizData = async (): Promise<QuizResponse> => {
+const fetchQuizData = async (isSubmitAnswer: boolean): Promise<QuizResponse> => {
   try {
     // まずセッションストレージに保存されているデータを確認
     const storedQuizData = sessionStorage.getItem('quizdata');
     const storedTodaysFinish = sessionStorage.getItem('todays_finish');
     
     // 既にデータがある場合、そのまま返す
-    if (storedQuizData && storedTodaysFinish) {
+    if (storedQuizData && storedTodaysFinish && !isSubmitAnswer) {
       return {
         quizdata: JSON.parse(storedQuizData),
         todays_finish: JSON.parse(storedTodaysFinish) === 'true',
@@ -29,6 +29,9 @@ const fetchQuizData = async (): Promise<QuizResponse> => {
         'Authorization': `Bearer ${jwt}`
       }
     });
+
+    // 取得したデータをコンソールに出力
+    console.log('APIレスポンス:', response.data);
 
     // 取得したデータをセッションストレージに保存
     sessionStorage.setItem('quizdata', JSON.stringify(response.data.quizdata));

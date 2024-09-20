@@ -77,6 +77,9 @@ func (r *AnswersRepository) UpdateStreakCount(answer *models.Answers) error {
 func (r *AnswersRepository) GetLatestAnswer(empID string, questionID uint) (*models.Answers, error) {
 	var answer models.Answers
 	err := r.db.Where("emp_id = ? AND question_id = ?", empID, questionID).Order("created_at desc").First(&answer).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil // record not found はエラーにしない
+	}
 	return &answer, err
 }
 

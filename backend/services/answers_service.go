@@ -52,10 +52,18 @@ func (s *AnswersService) SaveAnswers(inputs []dto.AnswersInput, tokenString stri
 		}
 
 		streakCount := uint(0)
-		if input.AnswerID == 0 {
-			streakCount = latestAnswer.StreakCount + 1
+		if latestAnswer != nil {
+			if input.AnswerID == 0 {
+				streakCount = latestAnswer.StreakCount + 1
+			} else {
+				streakCount = 0
+			}
 		} else {
-			streakCount = 0
+			if input.AnswerID == 0 {
+				streakCount = 1
+			} else {
+				streakCount = 0
+			}
 		}
 
 		answers := models.Answers{

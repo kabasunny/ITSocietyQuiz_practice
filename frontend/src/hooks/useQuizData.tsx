@@ -3,14 +3,14 @@ import { QuizData } from '../types';
 import fetchQuizData from './utils/fetchQuizData';
 import mapQuizData from './utils/mapQuizData';
 
-const useQuizData = (isLoggedIn: boolean, todaysFinish: boolean, isAdmin: boolean, setTodaysFinish: (finish: boolean) => void) => {
+const useQuizData = (isLoggedIn: boolean, todaysFinish: boolean, isAdmin: boolean, isSubmitAnsewr: boolean, setTodaysFinish: (finish: boolean) => void) => {
   const [quizData, setQuizData] = useState<QuizData[]>([]);
   const [dataFetched, setDataFetched] = useState<boolean>(false);
 
   useEffect(() => {
     if (isLoggedIn && !isAdmin) {
       const fetchData = async () => {
-        const response = await fetchQuizData();
+        const response = await fetchQuizData(isSubmitAnsewr);
         if (response.todays_finish) {
           setTodaysFinish(true);
           return; // ノルマが達成されている場合は早期にリターン

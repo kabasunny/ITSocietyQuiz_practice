@@ -15,7 +15,7 @@ import AddQuestion from './components/admin/AddQuestion';
 import UpdateDeleteQuestion from './components/admin/EditQuestion';
 import UserManagement from './components/admin/UserManagement';
 import Statistics from './components/admin/Statistics';
-import handleAdminLogout from './hooks/utils/handleLogout'; // handleAdminLogoutをインポート
+import handleLogout from './hooks/utils/handleLogout'; // handleLogoutをインポート
 
 function App() {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
@@ -29,6 +29,8 @@ function App() {
 
   const [isSubmitAnsewr, setIsSubmitAnsewr] = useState<boolean>(false);
   const [todaysFinish, setTodaysFinish] = useState<boolean>(false); // 日のノルマフラグの状態管理
+  
+  const quizData = useQuizData(isLoggedIn, todaysFinish, isAdmin, isSubmitAnsewr, setTodaysFinish);
 
   const navigate = useNavigate();
   const token = sessionStorage.getItem('token'); // トークンを取得
@@ -38,38 +40,77 @@ function App() {
     if (token) {
       setIsLoggedIn(true);
       const admin = sessionStorage.getItem('admin') === 'true';
-      const todaysCount = sessionStorage.getItem('todays_count') === 'true';
+      const todaysFinish = sessionStorage.getItem('todaysFinish') === 'true';
       setIsAdmin(admin);
-      setTodaysFinish(todaysCount);
+      setTodaysFinish(todaysFinish);
     } else {
       setIsLoggedIn(false);
     }
   }, [token]); // `token` が変更されたときにのみ実行
 
-  // 常に useQuizData を呼び出すが、結果を条件付きで使用する
-  const quizData = useQuizData(isLoggedIn, todaysFinish, isAdmin, setTodaysFinish);
 
   useEffect(() => {
     if (!isLoggedIn) {
       navigate('/'); // トークンがない場合はログインページにリダイレクト
     }
+    
+  // コンソールログで確認
+  console.log('quizdata:', sessionStorage.getItem('quizdata'));
+  console.log('todays_finish:', sessionStorage.getItem('todays_finish'));
+  console.log('currentQuestion:', sessionStorage.getItem('currentQuestion'));
+  console.log('answers:', sessionStorage.getItem('answers'));
   }, [isLoggedIn, navigate]);
+
+   // コンポーネントがマウントされたときにセッションから `currentQuestion` を復元する
+   useEffect(() => {
+    const todaysFinish = sessionStorage.getItem('todays_finish') === 'true';
+    setTodaysFinish(todaysFinish);
+    console.log('todaysFinish:', todaysFinish);
+
+    const savedCurrentQuestion = sessionStorage.getItem('currentQuestion');
+    console.log('savedCurrentQuestion:', savedCurrentQuestion);
+    if (savedCurrentQuestion) {
+      setCurrentQuestion(JSON.parse(savedCurrentQuestion));
+    }
+    const savedAnswers = sessionStorage.getItem('answers');
+    console.log('savedAnswers:', savedAnswers);
+    if (savedAnswers) {
+      setAnswers(JSON.parse(savedAnswers));
+    }
+    const savedScore = sessionStorage.getItem('score');
+  console.log('savedScore:', savedScore);
+  if (savedScore) {
+    setScore(JSON.parse(savedScore));
+  }
+    setNext(false);
+  }, []);
+
 
   return (
     <div className="quiz-container">
       {isLoggedIn ? (
         isAdmin ? ( // 管理者の場合
-          <AdminScreen isAdmin={isAdmin} onAdminLogout={() => handleAdminLogout(setIsLoggedIn, setIsAdmin, navigate)} /> // 管理者用画面を表示
+          <AdminScreen isAdmin={isAdmin} onAdminLogout={() => handleLogout(setIsLoggedIn, setIsAdmin, setIsSubmitAnsewr, setShowScore, navigate)} /> // 管理者用画面を表示
         ) : (
           todaysFinish ? ( // 日のノルマが達成された場合
             <div className="quota-met">
               <h1>本日の受験は終了しました</h1><h1>┌┤´д`├┐ﾀﾞﾙ～</h1>
-              <button className="logout-button" onClick={() => handleAdminLogout(setIsLoggedIn, setIsAdmin, navigate)}>ログアウト</button>
+              <button className="logout-button" onClick={() => handleLogout(setIsLoggedIn, setIsAdmin, setIsSubmitAnsewr, setShowScore, navigate)}>ログアウト</button>
             </div>
           ) : (
             showScore ? (
-              <ScoreSection score={score} answers={answers} isSubmitAnsewr={isSubmitAnsewr} />
-            ) : (
+              <ScoreSection 
+                score={score} 
+                answers={answers} 
+                isSubmitAnsewr={isSubmitAnsewr} 
+                handleLogout={handleLogout} 
+                setIsLoggedIn={setIsLoggedIn}
+                setIsAdmin={setIsAdmin}
+                setIsSubmitAnsewr={setIsSubmitAnsewr}
+                setShowScore={setShowScore}
+                navigate={navigate}
+              />
+             ) : (
               quizData.length > 0 ? (
                 <Quiz
                   currentQuestion={currentQuestion}
@@ -77,10 +118,10 @@ function App() {
                   next={next}
                   feedback={feedback}
                   handleAnswer={(selectedAnswer: Option) => handleAnswer(
-                    selectedAnswer, quizData, currentQuestion, setScore, setFeedback, setAnswers, setNext, answers
+                    selectedAnswer, quizData, currentQuestion, setCurrentQuestion, setScore, setFeedback, setAnswers, setNext, submitAnswers, setShowScore, setIsSubmitAnsewr, setTodaysFinish, answers
                   )}
                   goToNextQuestion={() => goToNextQuestion(
-                    currentQuestion, setCurrentQuestion, quizData, answers, submitAnswers, setShowScore, setNext, setIsSubmitAnsewr
+                    setNext, 
                   )}
                 />
               ) : (
@@ -96,7 +137,7 @@ function App() {
         <Login onLogin={(loginOK: boolean, isAdmin: boolean) => handleLogin(loginOK, setIsLoggedIn, setIsAdmin, isAdmin)} />
       )}
       <Routes>
-        <Route path="/admin" element={<AdminScreen isAdmin={isAdmin} onAdminLogout={() => handleAdminLogout(setIsLoggedIn, setIsAdmin, navigate)} />} />
+        <Route path="/admin" element={<AdminScreen isAdmin={isAdmin} onAdminLogout={() => handleLogout(setIsLoggedIn, setIsAdmin, setIsSubmitAnsewr, setShowScore, navigate)} />} />
         <Route path="/add-question" element={<AddQuestion />} />
         <Route path="/edit-question" element={<UpdateDeleteQuestion />} />
         <Route path="/user-management" element={<UserManagement />} />

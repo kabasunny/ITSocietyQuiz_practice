@@ -1,22 +1,34 @@
 import React, { useState } from 'react';
 import './ScoreSection.css';
-import { ScoreSectionProps } from '../types';
+import { Answer } from '../types';
+import { NavigateFunction } from 'react-router-dom';
 
-const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers, isSubmitAnsewr }) => {
+interface ScoreSectionProps {
+  score: number;
+  answers: Answer[];
+  isSubmitAnsewr: boolean;
+  handleLogout: (setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>, setIsAdmin: React.Dispatch<React.SetStateAction<boolean>>, setIsSubmitAnsewr: React.Dispatch<React.SetStateAction<boolean>>, setShowScore: React.Dispatch<React.SetStateAction<boolean>>, navigate: NavigateFunction) => void;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsAdmin: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsSubmitAnsewr: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowScore: React.Dispatch<React.SetStateAction<boolean>>;
+  navigate: NavigateFunction;
+}
+
+const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers, isSubmitAnsewr, handleLogout, setIsLoggedIn, setIsAdmin, setIsSubmitAnsewr, setShowScore, navigate }) => {
   const [isEnded, setIsEnded] = useState<boolean>(false); // 終了状態を管理
-
-  // useEffect(() => {
-  //   if (isSubmitAnsewr) {
-  //     alert('回答が送信されました！');
-  //   }
-  // }, [isSubmitAnsewr]);
 
   const handleEndClick = () => {
     if (isSubmitAnsewr) {
       setIsEnded(true);
+      setTimeout(() => {
+        handleLogout(setIsLoggedIn, setIsAdmin, setIsSubmitAnsewr, setShowScore, navigate); // 必要な引数を渡す
+      }, 2000); // 2秒待つ
     } else {
       alert('データ送信に失敗しました');
     }
+    sessionStorage.setItem('currentQuestion', JSON.stringify(0)); // 終了ボタンを押すとリセット
+    sessionStorage.setItem('answers', JSON.stringify(null)); 
   };
 
   return (
@@ -48,7 +60,8 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ score, answers, isSubmitAns
         <h1 className="end-message">本日の学習は終了です٩( 'ω' )و</h1>
       ) : (
         <button onClick={handleEndClick} className="end-button">
-          終了
+          終了<br/>
+          & ログアウト
         </button>
       )}
     </div>

@@ -46,4 +46,5 @@ func (c *AnswersController) SaveAnswers(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "Answers saved successfully"})
+
 }

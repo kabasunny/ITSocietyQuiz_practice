@@ -4,8 +4,7 @@ import { Dispatch, SetStateAction } from 'react';
 
 const submitAnswers = async (
   answers: Answer[],
-  setIsSubmitAnsewr: Dispatch<SetStateAction<boolean>>,
-  setTodaysFinish: Dispatch<SetStateAction<boolean>>
+  setIsSubmitAnsewr: Dispatch<SetStateAction<boolean>>
 ) => {
     const jwt = sessionStorage.getItem('token'); // ログイン時にAPIから取得したトークン
     const storedQuizData = sessionStorage.getItem('quizdata');

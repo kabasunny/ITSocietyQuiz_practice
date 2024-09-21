@@ -10,10 +10,9 @@ const handleAnswer = (
   setFeedback: Dispatch<SetStateAction<string | null>>,
   setAnswers: Dispatch<SetStateAction<Answer[]>>,
   setNext: Dispatch<SetStateAction<boolean>>,
-  submitAnswers: (answers: Answer[], setIsSubmitAnsewr: Dispatch<SetStateAction<boolean>>, setTodaysFinish: Dispatch<SetStateAction<boolean>> ) => void,
+  submitAnswers: (answers: Answer[], setIsSubmitAnsewr: Dispatch<SetStateAction<boolean>> ) => void,
   setShowScore: Dispatch<SetStateAction<boolean>>,
   setIsSubmitAnsewr: Dispatch<SetStateAction<boolean>>,
-  setTodaysFinish: Dispatch<SetStateAction<boolean>>, 
   answers: Answer[]
 ) => {
   const newAnswer: Answer = {
@@ -55,7 +54,7 @@ const handleAnswer = (
       return updatedQuestion;
     });
   } else {
-    submitAnswers(updatedAnswers, setIsSubmitAnsewr, setTodaysFinish); // APIに結果を送信
+    submitAnswers(updatedAnswers, setIsSubmitAnsewr); // APIに結果を送信
     setShowScore(true); // 結果のスコアを表示するためのフラグ
   }
   

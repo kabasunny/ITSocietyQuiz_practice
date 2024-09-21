@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
 import Quiz from './components/Quiz';
@@ -86,6 +86,26 @@ function App() {
   }, []);
 
 
+
+  const handleBeforeUnload = useCallback((event: BeforeUnloadEvent) => {
+    // submitAnswers関数を呼び出す条件をチェック
+    if (isLoggedIn && !isAdmin && !todaysFinish && !showScore) {
+        submitAnswers(answers, setIsSubmitAnsewr);
+      }
+  }, [answers]);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [handleBeforeUnload]);
+  
+
+
+  
+
   return (
     <div className="quiz-container">
       {isLoggedIn ? (
@@ -118,7 +138,7 @@ function App() {
                   next={next}
                   feedback={feedback}
                   handleAnswer={(selectedAnswer: Option) => handleAnswer(
-                    selectedAnswer, quizData, currentQuestion, setCurrentQuestion, setScore, setFeedback, setAnswers, setNext, submitAnswers, setShowScore, setIsSubmitAnsewr, setTodaysFinish, answers
+                    selectedAnswer, quizData, currentQuestion, setCurrentQuestion, setScore, setFeedback, setAnswers, setNext, submitAnswers, setShowScore, setIsSubmitAnsewr, answers
                   )}
                   goToNextQuestion={() => goToNextQuestion(
                     setNext, 

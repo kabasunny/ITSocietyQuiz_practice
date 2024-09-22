@@ -82,3 +82,14 @@ export interface User {
   total_questions: number;
   correct_answers: number;
 }
+
+
+export interface AdmQuestion {
+  id: number;
+  userQuestionID: string | null;
+  question: string;
+  options: string[];
+  supplement: string;
+  difficulty: number;
+  createdAt: string; // 作成日を追加
+}

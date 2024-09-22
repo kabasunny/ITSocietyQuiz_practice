@@ -14,11 +14,22 @@ type UpdateQuestionsInput struct {
 	Difficulty *uint     `json:"difficulty" binding:"omitempty"` // 追加
 }
 
-// フロントへのクイズデータ返却用
+// フロントへのユーザー用クイズデータ返却用
 type QuizData struct {
 	ID         uint     `json:"id"` // GROMのIDを使用する
 	Question   string   `json:"question"`
 	Options    []string `json:"options"`
 	Supplement string   `json:"supplement"`
 	Difficulty uint     `json:"difficulty"`
+}
+
+// フロントへのクイズデータ返却用
+type AdmQuizData struct {
+	ID             uint     `json:"id"` // GORMのIDを使用する
+	UserQuestionID *string  `json:"userQuestionID"`
+	Question       string   `json:"question"`
+	Options        []string `json:"options"`
+	Supplement     string   `json:"supplement"`
+	Difficulty     uint     `json:"difficulty"`
+	CreatedAt      string   `json:"createdAt"` // 作成日を追加
 }

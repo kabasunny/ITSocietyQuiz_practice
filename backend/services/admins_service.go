@@ -5,10 +5,11 @@ import (
 	"backend/models"
 	"backend/repositories"
 	"backend/utils"
+	"time"
 )
 
 type IAdminsService interface {
-	FindAll() (*[]models.Questions, error)
+	FindAll() (*[]dto.AdmQuizData, error) // 修正
 	FindById(QuestionsId uint) (*models.Questions, error)
 	Create(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error)
 	Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*models.Questions, error)
@@ -24,8 +25,26 @@ func NewAdminsService(repository repositories.IAdminsRepository) IAdminsService 
 	return &AdminsService{repository: repository}
 }
 
-func (s *AdminsService) FindAll() (*[]models.Questions, error) {
-	return s.repository.FindAll()
+func (s *AdminsService) FindAll() (*[]dto.AdmQuizData, error) { // 修正
+	questions, err := s.repository.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var quizData []dto.AdmQuizData
+	for _, question := range *questions {
+		quizData = append(quizData, dto.AdmQuizData{
+			ID:             question.ID,
+			UserQuestionID: question.UserQuestionID,
+			Question:       question.Question,
+			Options:        question.Options,
+			Supplement:     question.Supplement,
+			Difficulty:     question.Difficulty,
+			CreatedAt:      question.CreatedAt.Format(time.RFC3339),
+		})
+	}
+
+	return &quizData, nil
 }
 
 func (s *AdminsService) FindById(QuestionsId uint) (*models.Questions, error) {

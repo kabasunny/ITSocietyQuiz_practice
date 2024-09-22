@@ -32,7 +32,7 @@ func (c *AdminsController) FindAll(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"data": Questions})
+	ctx.JSON(http.StatusOK, gin.H{"adm_data": Questions})
 }
 
 func (c *AdminsController) FindById(ctx *gin.Context) {

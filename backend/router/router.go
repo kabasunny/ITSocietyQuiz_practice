@@ -58,10 +58,10 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	quizDataRouter.GET("/:id", quizDataController.FindById)
 
 	adminDataRouter.POST("/import_csv", adminsController.ImportCSV)
-	// adminDataRouter.POST("", adminsController.FindAll)
-	// adminDataRouter.POST("/:id", adminsController.Create)
+	adminDataRouter.GET("", adminsController.FindAll)
 	// adminDataRouter.PUT("/:id", adminsController.Update)
 	// adminDataRouter.DELETE("/:id", adminsController.Delete)
+	// adminDataRouter.POST("/:id", adminsController.Create)
 
 	return r
 }

@@ -2,6 +2,7 @@ package router
 
 import (
 	"backend/controllers"
+	"backend/middlewares"
 	"backend/repositories"
 	"backend/services"
 
@@ -50,6 +51,7 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	quizDataRouter := r.Group("/questions")
 
 	adminDataRouter := r.Group("/admins")
+	adminDataRouter.Use(middlewares.AuthMiddleware()) // ミドルウェアを適用
 
 	quizDataRouter.GET("", quizDataController.FindAll)              // 全クイズデータ返却メソッド
 	quizDataRouter.GET("oneday", quizDataController.GetOneDaysQuiz) // 1日分のクイズデータ返却メソッド

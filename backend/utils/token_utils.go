@@ -29,6 +29,7 @@ func ValidateToken(tokenString string) (string, bool, error) {
 
 	token, err := jwt.Parse(tokenString, keyFunc)
 	if err != nil {
+		fmt.Println("Failed to parse token:", err) // デバッグ用のログ出力
 		return "", false, fmt.Errorf("failed to parse token: %v", err)
 	}
 
@@ -39,14 +40,17 @@ func ValidateToken(tokenString string) (string, bool, error) {
 		exp, expOk := claims["exp"].(float64) // JSONの数値はすべて float64 として扱われるため、直接 int64 にキャストすることはできない
 
 		if !subOk || !expOk {
+			fmt.Println("Invalid token claims") // デバッグ用のログ出力
 			return "", false, fmt.Errorf("invalid token claims")
 		}
 
 		// 有効期限の確認
 		if time.Unix(int64(exp), 0).Before(time.Now()) {
+			fmt.Println("Token has expired") // デバッグ用のログ出力
 			return "", false, fmt.Errorf("token has expired")
 		}
 		return sub, true, nil
 	}
+	fmt.Println("Invalid token") // デバッグ用のログ出力
 	return "", false, fmt.Errorf("invalid token")
 }

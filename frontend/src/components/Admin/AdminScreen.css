@@ -1,58 +1,99 @@
-
-
 /* AdminScreen.css */
 .admin-container {
-    text-align: center; /* 中央に配置 */
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* 縦方向に中央に配置 */
-  }
-  
-  .admin-container h1 {
-    color: #4B0082; /* インディゴ色 */
-    font-size: 2em;
-    margin-bottom: 10px; /* マージンを調整 */
-  }
-  
-  /* h2 タグのスタイル */
-.admin-h2 {
-    margin: 10px 0; /* 上下にスペースを追加 */
-    font-size: 1.5em;
-    color: #333;
-    text-align: center; /* 中央に配置 */
-  }
+  text-align: center; /* 中央に配置 */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 縦方向に中央に配置 */
+}
 
-  
-  .admin-container .button-group {
-    display: flex;
-    flex-direction: row; /* 横に並べる */
-    justify-content: center; /* 中央に配置 */
-    gap: 10px; /* ボタン間のスペース */
-    margin-bottom: 10px; /* マージンを調整 */
-  }
-  
-  .admin-container button {
-    width: 125px; /* ボタンの幅を統一 */
-    padding: 10px 10px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    background-color: #556B2F; /* ダークオリーブグリーン */
-    color: white;
-    transition: background-color 0.3s;
-  }
-  
-  .admin-container button:hover {
-    background-color: #9ACD32; /* イエローグリーン */
-  }
-  
-  .admin-container .logout-button {
-    background-color: #B22222; /* ファイアブリック */
-  }
-  
-  .admin-container .logout-button:hover {
-    background-color: #FF4500; /* オレンジレッド */
-  }
-  
+.admin-container h1 {
+  color: #4B0082; /* インディゴ色 */
+  font-size: 2em;
+  margin-bottom: 10px; /* マージンを調整 */
+}
+
+/* h2 タグのスタイル */
+.admin-h2 {
+  margin: 10px 0; /* 上下にスペースを追加 */
+  font-size: 1.5em;
+  color: #333;
+  text-align: center; /* 中央に配置 */
+}
+
+.admin-container .button-group {
+  display: flex;
+  flex-direction: row; /* 横に並べる */
+  justify-content: center; /* 中央に配置 */
+  align-items: center; /* 垂直方向に中央に配置 */
+  gap: 10px; /* ボタン間のスペース */
+  margin-bottom: 10px; /* マージンを調整 */
+}
+
+.admin-container button {
+  width: 125px; /* ボタンの幅を統一 */
+  padding: 10px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: #556B2F; /* ダークオリーブグリーン */
+  color: white;
+  transition: background-color 0.3s;
+  vertical-align: middle; /* 垂直方向に中央に配置 */
+}
+
+.admin-container button:hover {
+  background-color: #9ACD32; /* イエローグリーン */
+}
+
+.admin-container .logout-button {
+  background-color: #B22222; /* ファイアブリック */
+}
+
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px; /* ボタン間のスペース */
+}
+
+.file-input {
+  display: none; /* 実際のファイル入力は隠す */
+}
+
+.upload-csv-button {
+  background-color: #4caf86;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  width: 150px;
+  height: 40px; /* 高さを統一 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-csv-button:hover {
+  background-color: #5bc260;
+}
+
+p {
+  margin-top: 10px;
+}
+
+.upload-button {
+  background-color: #a52494 !important; /* 新しい色 */
+  color: white !important;
+}
+
+.upload-button:hover {
+  background-color: #C70039 !important; /* 新しいホバー色 */
+}

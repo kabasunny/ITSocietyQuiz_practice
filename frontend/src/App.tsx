@@ -110,7 +110,7 @@ function App() {
     <div className="quiz-container">
       {isLoggedIn ? (
         isAdmin ? ( // 管理者の場合
-          <AdminScreen isAdmin={isAdmin} onAdminLogout={() => handleLogout(setIsLoggedIn, setIsAdmin, setIsSubmitAnsewr, setShowScore, navigate)} /> // 管理者用画面を表示
+          <AdminScreen isAdmin={isAdmin} onLogout={() => handleLogout(setIsLoggedIn, setIsAdmin, setIsSubmitAnsewr, setShowScore, navigate)} /> // 管理者用画面を表示
         ) : (
           todaysFinish ? ( // 日のノルマが達成された場合
             <div className="quota-met">
@@ -157,7 +157,7 @@ function App() {
         <Login onLogin={(loginOK: boolean, isAdmin: boolean) => handleLogin(loginOK, setIsLoggedIn, setIsAdmin, isAdmin)} />
       )}
       <Routes>
-        <Route path="/admin" element={<AdminScreen isAdmin={isAdmin} onAdminLogout={() => handleLogout(setIsLoggedIn, setIsAdmin, setIsSubmitAnsewr, setShowScore, navigate)} />} />
+        <Route path="/admin" element={<AdminScreen isAdmin={isAdmin} onLogout={() => handleLogout(setIsLoggedIn, setIsAdmin, setIsSubmitAnsewr, setShowScore, navigate)} />} />
         <Route path="/add-question" element={<AddQuestion />} />
         <Route path="/edit-question" element={<UpdateDeleteQuestion />} />
         <Route path="/user-management" element={<UserManagement />} />

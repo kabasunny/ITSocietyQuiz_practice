@@ -12,20 +12,25 @@ import (
 
 func SetupRouter(db *gorm.DB) *gin.Engine {
 
-	// クイズデータ取得用
+	// ユーザーのクイズデータ取得用
 	quizDataRepository := repositories.NewQuestionsRepository(db)
 	quizDataService := services.NewQuestionsService(quizDataRepository)
 	quizDataController := controllers.NewQuestionsController(quizDataService)
 
-	// ログイン用
+	// ユーザーの解答格納用
+	answersRepository := repositories.NewAnswersRepository(db)
+	answersService := services.NewAnswersService(answersRepository)
+	answersController := controllers.NewAnswersController(answersService)
+
+	// ユーザーおよび管理者のログイン用
 	loginRepository := repositories.NewLoginRepository(db)
 	loginService := services.NewLoginService(loginRepository)
 	loginController := controllers.NewLoginController(loginService)
 
-	// 解答格納用
-	answersRepository := repositories.NewAnswersRepository(db)
-	answersService := services.NewAnswersService(answersRepository)
-	answersController := controllers.NewAnswersController(answersService)
+	// 管理者のデータ編集用
+	adminsRepository := repositories.NewAdminsRepository(db)
+	adminsService := services.NewAdminsService(adminsRepository)
+	adminsController := controllers.NewAdminsController(adminsService)
 
 	r := gin.Default()
 
@@ -44,12 +49,17 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 
 	quizDataRouter := r.Group("/questions")
 
+	adminDataRouter := r.Group("/admins")
+
 	quizDataRouter.GET("", quizDataController.FindAll)              // 全クイズデータ返却メソッド
 	quizDataRouter.GET("oneday", quizDataController.GetOneDaysQuiz) // 1日分のクイズデータ返却メソッド
 	quizDataRouter.GET("/:id", quizDataController.FindById)
-	quizDataRouter.POST("", quizDataController.Create)
-	quizDataRouter.PUT("/:id", quizDataController.Update)
-	quizDataRouter.DELETE("/:id", quizDataController.Delete)
+
+	adminDataRouter.POST("/import_csv", adminsController.ImportCSV)
+	// adminDataRouter.POST("", adminsController.FindAll)
+	// adminDataRouter.POST("/:id", adminsController.Create)
+	// adminDataRouter.PUT("/:id", adminsController.Update)
+	// adminDataRouter.DELETE("/:id", adminsController.Delete)
 
 	return r
 }

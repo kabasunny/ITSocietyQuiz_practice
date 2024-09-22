@@ -1,0 +1,122 @@
+.admin-table-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex; /* フレックスボックスを使用 */
+    justify-content: center; /* 中央に配置 */
+  }
+  
+  .admin-table {
+    width: 90%;
+    border-collapse: collapse;
+    margin: 0 auto; /* テーブルを中央に配置 */
+    table-layout: fixed; /* テーブルのレイアウトを固定 */
+  }
+  
+  .admin-table th, .admin-table td {
+    border: 1px solid #b8ccb9;
+    padding: 8px;
+  }
+  
+  .admin-table th {
+    background-color: #570e8b; /* 背景色をインディゴ色に変更 */
+    color: white; /* テキスト色を白に変更 */
+    text-align: center; /* テキストをセンター配置 */
+    width: auto; /* デフォルトの幅をリセット */
+    position: sticky; /* ヘッダーを固定 */
+    top: 0; /* 上部に固定 */
+    z-index: 1; /* ヘッダーを前面に表示 */
+  }
+  
+  .admin-table th:nth-child(1) {
+    width: 4%; /* データID */
+  }
+  
+  .admin-table th:nth-child(2) {
+    width: 4%; /* クイズID */
+  }
+  
+  .admin-table th:nth-child(3) {
+    width: 30%; /* 問題文 */
+  }
+  
+  .admin-table th:nth-child(4) {
+    width: 10%; /* 正解 */
+  }
+  
+  .admin-table th:nth-child(5) {
+    width: 30%; /* 捕捉情報 */
+  }
+  
+  .admin-table th:nth-child(6) {
+    width: 10%; /* 不正解1 */
+  }
+  
+  .admin-table th:nth-child(7) {
+    width: 10%; /* 不正解2 */
+  }
+  
+  .admin-table th:nth-child(8) {
+    width: 10%; /* 不正解3 */
+  }
+  
+  .admin-table th:nth-child(9) {
+    width: 4%; /* 難易度 */
+  }
+  
+  .admin-table th:nth-child(10) {
+    width: 15%; /* 作成日 */
+  }
+  
+  .admin-table th:nth-child(11) {
+    width: 10%; /* アクション */
+  }
+  
+  .admin-table tr {
+    border-bottom: 1px solid #b8ccb9; /* 行の下に線を追加 */
+  }
+  
+  .admin-table tr:nth-child(even) {
+    background-color: #d2dfe0; /* 偶数行の背景色を変更 */
+  }
+  
+  .admin-table tr:nth-child(odd) {
+    background-color: #e9dbe7; /* 奇数行の背景色を変更 */
+  }
+
+  .button-container {
+    justify-content: center; /* 水平方向に中央配置 */
+    align-items: center; /* 垂直方向に中央配置 */
+  }
+  
+
+  .edit-button {
+    background-color: #1d7996 !important;
+    width: 60px !important;
+  height: 40px !important;
+  padding: 5px 5px !important;
+  margin-top: 2px !important; /* 上部のスペースを追加 */
+  margin-bottom: 2px !important; /* 下部のスペースを追加 */
+  margin-left: 0 !important; /* 左右のマージンをなしに */
+  margin-right: 0 !important; /* 左右のマージンをなしに */
+  }
+  
+  .edit-button:hover {
+    background-color: #4fa3d4 !important;
+  }
+  
+  .delete-button {
+    background-color: #B22222 !important;
+    width: 60px !important;
+    height: 40px !important;
+    padding: 5px 5px !important;
+    margin-top: 2px !important; /* 上部のスペースを追加 */
+    margin-bottom: 2px !important; /* 下部のスペースを追加 */
+    margin-left: 0 !important; /* 左右のマージンをなしに */
+    margin-right: 0 !important; /* 左右のマージンをなしに */
+  }
+  
+  .delete-button:hover {
+    background-color: #e02a5e !important;
+  }
+  

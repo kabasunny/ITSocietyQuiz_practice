@@ -11,9 +11,6 @@ import (
 type IQuestionsService interface {
 	FindAll() (*[]models.Questions, error)
 	FindById(QuestionsId uint) (*models.Questions, error)
-	Create(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error)
-	Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*models.Questions, error)
-	Delete(QuestionsId uint) error
 	GetOneDaysQuiz(tokenString string, todaysCount uint) (*[]dto.QuizData, bool, error) // 1日分のクイズを取得する
 }
 
@@ -41,40 +38,6 @@ func (s *QuestionsService) FindAll() (*[]models.Questions, error) {
 
 func (s *QuestionsService) FindById(QuestionsId uint) (*models.Questions, error) {
 	return s.repository.FindById(QuestionsId)
-}
-
-func (s *QuestionsService) Create(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error) {
-	newQuestions := models.Questions{
-		Question:   createQuestionsInput.Question,
-		Options:    createQuestionsInput.Options,
-		Supplement: createQuestionsInput.Supplement,
-		Difficulty: createQuestionsInput.Difficulty,
-	}
-	return s.repository.Create(newQuestions)
-}
-
-func (s *QuestionsService) Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*models.Questions, error) {
-	targetQuestions, err := s.FindById(QuestionsId)
-	if err != nil {
-		return nil, err
-	}
-	if updateQuestionsInput.Question != nil {
-		targetQuestions.Question = *updateQuestionsInput.Question
-	}
-	if updateQuestionsInput.Options != nil {
-		targetQuestions.Options = *updateQuestionsInput.Options
-	}
-	if updateQuestionsInput.Supplement != nil {
-		targetQuestions.Supplement = *updateQuestionsInput.Supplement
-	}
-	if updateQuestionsInput.Difficulty != nil {
-		targetQuestions.Difficulty = *updateQuestionsInput.Difficulty
-	}
-	return s.repository.Update(*targetQuestions)
-}
-
-func (s *QuestionsService) Delete(QuestionsId uint) error {
-	return s.repository.Delete(QuestionsId)
 }
 
 func (s *QuestionsService) GetOneDaysQuiz(tokenString string, todaysCount uint) (*[]dto.QuizData, bool, error) {

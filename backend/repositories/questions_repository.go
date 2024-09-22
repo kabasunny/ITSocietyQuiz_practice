@@ -9,18 +9,11 @@ import (
 
 type IQuestionsRepository interface {
 	FindAll() (*[]models.Questions, error)
-	FindById(QuestionsId uint) (*models.Questions, error) // 単一の質問IDに基づいて、questionsテーブルからデータを取得する場合
-	Create(newQuestions models.Questions) (*models.Questions, error)
-	Update(updateQuestions models.Questions) (*models.Questions, error)
-	Delete(QuestionsId uint) error
+	FindById(QuestionsId uint) (*models.Questions, error)                                                   // 単一の質問IDに基づいて、questionsテーブルからデータを取得する場合
 	Count() (int64, error)                                                                                  // 格納されたクイズのレコード数を取得するメソッドを追加
 	GetTopQuestionsByEmpID(query string, empID string, limit uint, necessaryQuestions uint) ([]uint, error) // answersテーブルからlimit件の質問IDを取得し、優先度順に並べる
 	GetCurrentQIDByEmpID(empID string) (uint, error)                                                        // usersテーブルからcurrentq_idを取得する
 	GetQuestionDetails(questionIDs []uint) ([]models.Questions, error)                                      // 複数の質問IDに基づいて、questionsテーブルからデータを取得する場合
-}
-
-type QuestionsMemoryRepository struct {
-	Questionss []models.Questions
 }
 
 type QuestionsRepository struct {
@@ -29,27 +22,6 @@ type QuestionsRepository struct {
 
 func NewQuestionsRepository(db *gorm.DB) IQuestionsRepository {
 	return &QuestionsRepository{db: db}
-}
-
-func (r *QuestionsRepository) Create(newQuestions models.Questions) (*models.Questions, error) {
-	result := r.db.Create(&newQuestions)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return &newQuestions, nil
-}
-
-func (r *QuestionsRepository) Delete(QuestionsId uint) error {
-	deleteQuestions, err := r.FindById(QuestionsId)
-	if err != nil {
-		return err
-	}
-	result := r.db.Delete(&deleteQuestions) //論理削除
-	// result := r.db.Unscoped().Delete(&deleteQuestions) // 物理削除
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
 }
 
 func (r *QuestionsRepository) FindAll() (*[]models.Questions, error) {
@@ -71,14 +43,6 @@ func (r *QuestionsRepository) FindById(QuestionsId uint) (*models.Questions, err
 		return nil, result.Error
 	}
 	return &Questions, nil
-}
-
-func (r *QuestionsRepository) Update(updateQuestions models.Questions) (*models.Questions, error) {
-	result := r.db.Save(&updateQuestions)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return &updateQuestions, nil
 }
 
 // クイズデータのレコード総数をカウント

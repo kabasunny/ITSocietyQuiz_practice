@@ -4,14 +4,21 @@ import './AdminScreen.css'; // インポート文の追加
 
 interface AdminScreenProps {
   isAdmin: boolean;
-  onAdminLogout: () => void;
+  onLogout: () => void;
 }
 
-const AdminScreen: React.FC<AdminScreenProps> = ({ onAdminLogout }) => {
+const AdminScreen: React.FC<AdminScreenProps> = ({ onLogout }) => {
   const navigate = useNavigate();
 
   const handleNavigation = (path: string) => {
     navigate(path, { state: { fromLink: true } });
+  };
+
+  const handleLogout = () => {
+    const confirmed = window.confirm('本当にログアウトしますか？');
+    if (confirmed) {
+      onLogout();
+    }
   };
 
   return (
@@ -22,7 +29,7 @@ const AdminScreen: React.FC<AdminScreenProps> = ({ onAdminLogout }) => {
         <button onClick={() => handleNavigation('/edit-question')}>問題の編集</button>
         <button onClick={() => handleNavigation('/user-management')}>ユーザー管理</button>
         <button onClick={() => handleNavigation('/statistics')}>統計と分析</button>
-        <button className="logout-button" onClick={onAdminLogout}>ログアウト</button>
+        <button className="logout-button" onClick={handleLogout}>ログアウト</button>
       </div>
     </div>
   );

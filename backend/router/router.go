@@ -53,13 +53,13 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	adminDataRouter := r.Group("/admins")
 	adminDataRouter.Use(middlewares.AuthMiddleware()) // ミドルウェアを適用
 
-	quizDataRouter.GET("", quizDataController.FindAll)              // 全クイズデータ返却メソッド
+	// quizDataRouter.GET("", quizDataController.FindAll)              // 全クイズデータ返却メソッド
 	quizDataRouter.GET("oneday", quizDataController.GetOneDaysQuiz) // 1日分のクイズデータ返却メソッド
-	quizDataRouter.GET("/:id", quizDataController.FindById)
+	// quizDataRouter.GET("/:id", quizDataController.FindById)
 
-	adminDataRouter.POST("/import_csv", adminsController.ImportCSV)
+	adminDataRouter.POST("/import_csv", adminsController.ImportCSV) // 全クイズデータ返却メソッド
 	adminDataRouter.GET("", adminsController.FindAll)
-	// adminDataRouter.PUT("/:id", adminsController.Update)
+	adminDataRouter.PUT("/:id", adminsController.Update)
 	// adminDataRouter.DELETE("/:id", adminsController.Delete)
 	// adminDataRouter.POST("/:id", adminsController.Create)
 

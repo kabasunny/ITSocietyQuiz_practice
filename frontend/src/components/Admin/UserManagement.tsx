@@ -1,5 +1,5 @@
 import React from 'react';
-import './AdminScreen.css'; // 共通スタイルをインポート
+import './css/AdminScreen.css'; // CSSファイルをインポート
 
 const UserManagement: React.FC = () => {
   return (

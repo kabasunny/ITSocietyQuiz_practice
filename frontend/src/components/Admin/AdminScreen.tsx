@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './AdminScreen.css'; // インポート文の追加
+import './css/AdminScreen.css'; // CSSファイルをインポート
 
 interface AdminScreenProps {
   isAdmin: boolean;

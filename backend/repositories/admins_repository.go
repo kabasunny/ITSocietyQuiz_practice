@@ -11,7 +11,7 @@ type IAdminsRepository interface {
 	FindAll() (*[]models.Questions, error)
 	FindById(QuestionsId uint) (*models.Questions, error) // 単一の質問IDに基づいて、questionsテーブルからデータを取得する場合
 	Create(newQuestions models.Questions) (*models.Questions, error)
-	Update(updateQuestions models.Questions) (*models.Questions, error)
+	Update(updateQuestions *models.Questions) (*models.Questions, error)
 	Delete(QuestionsId uint) error
 	Count() (int64, error)                          // 格納されたクイズのレコード数を取得するメソッドを追加
 	CreateQuestionsBatch([]*models.Questions) error // 追加
@@ -67,12 +67,12 @@ func (r *AdminsRepository) FindById(QuestionsId uint) (*models.Questions, error)
 	return &Questions, nil
 }
 
-func (r *AdminsRepository) Update(updateQuestions models.Questions) (*models.Questions, error) {
+func (r *AdminsRepository) Update(updateQuestions *models.Questions) (*models.Questions, error) {
 	result := r.db.Save(&updateQuestions)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &updateQuestions, nil
+	return updateQuestions, nil
 }
 
 // クイズデータのレコード総数をカウント

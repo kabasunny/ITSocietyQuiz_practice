@@ -80,6 +80,12 @@ func (c *AdminsController) Update(ctx *gin.Context) {
 		return
 	}
 
+	// IDの確認
+	if uint(QuestionsId) != input.ID {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID mismatch"})
+		return
+	}
+
 	updateQuestions, err := c.service.Update(uint(QuestionsId), input)
 	if err != nil {
 		if err.Error() == "Questions not found" {

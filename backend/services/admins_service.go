@@ -6,6 +6,8 @@ import (
 	"backend/repositories"
 	"backend/utils"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 type IAdminsService interface {
@@ -67,10 +69,13 @@ func (s *AdminsService) Update(QuestionsId uint, updateQuestionsInput dto.Update
 		return nil, err
 	}
 	if updateQuestionsInput.Question != nil {
+		targetQuestions.UserQuestionID = updateQuestionsInput.UserQuestionID // ポインタ型
+	}
+	if updateQuestionsInput.Question != nil {
 		targetQuestions.Question = *updateQuestionsInput.Question
 	}
 	if updateQuestionsInput.Options != nil {
-		targetQuestions.Options = *updateQuestionsInput.Options
+		targetQuestions.Options = pq.StringArray(*updateQuestionsInput.Options) // 一応キャスト　pq.StringArrayは[]stringのエイリアスで、PostgreSQLのtext[]型と直接互換性がある
 	}
 	if updateQuestionsInput.Supplement != nil {
 		targetQuestions.Supplement = *updateQuestionsInput.Supplement
@@ -78,7 +83,7 @@ func (s *AdminsService) Update(QuestionsId uint, updateQuestionsInput dto.Update
 	if updateQuestionsInput.Difficulty != nil {
 		targetQuestions.Difficulty = *updateQuestionsInput.Difficulty
 	}
-	return s.repository.Update(*targetQuestions)
+	return s.repository.Update(targetQuestions)
 }
 
 func (s *AdminsService) Delete(QuestionsId uint) error {

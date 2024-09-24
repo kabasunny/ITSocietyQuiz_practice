@@ -120,3 +120,40 @@
     background-color: #e02a5e !important;
   }
   
+  .edit-form {
+    width: 75%; /* フォームの幅を80%に設定 */
+    margin: 0 auto; /* フォームを中央に配置 */
+    padding: 20px; /* フォームの内側に余白を追加 */
+    border: 1px solid #ccc; /* フォームの境界線を追加 */
+    border-radius: 10px; /* フォームの角を丸くする */
+    background-color: #f9f9f9; /* フォームの背景色を設定 */
+  }
+  
+  .edit-form label {
+    display: block; /* ラベルをブロック要素に設定 */
+    margin-bottom: 10px; /* ラベルの下に余白を追加 */
+  }
+  
+  .edit-form input {
+    width: 100%; /* 入力フィールドの幅を100%に設定 */
+    padding: px; /* 入力フィールドの内側に余白を追加 */
+    margin-bottom: 10px; /* 入力フィールドの下に余白を追加 */
+    border: 1px solid #ccc; /* 入力フィールドの境界線を追加 */
+    border-radius: 5px; /* 入力フィールドの角を丸くする */
+  }
+  
+
+  .edit-form label {
+    justify-content: flex-start; /* 左寄せにする */
+    margin-bottom: 10px; /* ラベルの下に余白を追加 */
+    text-align: left; /* ラベルのテキストを左寄せにする */
+    margin-left: 30px; 
+    margin-right: 30px;
+  }
+  
+  .edit-form label input {
+    margin-left: 20px; /* 入力フィールドとラベルの間に余白を追加 */    
+    flex-grow: 1; /* 入力フィールドが残りのスペースを埋めるようにする */
+  }
+  
+  

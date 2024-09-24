@@ -53,13 +53,14 @@ function App() {
     if (!isLoggedIn) {
       navigate('/'); // トークンがない場合はログインページにリダイレクト
     }
-    
-  // コンソールログで確認
-  console.log('quizdata:', sessionStorage.getItem('quizdata'));
-  console.log('todays_finish:', sessionStorage.getItem('todays_finish'));
-  console.log('currentQuestion:', sessionStorage.getItem('currentQuestion'));
-  console.log('answers:', sessionStorage.getItem('answers'));
   }, [isLoggedIn, navigate]);
+
+  // useEffect(() => {
+  //   if (!isAdmin) {
+  //     navigate('/'); // トークンがない場合はログインページにリダイレクト
+  //   }
+  // }, [isAdmin, navigate]);
+
 
    // コンポーネントがマウントされたときにセッションから `currentQuestion` を復元する
    useEffect(() => {

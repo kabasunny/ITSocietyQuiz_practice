@@ -83,6 +83,10 @@ export interface User {
   correct_answers: number;
 }
 
+export interface AdminScreenProps {
+  isAdmin: boolean; // ひとまず使ってないけど、最後まで残しておく
+  onLogout: () => void;
+}
 
 export interface AdmQuestion {
   id: number;
@@ -92,4 +96,5 @@ export interface AdmQuestion {
   supplement: string;
   difficulty: number;
   createdAt: string; // 作成日を追加
+  updatedAt: string; // 更新日を追加
 }

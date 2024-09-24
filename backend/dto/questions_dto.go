@@ -20,6 +20,17 @@ type AdmQuizData struct {
 	CreatedAt      string   `json:"createdAt"` // 作成日を追加
 }
 
+// フロントへのクイズデータ返却用
+type UpdateQuestionsOutput struct {
+	ID             uint     `json:"id"` // GORMのIDを使用する
+	UserQuestionID *string  `json:"userQuestionID"`
+	Question       string   `json:"question"`
+	Options        []string `json:"options"`
+	Supplement     string   `json:"supplement"`
+	Difficulty     uint     `json:"difficulty"`
+	UpdatedAt      string   `json:"createdAt"` // 更新日
+}
+
 type UpdateQuestionsInput struct {
 	ID             uint      `json:"id"` // GORMのIDを使用する
 	UserQuestionID *string   `json:"userQuestionID"`

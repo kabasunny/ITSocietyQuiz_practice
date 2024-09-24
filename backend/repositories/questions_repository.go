@@ -14,6 +14,7 @@ type IQuestionsRepository interface {
 	GetTopQuestionsByEmpID(query string, empID string, limit uint, necessaryQuestions uint) ([]uint, error) // answersテーブルからlimit件の質問IDを取得し、優先度順に並べる
 	GetCurrentQIDByEmpID(empID string) (uint, error)                                                        // usersテーブルからcurrentq_idを取得する
 	GetQuestionDetails(questionIDs []uint) ([]models.Questions, error)                                      // 複数の質問IDに基づいて、questionsテーブルからデータを取得する場合
+	ExistsById(QuestionsId uint) (bool, error)                                                              // 追加: あるIDのレコードが存在するか否かを確認するメソッド
 }
 
 type QuestionsRepository struct {
@@ -84,4 +85,14 @@ func (r *QuestionsRepository) GetQuestionDetails(questionIDs []uint) ([]models.Q
 		return nil, result.Error
 	}
 	return questions, nil
+}
+
+// 追加: あるIDのレコードが存在するか否かを確認するメソッド
+func (r *QuestionsRepository) ExistsById(QuestionsId uint) (bool, error) {
+	var count int64
+	result := r.db.Model(&models.Questions{}).Where("id = ?", QuestionsId).Count(&count)
+	if result.Error != nil {
+		return false, result.Error
+	}
+	return count > 0, nil
 }

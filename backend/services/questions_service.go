@@ -81,7 +81,15 @@ func (s *QuestionsService) GetOneDaysQuiz(tokenString string, todaysCount uint) 
 
 		for len(selectedQuestions) < int(necessaryQuestions) {
 			currentQID++
-			selectedQuestions = append(selectedQuestions, currentQID)
+			// このロジックでは、歯抜けデータがある場合、必要数に届かない可能性がある
+			// currentQIDが存在するか確認し、存在する場合はselectedQuestionsに追加
+			exists, err := s.repository.ExistsById(currentQID)
+			if err != nil {
+				return nil, false, err
+			}
+			if exists {
+				selectedQuestions = append(selectedQuestions, currentQID)
+			}
 		}
 	}
 

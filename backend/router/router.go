@@ -60,7 +60,7 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	adminDataRouter.POST("/import_csv", adminsController.ImportCSV) // 全クイズデータ返却メソッド
 	adminDataRouter.GET("", adminsController.FindAll)
 	adminDataRouter.PUT("/:id", adminsController.Update)
-	// adminDataRouter.DELETE("/:id", adminsController.Delete)
+	adminDataRouter.DELETE("/:id", adminsController.Delete)
 	// adminDataRouter.POST("/:id", adminsController.Create)
 
 	return r

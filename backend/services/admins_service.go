@@ -14,7 +14,7 @@ type IAdminsService interface {
 	FindAll() (*[]dto.AdmQuizData, error) // 修正
 	FindById(QuestionsId uint) (*models.Questions, error)
 	Create(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error)
-	Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*models.Questions, error)
+	Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*dto.UpdateQuestionsOutput, error)
 	Delete(QuestionsId uint) error
 	ProcessCSVData(filepath string) error // 追加
 }
@@ -63,7 +63,7 @@ func (s *AdminsService) Create(createQuestionsInput dto.CreateQuestionsInput) (*
 	return s.repository.Create(newQuestions)
 }
 
-func (s *AdminsService) Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*models.Questions, error) {
+func (s *AdminsService) Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*dto.UpdateQuestionsOutput, error) {
 	targetQuestions, err := s.FindById(QuestionsId)
 	if err != nil {
 		return nil, err
@@ -83,7 +83,23 @@ func (s *AdminsService) Update(QuestionsId uint, updateQuestionsInput dto.Update
 	if updateQuestionsInput.Difficulty != nil {
 		targetQuestions.Difficulty = *updateQuestionsInput.Difficulty
 	}
-	return s.repository.Update(targetQuestions)
+	updatedQuestions, err := s.repository.Update(targetQuestions)
+	if err != nil {
+		return nil, err
+	}
+
+	// モデル構造体をDTO構造体に変換
+	updateQuestionsOutput := &dto.UpdateQuestionsOutput{
+		ID:             updatedQuestions.ID,
+		UserQuestionID: updatedQuestions.UserQuestionID,
+		Question:       updatedQuestions.Question,
+		Options:        updatedQuestions.Options,
+		Supplement:     updatedQuestions.Supplement,
+		Difficulty:     updatedQuestions.Difficulty,
+		UpdatedAt:      updatedQuestions.UpdatedAt.Format(time.RFC3339),
+	}
+
+	return updateQuestionsOutput, nil
 }
 
 func (s *AdminsService) Delete(QuestionsId uint) error {

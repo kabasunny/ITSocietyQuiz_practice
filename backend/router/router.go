@@ -57,10 +57,10 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	quizDataRouter.GET("oneday", quizDataController.GetOneDaysQuiz) // 1日分のクイズデータ返却メソッド
 	// quizDataRouter.GET("/:id", quizDataController.FindById)
 
-	adminDataRouter.POST("/import_csv", adminsController.ImportCSV) // 新規クイズデータ挿入メソッド
-	adminDataRouter.GET("", adminsController.FindAll)               // 全クイズデータ返却メソッド
-	adminDataRouter.PUT("/:id", adminsController.Update)            // クイズデータの更新
-	adminDataRouter.DELETE("/:id", adminsController.Delete)         // クイズデータの削除
+	adminDataRouter.POST("/import_csv", adminsController.ImportCSV)  // 新規クイズデータ挿入メソッド
+	adminDataRouter.GET("", adminsController.FindAllQuestions)       // 全クイズデータ返却メソッド
+	adminDataRouter.PUT("/:id", adminsController.UpdateQuestions)    // クイズデータの更新
+	adminDataRouter.DELETE("/:id", adminsController.DeleteQuestions) // クイズデータの削除
 	// adminDataRouter.POST("/:id", adminsController.Create)
 
 	return r

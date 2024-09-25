@@ -10,11 +10,11 @@ import (
 )
 
 type IAdminsController interface {
-	FindAll(ctx *gin.Context)
-	FindById(ctx *gin.Context)
-	Create(ctx *gin.Context)
-	Update(ctx *gin.Context)
-	Delete(ctx *gin.Context)
+	FindAllQuestions(ctx *gin.Context)
+	FindQuestionsById(ctx *gin.Context)
+	// CreateQuestions(ctx *gin.Context)
+	UpdateQuestions(ctx *gin.Context)
+	DeleteQuestions(ctx *gin.Context)
 	ImportCSV(ctx *gin.Context)
 }
 
@@ -26,8 +26,8 @@ func NewAdminsController(service services.IAdminsService) IAdminsController {
 	return &AdminsController{service: service}
 }
 
-func (c *AdminsController) FindAll(ctx *gin.Context) {
-	Questions, err := c.service.FindAll()
+func (c *AdminsController) FindAllQuestions(ctx *gin.Context) {
+	Questions, err := c.service.FindAllQuestions()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
 		return
@@ -35,13 +35,13 @@ func (c *AdminsController) FindAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"adm_data": Questions})
 }
 
-func (c *AdminsController) FindById(ctx *gin.Context) {
+func (c *AdminsController) FindQuestionsById(ctx *gin.Context) {
 	QuestionsId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
 		return
 	}
-	Questions, err := c.service.FindById(uint(QuestionsId))
+	Questions, err := c.service.FindQuestionsById(uint(QuestionsId))
 	if err != nil {
 		if err.Error() == "Questions not found" {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -54,21 +54,21 @@ func (c *AdminsController) FindById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"data": Questions})
 }
 
-func (c *AdminsController) Create(ctx *gin.Context) {
-	var input dto.CreateQuestionsInput
-	if err := ctx.ShouldBindJSON(&input); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	newQuestions, err := c.service.Create(input)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	ctx.JSON(http.StatusCreated, gin.H{"data": newQuestions})
-}
+// func (c *AdminsController) CreateQuestions(ctx *gin.Context) {
+// 	var input dto.CreateQuestionsInput
+// 	if err := ctx.ShouldBindJSON(&input); err != nil {
+// 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+// 	newQuestions, err := c.service.Create(input)
+// 	if err != nil {
+// 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+// 		return
+// 	}
+// 	ctx.JSON(http.StatusCreated, gin.H{"data": newQuestions})
+// }
 
-func (c *AdminsController) Update(ctx *gin.Context) {
+func (c *AdminsController) UpdateQuestions(ctx *gin.Context) {
 	QuestionsId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
@@ -86,7 +86,7 @@ func (c *AdminsController) Update(ctx *gin.Context) {
 		return
 	}
 
-	updateQuestions, err := c.service.Update(uint(QuestionsId), input)
+	updateQuestions, err := c.service.UpdateQuestions(uint(QuestionsId), input)
 	if err != nil {
 		if err.Error() == "Questions not found" {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -99,14 +99,14 @@ func (c *AdminsController) Update(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"data": updateQuestions})
 }
 
-func (c *AdminsController) Delete(ctx *gin.Context) {
+func (c *AdminsController) DeleteQuestions(ctx *gin.Context) {
 	QuestionsId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
 		return
 	}
 
-	err = c.service.Delete(uint(QuestionsId))
+	err = c.service.DeleteQuestions(uint(QuestionsId))
 	if err != nil {
 		if err.Error() == "Questions not found" {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})

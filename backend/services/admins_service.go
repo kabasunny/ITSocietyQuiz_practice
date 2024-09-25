@@ -11,11 +11,11 @@ import (
 )
 
 type IAdminsService interface {
-	FindAll() (*[]dto.AdmQuizData, error) // 修正
-	FindById(QuestionsId uint) (*models.Questions, error)
-	Create(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error)
-	Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*dto.UpdateQuestionsOutput, error)
-	Delete(QuestionsId uint) error
+	FindAllQuestions() (*[]dto.AdmQuizData, error) // 修正
+	FindQuestionsById(QuestionsId uint) (*models.Questions, error)
+	// CreateQuestions(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error)
+	UpdateQuestions(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*dto.UpdateQuestionsOutput, error)
+	DeleteQuestions(QuestionsId uint) error
 	ProcessCSVData(filepath string) error // 追加
 }
 
@@ -27,8 +27,8 @@ func NewAdminsService(repository repositories.IAdminsRepository) IAdminsService 
 	return &AdminsService{repository: repository}
 }
 
-func (s *AdminsService) FindAll() (*[]dto.AdmQuizData, error) { // 修正
-	questions, err := s.repository.FindAll()
+func (s *AdminsService) FindAllQuestions() (*[]dto.AdmQuizData, error) { // 修正
+	questions, err := s.repository.FindAllQuestions()
 	if err != nil {
 		return nil, err
 	}
@@ -50,22 +50,22 @@ func (s *AdminsService) FindAll() (*[]dto.AdmQuizData, error) { // 修正
 	return &quizData, nil
 }
 
-func (s *AdminsService) FindById(QuestionsId uint) (*models.Questions, error) {
-	return s.repository.FindById(QuestionsId)
+func (s *AdminsService) FindQuestionsById(QuestionsId uint) (*models.Questions, error) {
+	return s.repository.FindQuestionsById(QuestionsId)
 }
 
-func (s *AdminsService) Create(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error) {
-	newQuestions := models.Questions{
-		Question:   createQuestionsInput.Question,
-		Options:    createQuestionsInput.Options,
-		Supplement: createQuestionsInput.Supplement,
-		Difficulty: createQuestionsInput.Difficulty,
-	}
-	return s.repository.Create(newQuestions)
-}
+// func (s *AdminsService) CreateQuestions(createQuestionsInput dto.CreateQuestionsInput) (*models.Questions, error) {
+// 	newQuestions := models.Questions{
+// 		Question:   createQuestionsInput.Question,
+// 		Options:    createQuestionsInput.Options,
+// 		Supplement: createQuestionsInput.Supplement,
+// 		Difficulty: createQuestionsInput.Difficulty,
+// 	}
+// 	return s.repository.Create(newQuestions)
+// }
 
-func (s *AdminsService) Update(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*dto.UpdateQuestionsOutput, error) {
-	targetQuestions, err := s.FindById(QuestionsId)
+func (s *AdminsService) UpdateQuestions(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*dto.UpdateQuestionsOutput, error) {
+	targetQuestions, err := s.FindQuestionsById(QuestionsId)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func (s *AdminsService) Update(QuestionsId uint, updateQuestionsInput dto.Update
 	if updateQuestionsInput.Difficulty != nil {
 		targetQuestions.Difficulty = *updateQuestionsInput.Difficulty
 	}
-	updatedQuestions, err := s.repository.Update(targetQuestions)
+	updatedQuestions, err := s.repository.UpdateQuestions(targetQuestions)
 	if err != nil {
 		return nil, err
 	}
@@ -104,8 +104,8 @@ func (s *AdminsService) Update(QuestionsId uint, updateQuestionsInput dto.Update
 	return updateQuestionsOutput, nil
 }
 
-func (s *AdminsService) Delete(QuestionsId uint) error {
-	return s.repository.Delete(QuestionsId)
+func (s *AdminsService) DeleteQuestions(QuestionsId uint) error {
+	return s.repository.DeleteQuestions(QuestionsId)
 }
 
 func (s *AdminsService) ProcessCSVData(filePath string) error {

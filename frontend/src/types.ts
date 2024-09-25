@@ -95,6 +95,17 @@ export interface AdmQuestion {
   options: string[];
   supplement: string;
   difficulty: number;
-  createdAt: string; // 作成日を追加
+  createdAt: string; // 作成日
   updatedAt: string; // 更新日を追加
+}
+
+export interface EditFormProps {
+  editingQuestion: AdmQuestion;
+  handleInputChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: keyof AdmQuestion,
+    index?: number
+  ) => void;
+  handleSave: (id: number) => void;
+  handleCancelEdit: () => void;
 }

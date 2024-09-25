@@ -1,17 +1,25 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './css/AdminScreen.css'; // CSSファイルをインポート
-import './css/AddQuestion.css'; // 追加のCSSファイルをインポート
-
+import './css/AdminScreen.css';
+import './css/AddQuestion.css';
 
 const UploadCSV: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null); // コンポーネントが再レンダリングされても参照が保持
+  // const navigate = useNavigate();
+  // const isAdmin = sessionStorage.getItem('admin') === 'true';
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setFile(event.target.files[0]);
+  // useEffect(() => {
+  //   if (!isAdmin) {
+  //     navigate('/'); // 管理者でない場合はホームページにリダイレクト
+  //   }
+  // }, [isAdmin, navigate]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => { // ファイル入力フィールドで発生する変更イベント
+    if (event.target.files) { // ユーザーが選択したファイルのリストを含む FileList オブジェクト
+      setFile(event.target.files[0]); // ユーザーが選択した最初のファイルをfileに設定
     }
   };
 
@@ -21,9 +29,9 @@ const UploadCSV: React.FC = () => {
       return;
     }
 
-    const formData = new FormData();
+    const formData = new FormData(); // キーバリューのペアを簡単に構築するためのオブジェクトで、特にファイルやデータをサーバーに送信する際に使用
     formData.append('file', file);
-    const jwt = sessionStorage.getItem('token'); // ログイン時にAPIから取得したトークン
+    const jwt = sessionStorage.getItem('token');
 
     try {
       const response = await axios.post('http://localhost:8082/admins/import_csv', formData, {
@@ -37,10 +45,11 @@ const UploadCSV: React.FC = () => {
       } else {
         setMessage('ファイルのアップロードに失敗しました。');
       }
-      setFile(null); // ファイル選択をリセット
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ''; // ファイル入力フィールドをリセット
-      }
+      handleClear();
+      // setFile(null);
+      // if (fileInputRef.current) {
+      //   fileInputRef.current.value = '';
+      // }
     } catch (error) {
       console.error('Error uploading file:', error);
       setMessage('ファイルのアップロード中にエラーが発生しました。');
@@ -48,9 +57,9 @@ const UploadCSV: React.FC = () => {
   };
 
   const handleClear = () => {
-    setFile(null); // ファイル選択をリセット
+    setFile(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''; // ファイル入力フィールドをリセット
+      fileInputRef.current.value = '';
     }
   };
 

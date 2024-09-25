@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/AdminScreen.css'; // CSSファイルをインポート
-
-interface AdminScreenProps {
-  isAdmin: boolean;
-  onLogout: () => void;
-}
+import { AdminScreenProps } from '../../types';
 
 const AdminScreen: React.FC<AdminScreenProps> = ({ onLogout }) => {
   const navigate = useNavigate();
+  
+  // const isAdmin = sessionStorage.getItem('admin') === 'true';
+  
+  // useEffect(() => {
+  //   if (!isAdmin) {
+  //     navigate('/'); // 管理者でない場合はホームページにリダイレクト
+  //   }
+  // }, [isAdmin, navigate]);
 
   const handleNavigation = (path: string) => {
     navigate(path, { state: { fromLink: true } });

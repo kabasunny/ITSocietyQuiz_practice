@@ -43,6 +43,7 @@ func (s *AdminsService) FindAll() (*[]dto.AdmQuizData, error) { // 修正
 			Supplement:     question.Supplement,
 			Difficulty:     question.Difficulty,
 			CreatedAt:      question.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:      question.UpdatedAt.Format(time.RFC3339),
 		})
 	}
 
@@ -96,6 +97,7 @@ func (s *AdminsService) Update(QuestionsId uint, updateQuestionsInput dto.Update
 		Options:        updatedQuestions.Options,
 		Supplement:     updatedQuestions.Supplement,
 		Difficulty:     updatedQuestions.Difficulty,
+		CreatedAt:      updatedQuestions.CreatedAt.Format(time.RFC3339),
 		UpdatedAt:      updatedQuestions.UpdatedAt.Format(time.RFC3339),
 	}
 

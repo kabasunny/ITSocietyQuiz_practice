@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"backend/dto"
 	"backend/models"
 	"errors"
 
@@ -8,13 +9,14 @@ import (
 )
 
 type IAdminsRepository interface {
-	FindAll() (*[]models.Questions, error)
-	FindById(QuestionsId uint) (*models.Questions, error) // 単一の質問IDに基づいて、questionsテーブルからデータを取得する場合
-	Create(newQuestions models.Questions) (*models.Questions, error)
-	Update(updateQuestions *models.Questions) (*models.Questions, error)
-	Delete(QuestionsId uint) error
-	Count() (int64, error)                          // 格納されたクイズのレコード数を取得するメソッドを追加
-	CreateQuestionsBatch([]*models.Questions) error // 追加
+	FindAllQuestions() (*[]models.Questions, error)
+	FindQuestionsById(QuestionsId uint) (*models.Questions, error) // 単一の質問IDに基づいて、questionsテーブルからデータを取得する場合
+	// CreateQuestions(newQuestions models.Questions) (*models.Questions, error)
+	UpdateQuestions(updateQuestions *models.Questions) (*models.Questions, error)
+	DeleteQuestions(QuestionsId uint) error
+	CountQuestions() (int64, error)                  // 格納されたクイズのレコード数を取得するメソッドを追加
+	CreateQuestionsBatch([]*models.Questions) error  // 追加
+	GetUsersInfomation() ([]*dto.AdmUserData, error) // ユーザーの一覧を取得する
 }
 
 type AdminsRepository struct {
@@ -25,16 +27,16 @@ func NewAdminsRepository(db *gorm.DB) IAdminsRepository {
 	return &AdminsRepository{db: db}
 }
 
-func (r *AdminsRepository) Create(newQuestions models.Questions) (*models.Questions, error) {
-	result := r.db.Create(&newQuestions)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return &newQuestions, nil
-}
+// func (r *AdminsRepository) CreateQuestions(newQuestions models.Questions) (*models.Questions, error) {
+// 	result := r.db.Create(&newQuestions)
+// 	if result.Error != nil {
+// 		return nil, result.Error
+// 	}
+// 	return &newQuestions, nil
+// }
 
-func (r *AdminsRepository) Delete(QuestionsId uint) error {
-	deleteQuestions, err := r.FindById(QuestionsId)
+func (r *AdminsRepository) DeleteQuestions(QuestionsId uint) error {
+	deleteQuestions, err := r.FindQuestionsById(QuestionsId)
 	if err != nil {
 		return err
 	}
@@ -46,7 +48,7 @@ func (r *AdminsRepository) Delete(QuestionsId uint) error {
 	return nil
 }
 
-func (r *AdminsRepository) FindAll() (*[]models.Questions, error) {
+func (r *AdminsRepository) FindAllQuestions() (*[]models.Questions, error) {
 	var Questions []models.Questions
 	result := r.db.Find(&Questions)
 	if result.Error != nil {
@@ -55,7 +57,7 @@ func (r *AdminsRepository) FindAll() (*[]models.Questions, error) {
 	return &Questions, nil
 }
 
-func (r *AdminsRepository) FindById(QuestionsId uint) (*models.Questions, error) {
+func (r *AdminsRepository) FindQuestionsById(QuestionsId uint) (*models.Questions, error) {
 	var Questions models.Questions
 	result := r.db.First(&Questions, QuestionsId)
 	if result.Error != nil {
@@ -67,7 +69,7 @@ func (r *AdminsRepository) FindById(QuestionsId uint) (*models.Questions, error)
 	return &Questions, nil
 }
 
-func (r *AdminsRepository) Update(updateQuestions *models.Questions) (*models.Questions, error) {
+func (r *AdminsRepository) UpdateQuestions(updateQuestions *models.Questions) (*models.Questions, error) {
 	result := r.db.Save(&updateQuestions)
 	if result.Error != nil {
 		return nil, result.Error
@@ -76,7 +78,7 @@ func (r *AdminsRepository) Update(updateQuestions *models.Questions) (*models.Qu
 }
 
 // クイズデータのレコード総数をカウント
-func (r *AdminsRepository) Count() (int64, error) {
+func (r *AdminsRepository) CountQuestions() (int64, error) {
 	var count int64
 	result := r.db.Model(&models.Questions{}).Count(&count)
 	if result.Error != nil {
@@ -105,4 +107,8 @@ func (r *AdminsRepository) CreateQuestionsBatch(data []*models.Questions) error 
 	}
 
 	return nil
+}
+
+func (r *AdminsRepository) GetUsersInfomation() ([]*dto.AdmUserData, error) {
+	return nil, nil
 }

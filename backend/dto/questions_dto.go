@@ -9,7 +9,7 @@ type QuizData struct {
 	Difficulty uint     `json:"difficulty"`
 }
 
-// フロントへのクイズデータ返却用
+// フロントへの管理者用クイズデータ返却用
 type AdmQuizData struct {
 	ID             uint     `json:"id"` // GORMのIDを使用する
 	UserQuestionID *string  `json:"userQuestionID"`
@@ -18,6 +18,7 @@ type AdmQuizData struct {
 	Supplement     string   `json:"supplement"`
 	Difficulty     uint     `json:"difficulty"`
 	CreatedAt      string   `json:"createdAt"` // 作成日を追加
+	UpdatedAt      string   `json:"updatedAt"` // 更新日
 }
 
 // フロントへのクイズデータ返却用
@@ -28,7 +29,8 @@ type UpdateQuestionsOutput struct {
 	Options        []string `json:"options"`
 	Supplement     string   `json:"supplement"`
 	Difficulty     uint     `json:"difficulty"`
-	UpdatedAt      string   `json:"createdAt"` // 更新日
+	CreatedAt      string   `json:"createdAt"` // 作成日
+	UpdatedAt      string   `json:"updatedAt"` // 更新日
 }
 
 type UpdateQuestionsInput struct {

@@ -14,9 +14,9 @@ type IAdminsRepository interface {
 	// CreateQuestions(newQuestions models.Questions) (*models.Questions, error)
 	UpdateQuestions(updateQuestions *models.Questions) (*models.Questions, error)
 	DeleteQuestions(QuestionsId uint) error
-	CountQuestions() (int64, error)                  // 格納されたクイズのレコード数を取得するメソッドを追加
-	CreateQuestionsBatch([]*models.Questions) error  // 追加
-	GetUsersInfomation() ([]*dto.AdmUserData, error) // ユーザーの一覧を取得する
+	CountQuestions() (int64, error)                              // 格納されたクイズのレコード数を取得するメソッドを追加
+	CreateQuestionsBatch([]*models.Questions) error              // 追加
+	GetUsersInfomation(query string) ([]*dto.AdmUserData, error) // ユーザーの一覧を取得する
 }
 
 type AdminsRepository struct {
@@ -109,6 +109,10 @@ func (r *AdminsRepository) CreateQuestionsBatch(data []*models.Questions) error 
 	return nil
 }
 
-func (r *AdminsRepository) GetUsersInfomation() ([]*dto.AdmUserData, error) {
-	return nil, nil
+func (r *AdminsRepository) GetUsersInfomation(query string) ([]*dto.AdmUserData, error) {
+	var users []*dto.AdmUserData
+	if err := r.db.Raw(query).Scan(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
 }

@@ -156,4 +156,12 @@
     flex-grow: 1; /* 入力フィールドが残りのスペースを埋めるようにする */
   }
   
-  
+  /* 当該ページのハイライト */
+  button.active {
+    background-color: rgb(7, 92, 172);
+    color: white;
+  }
+
+  button.active:hover {
+    background-color: #4fa3d4 !important;
+  }

@@ -2,7 +2,8 @@ package dto
 
 // フロントへの管理者用ユーザー一覧データ返却用
 type AdmUserData struct {
-	EmpID     uint    `json:"id"` // GORMのIDを使用する
+	ID        uint    `json:"id"` // GORMのIDを使用する
+	EmpID     string  `json:"empid"`
 	Username  *string `json:"name"`
 	Email     string  `json:"email"`
 	Password  string  `json:"password"`

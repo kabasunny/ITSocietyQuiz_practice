@@ -5,6 +5,7 @@ import (
 	"backend/models"
 	"backend/repositories"
 	"backend/utils"
+	"log"
 	"time"
 
 	"github.com/lib/pq"
@@ -17,6 +18,7 @@ type IAdminsService interface {
 	UpdateQuestions(QuestionsId uint, updateQuestionsInput dto.UpdateQuestionsInput) (*dto.UpdateQuestionsOutput, error)
 	DeleteQuestions(QuestionsId uint) error
 	ProcessCSVData(filepath string) error // 追加
+	GetUsersInfomation() ([]*dto.AdmUserData, error)
 }
 
 type AdminsService struct {
@@ -120,4 +122,18 @@ func (s *AdminsService) ProcessCSVData(filePath string) error {
 	}
 
 	return nil
+}
+
+func (s *AdminsService) GetUsersInfomation() ([]*dto.AdmUserData, error) {
+
+	// SQLクエリを読み込む
+	query, err := utils.LoadSQLFile("services/queries/select_users_with_roles.sql")
+	if err != nil {
+		log.Fatalf("Failed to load SQL file: %v", err)
+	}
+
+	userList, err := s.repository.GetUsersInfomation(query)
+
+	return userList, err
+
 }

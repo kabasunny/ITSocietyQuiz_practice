@@ -16,6 +16,7 @@ type IAdminsController interface {
 	UpdateQuestions(ctx *gin.Context)
 	DeleteQuestions(ctx *gin.Context)
 	ImportCSV(ctx *gin.Context)
+	GetUsersInfomation(ctx *gin.Context)
 }
 
 type AdminsController struct {
@@ -139,4 +140,18 @@ func (c *AdminsController) ImportCSV(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "File uploaded and data processed successfully"})
+}
+
+func (c *AdminsController) GetUsersInfomation(ctx *gin.Context) {
+	userList, err := c.service.GetUsersInfomation()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
+		return
+	}
+
+	// todaysfinish = false // テスト時の制限解除はサービス側で行う
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"userlist": userList, // レスポンスにtodays_finishを含める
+	})
 }

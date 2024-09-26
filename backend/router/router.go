@@ -61,7 +61,8 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	adminDataRouter.GET("", adminsController.FindAllQuestions)       // 全クイズデータ返却メソッド
 	adminDataRouter.PUT("/:id", adminsController.UpdateQuestions)    // クイズデータの更新
 	adminDataRouter.DELETE("/:id", adminsController.DeleteQuestions) // クイズデータの削除
-	// adminDataRouter.POST("/:id", adminsController.Create)
+
+	adminDataRouter.GET("/userslist", adminsController.GetUsersInfomation) // ユーザーデータ一覧取得
 
 	return r
 }

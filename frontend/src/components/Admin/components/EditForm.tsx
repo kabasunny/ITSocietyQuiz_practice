@@ -1,16 +1,5 @@
 import React from 'react';
-import { AdmQuestion } from '../../../types';
-
-interface EditFormProps {
-  editingQuestion: AdmQuestion;
-  handleInputChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    field: keyof AdmQuestion,
-    index?: number
-  ) => void;
-  handleSave: (id: number) => void;
-  handleCancelEdit: () => void;
-}
+import { EditFormProps } from '../../../types';
 
 const EditForm: React.FC<EditFormProps> = ({
   editingQuestion,
@@ -81,7 +70,8 @@ const EditForm: React.FC<EditFormProps> = ({
         難度:
         <input
           type="number"
-          value={editingQuestion.difficulty !== undefined ? editingQuestion.difficulty.toString() : ''}
+          value={editingQuestion.difficulty !== undefined ? editingQuestion.difficulty.toString() : '' //表する際はstring型でデータとして扱うときは数値にする
+          }
           onChange={(e) => handleInputChange(e, 'difficulty')}
         />
       </label>

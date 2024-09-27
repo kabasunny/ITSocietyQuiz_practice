@@ -11,8 +11,8 @@ import (
 type ILoginRepository interface {
 	CreateUsers(Users models.Users) error
 	FindUsers(empID string) (*models.Users, error)
-	FindUsersRole(empID string) ([]models.Users_roles, error) // ユーザーの役割（権限）を取得、とりあえずスライスを返す
-	FindTodaysAnswersCount(empID string) (int64, error)       // 本日作成された回答数を取得、受験要否に使用
+	FindUsersRole(empID string) ([]models.UsersRoles, error) // ユーザーの役割（権限）を取得、とりあえずスライスを返す
+	FindTodaysAnswersCount(empID string) (int64, error)      // 本日作成された回答数を取得、受験要否に使用
 }
 
 type LoginRepository struct {
@@ -43,8 +43,8 @@ func (r *LoginRepository) FindUsers(empID string) (*models.Users, error) {
 	return &Users, nil
 }
 
-func (r *LoginRepository) FindUsersRole(empID string) ([]models.Users_roles, error) {
-	var roles []models.Users_roles
+func (r *LoginRepository) FindUsersRole(empID string) ([]models.UsersRoles, error) {
+	var roles []models.UsersRoles
 	result := r.db.Where("emp_id = ?", empID).Find(&roles)
 	if result.Error != nil {
 		return nil, result.Error

@@ -1,73 +1,187 @@
-.user-form, .edit-form {
-    margin: 20px 0;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-  }
-  
-  .user-form label, .edit-form label {
-    display: block;
-    margin-bottom: 10px;
-  }
-  
-  .user-form input, .edit-form input {
-    width: 80%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  
-  .user-form button, .edit-form button {
-    padding: 10px 20px;
-    margin-right: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-  }
-  
-  .user-form button:hover, .edit-form button:hover {
-    background-color: #45a049;
-  }
-  
-  .admin-table {
-    width: 90%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  .button-container {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .edit-button, .delete-button {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .edit-button {
-    background-color: #4CAF50;
-    color: white;
-  }
-  
-  .delete-button {
-    background-color: #f44336;
-    color: white;
-  }
-  
-  .edit-button:hover {
-    background-color: #45a049;
-  }
-  
-  .delete-button:hover {
-    background-color: #d32f2f;
-  }
-  
+.admin-user-table {
+  width: 80%;
+  border-collapse: collapse;
+  margin: auto; /* テーブルを中央に配置 */
+  table-layout: fixed; /* テーブルのレイアウトを固定 */
+  border: 1px solid #b8ccb9; /* テーブル全体に境界線を追加 */
+}
+
+.admin-user-table th, .admin-user-table td {
+  border: 1px solid #b8ccb9; /* セルに境界線を追加 */
+  padding: 8px;
+}
+
+.admin-user-table th {
+  background-color: #570e8b; /* 背景色をインディゴ色に変更 */
+  color: white; /* テキスト色を白に変更 */
+  text-align: center; /* テキストをセンター配置 */
+  width: auto; /* デフォルトの幅をリセット */
+  position: sticky; /* ヘッダーを固定 */
+  top: 0; /* 上部に固定 */
+  z-index: 1; /* ヘッダーを前面に表示 */
+}
+
+.admin-user-table th:nth-child(1) {
+  width: 10%; /* 社員ID */
+}
+
+.admin-user-table th:nth-child(2) {
+  width: 20%; /* 社員氏名 */
+}
+
+.admin-user-table th:nth-child(3) {
+  width: 30%; /* Eメールアドレス */
+}
+
+.admin-user-table th:nth-child(4) {
+  width: 10%; /* 権限 */
+}
+
+.admin-user-table th:nth-child(5) {
+  width: 10%; /* 最終更新日 */
+}
+
+.admin-user-table th:nth-child(6) {
+  width: 10%; /* 操作 */
+}
+
+.admin-user-table tr {
+  border-bottom: 1px solid #b8ccb9; /* 行の下に線を追加 */
+}
+
+.admin-user-table tr:nth-child(even) {
+  background-color: #d2dfe0; /* 偶数行の背景色を変更 */
+}
+
+.admin-user-table tr:nth-child(odd) {
+  background-color: #e9dbe7; /* 奇数行の背景色を変更 */
+}
+
+
+.button-container {
+  justify-content: center; /* 水平方向に中央配置 */
+  align-items: center; /* 垂直方向に中央配置 */
+}
+
+
+.edit-button {
+  background-color: #1d7996 !important;
+  width: 60px !important;
+height: 40px !important;
+padding: 5px 5px !important;
+margin-top: 2px !important; /* 上部のスペースを追加 */
+margin-bottom: 2px !important; /* 下部のスペースを追加 */
+margin-left: 0 !important; /* 左右のマージンをなしに */
+margin-right: 0 !important; /* 左右のマージンをなしに */
+}
+
+.edit-button:hover {
+  background-color: #4fa3d4 !important;
+}
+
+.delete-button {
+  background-color: #B22222 !important;
+  width: 60px !important;
+  height: 40px !important;
+  padding: 5px 5px !important;
+  margin-top: 2px !important; /* 上部のスペースを追加 */
+  margin-bottom: 2px !important; /* 下部のスペースを追加 */
+  margin-left: 0 !important; /* 左右のマージンをなしに */
+  margin-right: 0 !important; /* 左右のマージンをなしに */
+}
+
+.delete-button:hover {
+  background-color: #e02a5e !important;
+}
+
+.edit-form {
+  width: 75%; /* フォームの幅を80%に設定 */
+  margin-top: 40 auto; /* フォームを中央に配置 */
+  padding: 20px; /* フォームの内側に余白を追加 */
+  border: 1px solid #ccc; /* フォームの境界線を追加 */
+  border-radius: 10px; /* フォームの角を丸くする */
+  background-color: #f9f9f9; /* フォームの背景色を設定 */
+}
+
+.edit-form label {
+  display: block; /* ラベルをブロック要素に設定 */
+  margin-bottom: 10px; /* ラベルの下に余白を追加 */
+}
+
+.edit-form input {
+  width: 100%; /* 入力フィールドの幅を100%に設定 */
+  padding: px; /* 入力フィールドの内側に余白を追加 */
+  margin-bottom: 10px; /* 入力フィールドの下に余白を追加 */
+  border: 1px solid #ccc; /* 入力フィールドの境界線を追加 */
+  border-radius: 5px; /* 入力フィールドの角を丸くする */
+}
+
+
+.edit-form label {
+  justify-content: flex-start; /* 左寄せにする */
+  margin-bottom: 10px; /* ラベルの下に余白を追加 */
+  text-align: left; /* ラベルのテキストを左寄せにする */
+  margin-left: 30px; 
+  margin-right: 30px;
+}
+
+.edit-form label input {
+  margin-left: 20px; /* 入力フィールドとラベルの間に余白を追加 */    
+  flex-grow: 1; /* 入力フィールドが残りのスペースを埋めるようにする */
+}
+
+/* 当該ページのハイライト */
+button.active {
+  background-color: rgb(7, 92, 172);
+  color: white;
+}
+
+button.active:hover {
+  background-color: #4fa3d4 !important;
+}
+
+
+
+.user-form {
+  width: 95%; /* フォームの幅を50%に設定 */
+  margin: 0 auto; /* フォームを中央に配置 */
+  padding: 1px; /* フォームの内側に余白を追加 */
+  border: 1px solid #888484; /* フォームの境界線を追加 */
+  border-radius: 10px; /* フォームの角を丸くする */
+  background-color: #d6d0d0; /* フォームの背景色を設定 */
+  text-align: center; /* 子要素を中央に配置 */
+}
+
+.user-form .form-group {
+  display: flex; /* ラベルとインプットフィールドをフレックスボックスに設定 */
+  align-items: center; /* ラベルとインプットフィールドを垂直方向に中央揃え */
+  margin-bottom: 5px; /* フォームグループの下に余白を追加 */
+}
+
+.user-form label {
+  flex: 0 0 150px; /* ラベルの幅を固定 */
+  margin-right: 0; /* ラベルの右に余白を追加しない */
+  text-align: right; /* ラベルのテキストを右揃え */
+}
+
+.user-form input {
+  width: 90%; /* 入力フィールドの幅を50%に設定 */
+  flex: 1; /* 入力フィールドの幅を自動調整 */
+  padding: 4px; /* 入力フィールドの内側に余白を追加 */
+  border: 1px solid #ccc; /* 入力フィールドの境界線を追加 */
+  border-radius: 5px; /* 入力フィールドの角を丸くする */
+  margin-right: 30px; /* 入力フィールドの右に余白を追加 */
+  margin-left: 5px;
+}
+
+.add-button {
+  background-color: #6e4cca !important;
+  width: 50% !important;
+  height: 40px !important;
+  padding: 5px 5px !important;
+  margin: 10px auto !important; /* 上下のスペースを追加し、左右のマージンを自動に */
+}
+
+.add-button:hover {
+  background-color: #8875f3 !important;
+}

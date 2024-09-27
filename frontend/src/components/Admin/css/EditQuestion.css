@@ -65,7 +65,7 @@
   }
   
   .admin-table th:nth-child(10) {
-    width: 15%; /* 作成日 */
+    width: 10%; /* 最終更新 */
   }
   
   .admin-table th:nth-child(11) {

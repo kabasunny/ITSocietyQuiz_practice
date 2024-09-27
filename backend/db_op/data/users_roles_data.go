@@ -1,7 +1,7 @@
 package data // テスト用データ
 import "backend/models"
 
-var UsersRolesList = []models.Users_roles{
+var UsersRolesList = []models.UsersRoles{
 	{
 		EmpID:  "EMP1234",
 		RoleID: models.RoleUser, // 2

@@ -5,10 +5,13 @@ import (
 	"backend/models"
 	"backend/repositories"
 	"backend/utils"
+	"errors"
+	"fmt"
 	"log"
 	"time"
 
 	"github.com/lib/pq"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type IAdminsService interface {
@@ -19,6 +22,7 @@ type IAdminsService interface {
 	DeleteQuestions(QuestionsId uint) error
 	ProcessCSVData(filepath string) error // 追加
 	GetUsersInfomation() ([]*dto.AdmUserData, error)
+	UpdateUsers(dbId uint, updateUsers dto.AdmUserData) (*dto.AdmUserData, error)
 }
 
 type AdminsService struct {
@@ -135,5 +139,72 @@ func (s *AdminsService) GetUsersInfomation() ([]*dto.AdmUserData, error) {
 	userList, err := s.repository.GetUsersInfomation(query)
 
 	return userList, err
+}
 
+func (s *AdminsService) UpdateUsers(dbId uint, updateUsers dto.AdmUserData) (*dto.AdmUserData, error) {
+
+	// データベースから既存のユーザーを取得、ユーザーIDではなくGORMのidで検索する
+	user, err := s.repository.GetUserByDBID(dbId)
+	if err != nil {
+		log.Printf("Failed to get user by DB ID: %v", err)
+		return nil, fmt.Errorf("failed to get user by DB ID: %w", err)
+	}
+
+	// パスワードの更新が必要か確認
+	if updateUsers.Password_1 != "" && updateUsers.Password_2 != "" {
+		// 現在のパスワードを比較
+		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(updateUsers.Password_1))
+		if err != nil {
+			log.Printf("Old password does not match: %v", err)
+			return nil, errors.New("old password does not match")
+		}
+
+		// 新しいパスワードをハッシュ化
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(updateUsers.Password_2), bcrypt.DefaultCost)
+		if err != nil {
+			log.Printf("Failed to hash password: %v", err)
+			return nil, fmt.Errorf("failed to hash password: %w", err)
+		}
+		user.Password = string(hashedPassword)
+	}
+
+	// その他のフィールドを更新
+	user.EmpID = updateUsers.EmpID
+	user.Username = *updateUsers.Username
+	user.Email = updateUsers.Email
+
+	// 更新されたユーザー情報をリポジトリを通じて保存
+	updatedUser, err := s.repository.UpdateUsers(user)
+	if err != nil {
+		log.Printf("Failed to update user: %v", err)
+		return nil, fmt.Errorf("failed to update user: %w", err)
+	}
+
+	// 1. users_rolesテーブルにレコードを挿入
+	log.Printf("Inserting user role: EmpID=%s, RoleID=%d", user.EmpID, updateUsers.RoleID)
+	err = s.repository.InsertUserRole(user.EmpID, updateUsers.RoleID)
+	if err != nil {
+		log.Printf("Failed to insert user role: %v", err)
+		return nil, fmt.Errorf("failed to insert user role: %w", err)
+	}
+
+	// 2. rolesテーブルからRoleNameを取得
+	log.Printf("Getting role name for RoleID=%d", updateUsers.RoleID)
+	roleName, err := s.repository.GetRoleNameByID(updateUsers.RoleID)
+	if err != nil {
+		log.Printf("Failed to get role name: %v", err)
+		return nil, fmt.Errorf("failed to get role name: %w", err)
+	}
+
+	// DTOに変換して返却
+	updatedUserData := &dto.AdmUserData{
+		EmpID:     updatedUser.EmpID,
+		Username:  &updatedUser.Username,
+		Email:     updatedUser.Email,
+		RoleName:  roleName,
+		CreatedAt: updatedUser.CreatedAt.String(),
+		UpdatedAt: updatedUser.UpdatedAt.String(),
+	}
+
+	return updatedUserData, nil
 }

@@ -17,6 +17,10 @@ type IAdminsRepository interface {
 	CountQuestions() (int64, error)                              // 格納されたクイズのレコード数を取得するメソッドを追加
 	CreateQuestionsBatch([]*models.Questions) error              // 追加
 	GetUsersInfomation(query string) ([]*dto.AdmUserData, error) // ユーザーの一覧を取得する
+	UpdateUsers(updateUsers *models.Users) (*models.Users, error)
+	GetUserByDBID(dbId uint) (*models.Users, error)
+	InsertUserRole(empID string, roleID uint) error
+	GetRoleNameByID(roleID uint) (string, error)
 }
 
 type AdminsRepository struct {
@@ -115,4 +119,48 @@ func (r *AdminsRepository) GetUsersInfomation(query string) ([]*dto.AdmUserData,
 		return nil, err
 	}
 	return users, nil
+}
+
+func (r *AdminsRepository) UpdateUsers(updateUsers *models.Users) (*models.Users, error) {
+	result := r.db.Save(&updateUsers)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return updateUsers, nil
+}
+
+func (r *AdminsRepository) GetUserByDBID(dbId uint) (*models.Users, error) {
+	var user models.Users
+	result := r.db.First(&user, dbId)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, errors.New("user not found")
+		}
+		return nil, result.Error
+	}
+	return &user, nil
+}
+
+func (r *AdminsRepository) InsertUserRole(empID string, roleID uint) error {
+	userRole := models.UsersRoles{
+		EmpID:  empID,
+		RoleID: roleID,
+	}
+	result := r.db.Create(&userRole)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (r *AdminsRepository) GetRoleNameByID(roleID uint) (string, error) {
+	var role models.Roles
+	result := r.db.First(&role, roleID)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return "", errors.New("role not found")
+		}
+		return "", result.Error
+	}
+	return role.RoleName, nil
 }

@@ -2,27 +2,26 @@ import React, { useState, useEffect, ChangeEvent } from 'react';
 import axios from 'axios';
 import './css/AdminScreen.css'; // CSSファイルをインポート
 import './css/UserManagement.css'; // 新しいCSSファイルをインポート
-
-interface User {
-  empid: string;
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-  updatedAt: string;
-}
+import UserTable from './components/UserTable';
+import UserForm from './components/UserForm';
+import { AdminsUser } from '../../types';
 
 const UserManagement: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [newUser, setNewUser] = useState<User>({
-    empid: '',
+  const [users, setUsers] = useState<AdminsUser[]>([]);
+  const [editingUser, setEditingUser] = useState<AdminsUser | null>(null);
+  const [newUser, setNewUser] = useState<AdminsUser>({
+    dbId: 0,
+    empId: '',
     name: '',
     email: '',
-    password: '',
-    role: '',
-    updatedAt: ''
+    password_1: '',
+    password_2: '',
+    roleId: 2, // 一般ユーザーのroleIdをデフォルトに設定
+    roleName: '',
+    updatedAt: '',
+    createdAt: ''
   });
+  const [showAddForm, setShowAddForm] = useState(false); // 新しいユーザー追加フォームの表示状態
 
   const jwt = sessionStorage.getItem('token');
 
@@ -39,39 +38,58 @@ const UserManagement: React.FC = () => {
       .catch(error => {
         console.error('Error fetching users:', error);
       });
-  }, []);
+  }, [jwt]);
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>, field: keyof User) => {
-    setNewUser({ ...newUser, [field]: e.target.value });
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>, field: keyof AdminsUser) => {
+    if (editingUser) {
+      setEditingUser({ ...editingUser, [field]: e.target.value });
+    } else {
+      setNewUser({ ...newUser, [field]: e.target.value });
+    }
   };
 
   const handleAddUser = () => {
-    axios.post('http://localhost:8082/users', newUser)
+    // ユーザー情報を新規追加するAPI呼び出し
+    axios.post('http://localhost:8082/admins/addusers', newUser, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    })
       .then(response => {
         setUsers([...users, response.data.userlist]);
         setNewUser({
-          empid: '',
+          dbId: 0,
+          empId: '',
           name: '',
           email: '',
-          password: '',
-          role: '',
-          updatedAt: ''
+          password_1: '',
+          password_2: '',
+          roleId: 2, // 一般ユーザーのroleIdをデフォルトに設定
+          roleName: '',
+          updatedAt: '',
+          createdAt: ''
         });
+        setShowAddForm(false); // フォームを閉じる
       })
       .catch(error => {
         console.error('Error adding user:', error);
       });
   };
 
-  const handleEditUser = (user: User) => {
+  const handleEditUser = (user: AdminsUser) => {
     setEditingUser(user);
   };
 
   const handleUpdateUser = () => {
+    // ユーザー情報を編集後、更新するAPI呼び出し
     if (editingUser) {
-      axios.put(`http://localhost:8082/users/${editingUser.empid}`, editingUser)
+      axios.put(`http://localhost:8082/admins/updateusers/${editingUser.dbId}`, editingUser, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      })
         .then(response => {
-          setUsers(users.map(user => user.empid === editingUser.empid ? response.data : user));
+          setUsers(users.map(user => user.dbId === editingUser.dbId ? response.data : user));
           setEditingUser(null);
         })
         .catch(error => {
@@ -79,106 +97,55 @@ const UserManagement: React.FC = () => {
         });
     }
   };
+  
 
-  const handleDeleteUser = (empid: string) => {
-    axios.delete(`http://localhost:8082/users/${empid}`)
-      .then(() => {
-        setUsers(users.filter(user => user.empid !== empid));
+  const handleDeleteUser = (empId: string) => {
+    const confirmDelete = window.confirm('本当にこのユーザーを削除しますか？'); // 確認ダイアログを表示
+    if (confirmDelete) {
+      // ユーザー情報を削除するAPI呼び出し
+      axios.delete(`http://localhost:8082/users/${empId}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
       })
-      .catch(error => {
-        console.error('Error deleting user:', error);
-      });
+        .then(() => {
+          setUsers(users.filter(user => user.empId !== empId));
+        })
+        .catch(error => {
+          console.error('Error deleting user:', error);
+        });
+    }
   };
 
   return (
     <div className="admin-container">
       <h2 className="admin-h2">ユーザー管理（社員情報を更新、削除、追加）</h2>
-      <div className="admin-table-container">
-      <div className="table-container">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>社員ID</th>
-              <th>社員氏名</th>
-              <th>Eメールアドレス</th>
-              <th>パスワード</th>
-              <th>権限</th>
-              <th>最終更新日</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map(user => (
-              <tr key={user.empid}>
-                <td>{user.empid}</td>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.password}</td>
-                <td>{user.role}</td>
-                <td>{user.updatedAt}</td>
-                <td>
-                  <button className="edit-button" onClick={() => handleEditUser(user)}>編集</button>
-                  <button className="delete-button" onClick={() => handleDeleteUser(user.empid)}>削除</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div></div>
-      {editingUser && (
-        <div className="edit-form">
-          <h3>ユーザー情報を編集</h3>
-          <label>
-            社員ID:
-            <input type="text" value={editingUser.empid} onChange={(e) => setEditingUser({ ...editingUser, empid: e.target.value })} />
-          </label>
-          <label>
-            社員氏名:
-            <input type="text" value={editingUser.name} onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })} />
-          </label>
-          <label>
-            Eメールアドレス:
-            <input type="email" value={editingUser.email} onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })} />
-          </label>
-          <label>
-            パスワード:
-            <input type="password" value={editingUser.password} onChange={(e) => setEditingUser({ ...editingUser, password: e.target.value })} />
-          </label>
-          <label>
-            権限:
-            <input type="text" value={editingUser.role} onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })} />
-          </label>
-          <button onClick={handleUpdateUser}>更新</button>
-          <button onClick={() => setEditingUser(null)}>キャンセル</button>
-        </div>
+      {!showAddForm && !editingUser && (
+        <UserTable users={users} onEditUser={handleEditUser} onDeleteUser={handleDeleteUser} />
       )}
-      <div className="user-form">
-        <h3>新しいユーザーを追加</h3>
-        <label>
-          社員ID:
-          <input type="text" value={newUser.empid} onChange={(e) => handleInputChange(e, 'empid')} />
-        </label>
-        <label>
-          社員氏名:
-          <input type="text" value={newUser.name} onChange={(e) => handleInputChange(e, 'name')} />
-        </label>
-        <label>
-          Eメールアドレス:
-          <input type="email" value={newUser.email} onChange={(e) => handleInputChange(e, 'email')} />
-        </label>
-        <label>
-          パスワード:
-          <input type="password" value={newUser.password} onChange={(e) => handleInputChange(e, 'password')} />
-        </label>
-        <label>
-          権限:
-          <input type="text" value={newUser.role} onChange={(e) => handleInputChange(e, 'role')} />
-        </label>
-        <button onClick={handleAddUser}>追加</button>
-      </div>
+      {editingUser && (
+        <UserForm
+          user={editingUser}
+          onChange={handleInputChange}
+          onSave={handleUpdateUser}
+          onCancel={() => setEditingUser(null)}
+          isEditing={true}
+        />
+      )}
+      {!showAddForm && !editingUser && (
+        <button className="add-button" onClick={() => setShowAddForm(true)}>新規ユーザーの登録</button>
+      )}
+      {showAddForm && (
+        <UserForm
+          user={newUser}
+          onChange={handleInputChange}
+          onSave={handleAddUser}
+          onCancel={() => setShowAddForm(false)}
+          isEditing={false}
+        />
+      )}
     </div>
   );
-  
 };
 
 export default UserManagement;

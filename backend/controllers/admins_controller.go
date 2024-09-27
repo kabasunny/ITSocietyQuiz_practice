@@ -17,6 +17,7 @@ type IAdminsController interface {
 	DeleteQuestions(ctx *gin.Context)
 	ImportCSV(ctx *gin.Context)
 	GetUsersInfomation(ctx *gin.Context)
+	UpdateUsers(ctx *gin.Context)
 }
 
 type AdminsController struct {
@@ -154,4 +155,21 @@ func (c *AdminsController) GetUsersInfomation(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"userlist": userList, // レスポンスにtodays_finishを含める
 	})
+}
+
+func (c *AdminsController) UpdateUsers(ctx *gin.Context) {
+	dbId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	var updateUsers dto.AdmUserData
+	if err := ctx.ShouldBindJSON(&updateUsers); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updatedUser, err := c.service.UpdateUsers(uint(dbId), updateUsers)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, updatedUser)
 }

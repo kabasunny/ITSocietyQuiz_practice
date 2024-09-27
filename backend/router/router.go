@@ -63,6 +63,7 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	adminDataRouter.DELETE("/:id", adminsController.DeleteQuestions) // クイズデータの削除
 
 	adminDataRouter.GET("/userslist", adminsController.GetUsersInfomation) // ユーザーデータ一覧取得
+	adminDataRouter.PUT("/updateusers/:id", adminsController.UpdateUsers)  // ユーザーデータの更新
 
 	return r
 }

@@ -1,4 +1,5 @@
 
+import React, { ChangeEvent } from 'react';
 import { NavigateFunction } from 'react-router-dom';
 
 export interface LoginProps {
@@ -109,3 +110,31 @@ export interface EditFormProps {
   handleSave: (id: number) => void;
   handleCancelEdit: () => void;
 }
+
+export interface AdminsUser {
+  dbId: number;
+  empId: string;
+  name: string;
+  email: string;
+  password_1: string;
+  password_2: string;
+  roleId: number; // APIに送信用
+  roleName: string; // APIから受信用
+  updatedAt: string;
+  createdAt: string;
+}
+
+
+export interface UserTableProps {
+  users: AdminsUser[];
+  onEditUser: (user: AdminsUser) => void;
+  onDeleteUser: (empid: string) => void;
+}
+
+export interface UserFormProps {
+    user: AdminsUser;
+    onChange: (e: ChangeEvent<HTMLInputElement>, field: keyof AdminsUser) => void;
+    onSave: () => void;
+    onCancel: () => void;
+    isEditing: boolean;
+  }

@@ -76,7 +76,7 @@ const EditForm: React.FC<EditFormProps> = ({
         />
       </label>
       <button onClick={() => handleSave(editingQuestion.id)}>保存 & 更新</button>
-      <button onClick={handleCancelEdit}>編集取止め</button>
+      <button onClick={handleCancelEdit}>キャンセル</button>
     </div>
   );
 };

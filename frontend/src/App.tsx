@@ -31,6 +31,7 @@ function App() {
   const [todaysFinish, setTodaysFinish] = useState<boolean>(false); // 日のノルマフラグの状態管理
   
   const quizData = useQuizData(isLoggedIn, todaysFinish, isAdmin, isSubmitAnsewr, setTodaysFinish);
+  console.log('quizData:', quizData);
 
   const navigate = useNavigate();
   const token = sessionStorage.getItem('token'); // トークンを取得

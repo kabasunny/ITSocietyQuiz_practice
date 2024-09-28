@@ -15,8 +15,8 @@ func main() {
 	// insertData := data.AnswersList // data.～を切り替えて、データ挿入。
 	// insertData := data.QuestionsList // data.～を切り替えて、データ挿入。
 	// insertData := data.GetHashedUsersList() // data.～を切り替えて、データ挿入。ユーザーの登録時はパスワードをハッシュ化するので、関数を呼ぶ
-	// insertData := data.UsersRolesList // data.～を切り替えて、データ挿入。
-	insertData := data.RolesList // data.～を切り替えて、データ挿入。
+	// insertData := data.RolesList // data.～を切り替えて、データ挿入。
+	insertData := data.UsersRolesList // data.～を切り替えて、データ挿入。
 
 	for _, data := range insertData {
 		if err := db.Create(&data).Error; err != nil {

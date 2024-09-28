@@ -4,7 +4,8 @@ SELECT DISTINCT
     users.username,
     users.email,
     roles.role_name,
-    users.created_at
+    users.created_at,
+    users.updated_at
 FROM 
     users
 JOIN 

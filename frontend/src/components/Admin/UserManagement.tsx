@@ -34,41 +34,30 @@ const UserManagement: React.FC = () => {
     })
       .then(response => {
         setUsers(response.data.userlist);
+        console.log(users);
       })
       .catch(error => {
         console.error('Error fetching users:', error);
       });
-  }, [jwt]);
+  }, [jwt, editingUser]);
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>, field: keyof AdminsUser) => {
-    if (editingUser) {
-      setEditingUser({ ...editingUser, [field]: e.target.value });
-    } else {
-      setNewUser({ ...newUser, [field]: e.target.value });
-    }
-  };
+  // const handleInputChange = (e: ChangeEvent<HTMLInputElement>, field: keyof AdminsUser) => {
+  //   if (editingUser) {
+  //     setEditingUser({ ...editingUser, [field]: e.target.value });
+  //   } else {
+  //     setNewUser({ ...newUser, [field]: e.target.value });
+  //   }
+  // };
 
-  const handleAddUser = () => {
+  const handleAddUser = (data: AdminsUser) => {
     // ユーザー情報を新規追加するAPI呼び出し
-    axios.post('http://localhost:8082/admins/addusers', newUser, {
+    axios.post('http://localhost:8082/admins/addusers', data, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
     })
       .then(response => {
         setUsers([...users, response.data.userlist]);
-        setNewUser({
-          dbId: 0,
-          empId: '',
-          name: '',
-          email: '',
-          password_1: '',
-          password_2: '',
-          roleId: 2, // 一般ユーザーのroleIdをデフォルトに設定
-          roleName: '',
-          updatedAt: '',
-          createdAt: ''
-        });
         setShowAddForm(false); // フォームを閉じる
       })
       .catch(error => {
@@ -80,22 +69,27 @@ const UserManagement: React.FC = () => {
     setEditingUser(user);
   };
 
-  const handleUpdateUser = () => {
-    // ユーザー情報を編集後、更新するAPI呼び出し
+  const handleUpdateUser = (data: AdminsUser) => {
     if (editingUser) {
-      axios.put(`http://localhost:8082/admins/updateusers/${editingUser.dbId}`, editingUser, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-        .then(response => {
-          setUsers(users.map(user => user.dbId === editingUser.dbId ? response.data : user));
-          setEditingUser(null);
-        })
-        .catch(error => {
-          console.error('Error updating user:', error);
-        });
+      data.dbId = editingUser.dbId; // 初期に受け取った dbId を設定
     }
+    axios.put(`http://localhost:8082/admins/updateusers/${data.dbId}`, data, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    })
+      .then(response => {
+        if (response.status === 200) {
+          setUsers(users.map(user => user.dbId === data.dbId ? response.data : user));
+          alert('ユーザー情報が正常に更新されました。');
+        } else {
+          console.error('Unexpected response status:', response.status);
+        }
+      })
+      .catch(error => {
+        console.error('Error updating user:', error);
+      });
+    setEditingUser(null);
   };
   
 
@@ -126,7 +120,6 @@ const UserManagement: React.FC = () => {
       {editingUser && (
         <UserForm
           user={editingUser}
-          onChange={handleInputChange}
           onSave={handleUpdateUser}
           onCancel={() => setEditingUser(null)}
           isEditing={true}
@@ -138,7 +131,6 @@ const UserManagement: React.FC = () => {
       {showAddForm && (
         <UserForm
           user={newUser}
-          onChange={handleInputChange}
           onSave={handleAddUser}
           onCancel={() => setShowAddForm(false)}
           isEditing={false}

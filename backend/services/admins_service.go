@@ -142,7 +142,6 @@ func (s *AdminsService) GetUsersInfomation() ([]*dto.AdmUserData, error) {
 }
 
 func (s *AdminsService) UpdateUsers(dbId uint, updateUsers dto.AdmUserData) (*dto.AdmUserData, error) {
-
 	// データベースから既存のユーザーを取得、ユーザーIDではなくGORMのidで検索する
 	user, err := s.repository.GetUserByDBID(dbId)
 	if err != nil {
@@ -180,15 +179,24 @@ func (s *AdminsService) UpdateUsers(dbId uint, updateUsers dto.AdmUserData) (*dt
 		return nil, fmt.Errorf("failed to update user: %w", err)
 	}
 
-	// 1. users_rolesテーブルにレコードを挿入
-	log.Printf("Inserting user role: EmpID=%s, RoleID=%d", user.EmpID, updateUsers.RoleID)
-	err = s.repository.InsertUserRole(user.EmpID, updateUsers.RoleID)
-	if err != nil {
-		log.Printf("Failed to insert user role: %v", err)
-		return nil, fmt.Errorf("failed to insert user role: %w", err)
+	// RoleIDが0の場合、既存のRoleIDを取得して設定
+	if updateUsers.RoleID == 0 {
+		updateUsers.RoleID, err = s.repository.GetRoleIDByEmpID(user.EmpID)
+		if err != nil {
+			log.Printf("Failed to get existing role ID: %v", err)
+			return nil, fmt.Errorf("failed to get existing role ID: %w", err)
+		}
+	} else {
+		// RoleIDが0でない場合のみ、users_rolesテーブルにレコードを挿入
+		log.Printf("Inserting user role: EmpID=%s, RoleID=%d", user.EmpID, updateUsers.RoleID)
+		err = s.repository.InsertUserRole(user.EmpID, updateUsers.RoleID)
+		if err != nil {
+			log.Printf("Failed to insert user role: %v", err)
+			return nil, fmt.Errorf("failed to insert user role: %w", err)
+		}
 	}
 
-	// 2. rolesテーブルからRoleNameを取得
+	// rolesテーブルからRoleNameを取得
 	log.Printf("Getting role name for RoleID=%d", updateUsers.RoleID)
 	roleName, err := s.repository.GetRoleNameByID(updateUsers.RoleID)
 	if err != nil {
@@ -198,6 +206,7 @@ func (s *AdminsService) UpdateUsers(dbId uint, updateUsers dto.AdmUserData) (*dt
 
 	// DTOに変換して返却
 	updatedUserData := &dto.AdmUserData{
+		ID:        updatedUser.ID,
 		EmpID:     updatedUser.EmpID,
 		Username:  &updatedUser.Username,
 		Email:     updatedUser.Email,
@@ -207,4 +216,63 @@ func (s *AdminsService) UpdateUsers(dbId uint, updateUsers dto.AdmUserData) (*dt
 	}
 
 	return updatedUserData, nil
+}
+func (s *AdminsService) AddUser(newUsers dto.AdmUserData) (*dto.AdmUserData, error) {
+	user := &models.Users{}
+
+	// パスワードと確認用パスワードを比較
+	if newUsers.Password_1 == "" && newUsers.Password_2 != "" {
+
+		log.Printf("password does not match")
+		return nil, errors.New("password does not match")
+	}
+
+	// パスワードをハッシュ化
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newUsers.Password_1), bcrypt.DefaultCost)
+	if err != nil {
+		log.Printf("Failed to hash password: %v", err)
+		return nil, fmt.Errorf("failed to hash password: %w", err)
+	}
+	user.Password = string(hashedPassword)
+
+	// その他のフィールドを更新
+	user.EmpID = newUsers.EmpID
+	user.Username = *newUsers.Username
+	user.Email = newUsers.Email
+
+	// 更新されたユーザー情報をリポジトリを通じて保存
+	addedUsers, err := s.repository.AddUser(user)
+	if err != nil {
+		log.Printf("Failed to update user: %v", err)
+		return nil, fmt.Errorf("failed to update user: %w", err)
+	}
+
+	// 1. users_rolesテーブルにレコードを挿入
+	log.Printf("Inserting user role: EmpID=%s, RoleID=%d", user.EmpID, newUsers.RoleID)
+	err = s.repository.InsertUserRole(user.EmpID, newUsers.RoleID)
+	if err != nil {
+		log.Printf("Failed to insert user role: %v", err)
+		return nil, fmt.Errorf("failed to insert user role: %w", err)
+	}
+
+	// 2. rolesテーブルからRoleNameを取得
+	log.Printf("Getting role name for RoleID=%d", newUsers.RoleID)
+	roleName, err := s.repository.GetRoleNameByID(newUsers.RoleID)
+	if err != nil {
+		log.Printf("Failed to get role name: %v", err)
+		return nil, fmt.Errorf("failed to get role name: %w", err)
+	}
+
+	// DTOに変換して返却
+	addedUsersData := &dto.AdmUserData{
+		ID:        addedUsers.ID,
+		EmpID:     addedUsers.EmpID,
+		Username:  &addedUsers.Username,
+		Email:     addedUsers.Email,
+		RoleName:  roleName,
+		CreatedAt: addedUsers.CreatedAt.String(),
+		UpdatedAt: addedUsers.UpdatedAt.String(),
+	}
+
+	return addedUsersData, nil
 }

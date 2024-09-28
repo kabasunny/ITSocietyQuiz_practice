@@ -20,7 +20,9 @@ type IAdminsRepository interface {
 	UpdateUsers(updateUsers *models.Users) (*models.Users, error)
 	GetUserByDBID(dbId uint) (*models.Users, error)
 	InsertUserRole(empID string, roleID uint) error
+	GetRoleIDByEmpID(empID string) (uint, error)
 	GetRoleNameByID(roleID uint) (string, error)
+	AddUser(newUser *models.Users) (*models.Users, error)
 }
 
 type AdminsRepository struct {
@@ -153,6 +155,18 @@ func (r *AdminsRepository) InsertUserRole(empID string, roleID uint) error {
 	return nil
 }
 
+func (r *AdminsRepository) GetRoleIDByEmpID(empID string) (uint, error) {
+	var userRole models.UsersRoles
+	result := r.db.First(&userRole, "emp_id = ?", empID)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return 0, errors.New("role_id not found")
+		}
+		return 0, result.Error
+	}
+	return userRole.RoleID, nil
+}
+
 func (r *AdminsRepository) GetRoleNameByID(roleID uint) (string, error) {
 	var role models.Roles
 	result := r.db.First(&role, roleID)
@@ -163,4 +177,12 @@ func (r *AdminsRepository) GetRoleNameByID(roleID uint) (string, error) {
 		return "", result.Error
 	}
 	return role.RoleName, nil
+}
+
+func (r *AdminsRepository) AddUser(newUser *models.Users) (*models.Users, error) {
+	result := r.db.Create(newUser)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return newUser, nil
 }

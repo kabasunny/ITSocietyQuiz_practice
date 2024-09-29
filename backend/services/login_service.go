@@ -65,7 +65,7 @@ func CreateToken(empID string, Username string) (*string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":      empID,
 		"username": Username,
-		"exp":      time.Now().Add(time.Hour).Unix(),
+		"exp":      time.Now().Add(12 * time.Hour).Unix(), //セキュリティを考慮したとき1時間以内が良いが、12時間にしている
 		// "exp": time.Now().Add(time.Minute).Unix(), // exp有効性確認
 	}) // Unixタイムスタンプは、1970年1月1日のUTC午前0時0分0秒からの経過秒数を表すため、int64型では約292億年分の秒数をカバー
 

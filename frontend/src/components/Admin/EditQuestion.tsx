@@ -9,48 +9,50 @@ import './css/EditQuestion.css';
 
 const EditQuestion: React.FC = () => {
   const jwt = sessionStorage.getItem('token');
-  const { questions, setQuestions, editingQuestion, setEditingQuestion } = useQuestions(jwt);
+  const { questions, setQuestions, editingQuestion, setEditingQuestion, refreshQuestions } = useQuestions(jwt); // refreshQuestionsを取得
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
   // 入力フィールドの変更を処理する関数
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>, // イベントオブジェクトの型を指定
-    field: keyof AdmQuestion, // 変更するフィールドのキーを指定
-    index?: number // オプションのインデックス（オプションフィールドの場合に使用）
+    e: React.ChangeEvent<HTMLInputElement>, 
+    field: keyof AdmQuestion,
+    index?: number
   ) => {
-    if (editingQuestion) { // 編集中の質問が存在する場合に処理を行う
-      if (field === 'options' && index !== undefined) { // フィールドがオプションで、インデックスが指定されている場合
-        const updatedOptions = [...editingQuestion.options]; // 現在のオプションをコピー
-        updatedOptions[index] = e.target.value; // 指定されたインデックスのオプションを更新
-        setEditingQuestion({ ...editingQuestion, options: updatedOptions }); // 更新されたオプションを含む新しい質問オブジェクトを設定
-      } else if (field === 'difficulty') { // 難度フィールドの場合
-        setEditingQuestion({ ...editingQuestion, [field]: parseInt(e.target.value, 10) }); // 数値に変換して設定
-      } else { // その他のフィールドの場合
-        setEditingQuestion({ ...editingQuestion, [field]: e.target.value }); // 指定されたフィールドを更新
+    if (editingQuestion) {
+      if (field === 'options' && index !== undefined) {
+        const updatedOptions = [...editingQuestion.options];
+        updatedOptions[index] = e.target.value;
+        setEditingQuestion({ ...editingQuestion, options: updatedOptions });
+      } else if (field === 'difficulty') {
+        setEditingQuestion({ ...editingQuestion, [field]: parseInt(e.target.value, 10) });
+      } else {
+        setEditingQuestion({ ...editingQuestion, [field]: e.target.value });
       }
     }
   };
-  
+
   // 編集中の質問を保存する関数
   const handleSave = (id: number) => {
     if (editingQuestion) {
-      axios.put(`http://localhost:8082/admins/${id}`, editingQuestion, { // 編集中の質問を指定されたIDで更新するためのPUTリクエストを送信
+      axios.put(`http://localhost:8082/admins/${id}`, editingQuestion, {
         headers: {
-          Authorization: `Bearer ${jwt}`, // 認証トークンをヘッダーに含める
+          Authorization: `Bearer ${jwt}`,
         },
       })
         .then((response) => {
           setQuestions(
-            questions.map((q) => (q.id === id ? response.data : q)) // 更新された質問データで質問リストを更新
+            questions.map((q) => (q.id === id ? response.data : q))
           );
-          setEditingQuestion(null); // 編集中の質問をクリア
+          refreshQuestions(); // データを再取得して最新の状態に更新
+          setEditingQuestion(null); // データの更新が成功した後に編集画面を閉じる
         })
         .catch((error) => {
-          console.error('Error updating data:', error); // エラーメッセージをコンソールに表示
+          console.error('Error updating data:', error);
         });
     }
   };
+  
 
   // 質問を削除する関数
 const handleDelete = (id: number) => {

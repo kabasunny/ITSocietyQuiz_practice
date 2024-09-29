@@ -9,7 +9,7 @@ import { AdminsUser } from '../../types';
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<AdminsUser[]>([]);
   const [editingUser, setEditingUser] = useState<AdminsUser | null>(null);
-  const [newUser, setNewUser] = useState<AdminsUser>({
+  const newUser :AdminsUser = {
     dbId: 0,
     empId: '',
     name: '',
@@ -20,7 +20,7 @@ const UserManagement: React.FC = () => {
     roleName: '',
     updatedAt: '',
     createdAt: ''
-  });
+  };
   const [showAddForm, setShowAddForm] = useState(false); // 新しいユーザー追加フォームの表示状態
 
   const jwt = sessionStorage.getItem('token');
@@ -40,14 +40,6 @@ const UserManagement: React.FC = () => {
         console.error('Error fetching users:', error);
       });
   }, [jwt, editingUser]);
-
-  // const handleInputChange = (e: ChangeEvent<HTMLInputElement>, field: keyof AdminsUser) => {
-  //   if (editingUser) {
-  //     setEditingUser({ ...editingUser, [field]: e.target.value });
-  //   } else {
-  //     setNewUser({ ...newUser, [field]: e.target.value });
-  //   }
-  // };
 
   const handleAddUser = (data: AdminsUser) => {
     // ユーザー情報を新規追加するAPI呼び出し
@@ -78,19 +70,27 @@ const UserManagement: React.FC = () => {
         Authorization: `Bearer ${jwt}`,
       },
     })
-      .then(response => {
-        if (response.status === 200) {
-          setUsers(users.map(user => user.dbId === data.dbId ? response.data : user));
-          alert('ユーザー情報が正常に更新されました。');
-        } else {
-          console.error('Unexpected response status:', response.status);
-        }
-      })
+    .then(response => {
+      if (response.status === 200) {
+        const updatedUser = response.data;
+        setUsers(users.map(user => user.dbId === data.dbId ? { ...user, ...updatedUser } : user));
+        console.log(updatedUser);
+        alert('ユーザー情報が正常に更新されました。');
+      } else {
+        console.error('Unexpected response status:', response.status);
+      }
+    })
+    
       .catch(error => {
         console.error('Error updating user:', error);
       });
     setEditingUser(null);
   };
+
+  useEffect(() => {
+    console.log("Users updated:", users);
+  }, [users]);
+  
   
 
   const handleDeleteUser = (empId: string) => {

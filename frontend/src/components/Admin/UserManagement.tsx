@@ -98,17 +98,17 @@ const handleAddUser = (data: AdminsUser) => {
 
 
 
-  const handleDeleteUser = (empId: string) => {
+  const handleDeleteUser = (dbId: number) => {
     const confirmDelete = window.confirm('本当にこのユーザーを削除しますか？'); // 確認ダイアログを表示
     if (confirmDelete) {
       // ユーザー情報を削除するAPI呼び出し
-      axios.delete(`http://localhost:8082/users/${empId}`, {
+      axios.delete(`http://localhost:8082/admins/deleteuser/${dbId}`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       })
         .then(() => {
-          setUsers(users.filter(user => user.empId !== empId));
+          setUsers(users.filter(user => user.dbId !== dbId));
         })
         .catch(error => {
           console.error('Error deleting user:', error);

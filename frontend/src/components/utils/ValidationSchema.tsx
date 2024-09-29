@@ -31,31 +31,31 @@ export const addUserSchema = z.object({
   password_2: z
   .string()
   .min(6, 'パスワードは6文字以上必要です(ꐦ`•ω•´)'),
-  // roleId: z
-  // .number()
-  // .min(1, '権限を選択してください'),
+  roleId: z
+  .number()
+  .min(1, '権限を選択してください'),
+}).refine(data => {
+  // パスワードの一致を確認
+  if (data.password_1 && data.password_2 && data.password_1 !== data.password_2) {
+    return false;
+  }
+  return true;
+}, {
+  message: 'パスワードが一致しません (ꐦ°᷄д°᷅)',
+  path: ['password_2'], // エラーメッセージを表示するフィールド;
 });
-
 
 export const editUserSchema = z.object({
   empId: z
-    .string()
-    .refine(value => value === '' || value.length >= 6, {
-      message: '社員IDは6文字以上で入力してください (ꐦ`•ω•´)',
-    })
-    .optional(),
+  .string()
+  .min(1, '社員IDは必須です (ꐦ°᷄д°᷅)')
+  .min(6, '社員IDは6文字以上で入力してください (ꐦ`•ω•´)'),
   name: z
-    .string()
-    .refine(value => value === '' || value.length >= 1, {
-      message: '社員氏名は必須です (ꐦ`•ω•´)',
-    })
-    .optional(),
+  .string()
+  .min(1, '社員氏名は必須です(ꐦ`•ω•´)'),
   email: z
-    .string()
-    .refine(value => value === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), {
-      message: '無効なメールアドレスです (ꐦ°᷄д°᷅)',
-    })
-    .optional(),
+  .string()
+  .email('無効なメールアドレスです'),
   password_1: z
     .string()
     .refine(value => value === '' || value.length >= 6, {
@@ -68,19 +68,6 @@ export const editUserSchema = z.object({
       message: 'パスワードは6文字以上必要です (ꐦ`•ω•´)',
     })
     .optional(),
-  // roleId: z
-  //   .number()
-  //   .refine(value => value === undefined || value >= 1, {
-  //     message: '権限を選択してください',
-  //   })
-  //   .optional(),
-}).refine(data => {
-  // パスワードの一致を確認
-  if (data.password_1 && data.password_2 && data.password_1 !== data.password_2) {
-    return false;
-  }
-  return true;
-}, {
-  message: 'パスワードが一致しません (ꐦ°᷄д°᷅)',
-  path: ['password_2'], // エラーメッセージを表示するフィールド
+  
+
 });

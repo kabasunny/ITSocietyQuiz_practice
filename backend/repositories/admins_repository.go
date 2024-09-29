@@ -22,7 +22,7 @@ type IAdminsRepository interface {
 	InsertUserRole(empID string, roleID uint) error
 	GetRoleIDByEmpID(empID string) (uint, error)
 	GetRoleNameByID(roleID uint) (string, error)
-	AddUser(newUser *models.Users) (*models.Users, error)
+	AddUsers(newUser *models.Users) (*models.Users, error)
 }
 
 type AdminsRepository struct {
@@ -179,7 +179,7 @@ func (r *AdminsRepository) GetRoleNameByID(roleID uint) (string, error) {
 	return role.RoleName, nil
 }
 
-func (r *AdminsRepository) AddUser(newUser *models.Users) (*models.Users, error) {
+func (r *AdminsRepository) AddUsers(newUser *models.Users) (*models.Users, error) {
 	result := r.db.Create(newUser)
 	if result.Error != nil {
 		return nil, result.Error

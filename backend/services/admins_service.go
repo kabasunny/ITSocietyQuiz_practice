@@ -23,6 +23,7 @@ type IAdminsService interface {
 	ProcessCSVData(filepath string) error // 追加
 	GetUsersInfomation() ([]*dto.AdmUserData, error)
 	UpdateUsers(dbId uint, updateUsers dto.AdmUserData) (*dto.AdmUserData, error)
+	AddUsers(newUsers dto.AdmUserData) (*dto.AdmUserData, error)
 }
 
 type AdminsService struct {
@@ -217,7 +218,7 @@ func (s *AdminsService) UpdateUsers(dbId uint, updateUsers dto.AdmUserData) (*dt
 
 	return updatedUserData, nil
 }
-func (s *AdminsService) AddUser(newUsers dto.AdmUserData) (*dto.AdmUserData, error) {
+func (s *AdminsService) AddUsers(newUsers dto.AdmUserData) (*dto.AdmUserData, error) {
 	user := &models.Users{}
 
 	// パスワードと確認用パスワードを比較
@@ -241,7 +242,7 @@ func (s *AdminsService) AddUser(newUsers dto.AdmUserData) (*dto.AdmUserData, err
 	user.Email = newUsers.Email
 
 	// 更新されたユーザー情報をリポジトリを通じて保存
-	addedUsers, err := s.repository.AddUser(user)
+	addedUsers, err := s.repository.AddUsers(user)
 	if err != nil {
 		log.Printf("Failed to update user: %v", err)
 		return nil, fmt.Errorf("failed to update user: %w", err)

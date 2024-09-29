@@ -18,6 +18,7 @@ type IAdminsController interface {
 	ImportCSV(ctx *gin.Context)
 	GetUsersInfomation(ctx *gin.Context)
 	UpdateUsers(ctx *gin.Context)
+	AddUsers(ctx *gin.Context)
 }
 
 type AdminsController struct {
@@ -172,4 +173,20 @@ func (c *AdminsController) UpdateUsers(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, updatedUser)
+}
+
+func (c *AdminsController) AddUsers(ctx *gin.Context) {
+	var addUsers dto.AdmUserData
+	if err := ctx.ShouldBindJSON(&addUsers); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	addedUsers, err := c.service.AddUsers(addUsers)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, addedUsers)
 }

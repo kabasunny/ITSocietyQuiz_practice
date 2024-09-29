@@ -64,6 +64,7 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 
 	adminDataRouter.GET("/userslist", adminsController.GetUsersInfomation) // ユーザーデータ一覧取得
 	adminDataRouter.PUT("/updateusers/:id", adminsController.UpdateUsers)  // ユーザーデータの更新
+	adminDataRouter.POST("/addusers", adminsController.AddUsers)           // ユーザーデータの追加
 
 	return r
 }

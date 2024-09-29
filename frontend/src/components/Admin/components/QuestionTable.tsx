@@ -44,7 +44,7 @@ const QuestionTable: React.FC<QuestionTableProps> = ({ questions, handleEdit, ha
             <td dangerouslySetInnerHTML={{ __html: formatDate(question.updatedAt > question.createdAt ? question.updatedAt : question.createdAt) }}></td>
             <td>
               <div className="button-container">
-                <button className="edit-button" onClick={() => handleEdit(question)}>編集</button>
+                <button className="edit-button" onClick={() => handleEdit(question)}>編集</button><br/>
                 <button className="delete-button" onClick={() => handleDelete(question.id)}>削除</button>
               </div>
             </td>

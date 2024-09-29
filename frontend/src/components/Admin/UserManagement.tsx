@@ -9,7 +9,7 @@ import { AdminsUser } from '../../types';
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<AdminsUser[]>([]);
   const [editingUser, setEditingUser] = useState<AdminsUser | null>(null);
-  const newUser :AdminsUser = {
+  const newUser: AdminsUser = {
     dbId: 0,
     empId: '',
     name: '',
@@ -41,21 +41,26 @@ const UserManagement: React.FC = () => {
       });
   }, [jwt, editingUser]);
 
-  const handleAddUser = (data: AdminsUser) => {
-    // ユーザー情報を新規追加するAPI呼び出し
-    axios.post('http://localhost:8082/admins/addusers', data, {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
+
+const handleAddUser = (data: AdminsUser) => {
+  console.log(data);
+  // ユーザー情報を新規追加するAPI呼び出し
+  axios.post('http://localhost:8082/admins/addusers', data, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(response => {
+      setUsers([...users, response.data]);
+      alert('ユーザー情報が正常に更新されました。');
+      setShowAddForm(false); // フォームを閉じる
     })
-      .then(response => {
-        setUsers([...users, response.data.userlist]);
-        setShowAddForm(false); // フォームを閉じる
-      })
-      .catch(error => {
-        console.error('Error adding user:', error);
-      });
-  };
+    .catch(error => {
+      console.error('Error adding user:', error);
+      console.error('Error details:', error.response ? error.response.data : error.message);
+    });
+};
 
   const handleEditUser = (user: AdminsUser) => {
     setEditingUser(user);
@@ -70,17 +75,17 @@ const UserManagement: React.FC = () => {
         Authorization: `Bearer ${jwt}`,
       },
     })
-    .then(response => {
-      if (response.status === 200) {
-        const updatedUser = response.data;
-        setUsers(users.map(user => user.dbId === data.dbId ? { ...user, ...updatedUser } : user));
-        console.log(updatedUser);
-        alert('ユーザー情報が正常に更新されました。');
-      } else {
-        console.error('Unexpected response status:', response.status);
-      }
-    })
-    
+      .then(response => {
+        if (response.status === 200) {
+          const updatedUser = response.data;
+          setUsers(users.map(user => user.dbId === data.dbId ? { ...user, ...updatedUser } : user));
+          console.log(updatedUser);
+          alert('ユーザー情報が正常に更新されました。');
+        } else {
+          console.error('Unexpected response status:', response.status);
+        }
+      })
+
       .catch(error => {
         console.error('Error updating user:', error);
       });
@@ -90,8 +95,8 @@ const UserManagement: React.FC = () => {
   useEffect(() => {
     console.log("Users updated:", users);
   }, [users]);
-  
-  
+
+
 
   const handleDeleteUser = (empId: string) => {
     const confirmDelete = window.confirm('本当にこのユーザーを削除しますか？'); // 確認ダイアログを表示
@@ -126,7 +131,9 @@ const UserManagement: React.FC = () => {
         />
       )}
       {!showAddForm && !editingUser && (
-        <button className="add-button" onClick={() => setShowAddForm(true)}>新規ユーザーの登録</button>
+        <div className="add-user-button-container">
+          <button className="add-user-button" onClick={() => setShowAddForm(true)}>新規ユーザーの登録</button>
+        </div>
       )}
       {showAddForm && (
         <UserForm

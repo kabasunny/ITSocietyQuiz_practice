@@ -18,12 +18,14 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSave, onCancel, isEditing }
   });
 
   const onSubmit = (data: AdminsUser) => {
+    console.log(data); // 送信データをコンソールに出力
     onSave(data);
   };
 
+
   return (
     <form className="user-form" onSubmit={handleSubmit(onSubmit)} autoComplete="off">{/* 自動補完をオフ */}
-      <h3>ユーザー情報を{isEditing ? '編集' : '追加'}</h3>
+      <h3>ユーザー情報を{isEditing ? '編集は、変更箇所のみ編集ください。' : '追加は、全項目の入力が必須です。'}</h3>
       <div className="form-group">
         <label>社員ID : </label>
         <input type="text" {...register('empId')} autoComplete="off" />
@@ -51,20 +53,22 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSave, onCancel, isEditing }
       </div>
       <div className="form-group">
         <label>権限 : </label>
-        <select {...register('roleId', { valueAsNumber: true })} defaultValue={user.roleId || 2}>
+        <select {...register('roleId', { valueAsNumber: true })} defaultValue={user.roleId || 2} onChange={(e) => console.log('Selected roleId:', e.target.value)}>
           <option value={2}>一般</option>
           <option value={1}>クイズ管理者</option>
         </select>
+
         {errors.roleId && <p className="error-message">{errors.roleId?.message}</p>}
       </div>
-      <button type="submit" className="add-button">
-        {isEditing ? '更新' : 'ユーザーの追加'}
-      </button>
-      <button type="button" onClick={onCancel}>
-        キャンセル
-      </button>
+      <div className="button-container">
+        <button type="submit" className="add-button">
+          {isEditing ? '更新' : 'ユーザーの追加'}
+        </button>
+        <button className="cancel-button" type="button" onClick={onCancel}>
+          キャンセル
+        </button>
+      </div>
     </form>
-
   );
 };
 

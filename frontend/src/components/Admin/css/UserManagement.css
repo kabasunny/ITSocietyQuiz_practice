@@ -141,9 +141,9 @@ button.active:hover {
 }
 
 
-
+/* UserForm.css */
 .user-form {
-  width: 95%; /* フォームの幅を50%に設定 */
+  width: 95%; /* フォームの幅を設定 */
   margin: 0 auto; /* フォームを中央に配置 */
   padding: 1px; /* フォームの内側に余白を追加 */
   border: 1px solid #888484; /* フォームの境界線を追加 */
@@ -154,34 +154,78 @@ button.active:hover {
 
 .user-form .form-group {
   display: flex; /* ラベルとインプットフィールドをフレックスボックスに設定 */
-  align-items: center; /* ラベルとインプットフィールドを垂直方向に中央揃え */
-  margin-bottom: 5px; /* フォームグループの下に余白を追加 */
+  flex-direction: column; /* フレックスボックスの方向を縦に設定 */
+  align-items: center; /* ラベルとインプットフィールドを中央揃え */
+  margin-bottom: 0.5rem; /* フォームグループの下に余白を追加 */
 }
 
 .user-form label {
-  flex: 0 0 150px; /* ラベルの幅を固定 */
-  margin-right: 0; /* ラベルの右に余白を追加しない */
-  text-align: right; /* ラベルのテキストを右揃え */
+  align-self: flex-start; /* ラベルを左寄せに設定 */
+  margin-left: 70px; /* ラベルの左に余白を追加 */
+  margin-bottom: 0.1rem; /* ラベルの下に余白を追加 */
 }
 
-.user-form input {
-  width: 90%; /* 入力フィールドの幅を50%に設定 */
-  flex: 1; /* 入力フィールドの幅を自動調整 */
-  padding: 4px; /* 入力フィールドの内側に余白を追加 */
-  border: 1px solid #ccc; /* 入力フィールドの境界線を追加 */
-  border-radius: 5px; /* 入力フィールドの角を丸くする */
-  margin-right: 30px; /* 入力フィールドの右に余白を追加 */
-  margin-left: 5px;
+.user-form input,
+.user-form select {
+  width: 60%; /* 入力フィールドとセレクトボックスの幅を60%に設定 */
+  height: 1.7rem; /* 入力フィールドとセレクトボックスの高さを設定 */
+  padding: 0.1rem; /* 入力フィールドとセレクトボックスの内側に余白を追加 */
+  padding-left: 0.5rem; /* 入力フィールドとセレクトボックスの左側に余白を追加 */
+  border: 1px solid #ccc; /* 入力フィールドとセレクトボックスの境界線を追加 */
+  border-radius: 5px; /* 入力フィールドとセレクトボックスの角を丸くする */
+  margin-bottom: 0.1rem; /* 入力フィールドとセレクトボックスの下に余白を追加 */
 }
+
+.error-message {
+  color: red;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+  font-size: 1rem;
+  display: block; /* エラーメッセージをブロック要素に設定 */
+  text-align: center; /* エラーメッセージを中央揃え */
+}
+
+.add-user-button {
+  background-color: #343fdd !important;
+  width: 250px !important;
+  height: 40px !important;
+  padding: 1px 1px !important;
+  margin: 5px 5px !important; /* 上下左右のスペースを追加 */
+}
+
+.add-user-button:hover {
+  background-color: #7b81d8 !important;
+}
+
 
 .add-button {
-  background-color: #6e4cca !important;
-  width: 50% !important;
+  background-color: #6747c0 !important;
+  width: 250px !important;
   height: 40px !important;
-  padding: 5px 5px !important;
-  margin: 10px auto !important; /* 上下のスペースを追加し、左右のマージンを自動に */
+  padding: 1px 1px !important;
+  margin: 5px 5px !important; /* 上下左右のスペースを追加 */
 }
 
 .add-button:hover {
-  background-color: #8875f3 !important;
+  background-color: #947bd8 !important;
+}
+
+
+.cancel-button {
+  background-color: #82c047 !important;
+  width: 100px !important;
+  height: 40px !important;
+  padding: 1px 1px !important;
+  margin: 5px 5px !important; /* 上下左右のスペースを追加 */
+}
+
+.cancel-button:hover {
+  background-color: #aee07f !important;
+}
+
+h3 {
+  margin: 5px 5px;
+  font-size: 1em;
+  color: #0d0397;
+  text-align: center;
 }

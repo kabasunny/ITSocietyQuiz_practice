@@ -18,11 +18,12 @@ type IAdminsRepository interface {
 	CreateQuestionsBatch([]*models.Questions) error              // 追加
 	GetUsersInfomation(query string) ([]*dto.AdmUserData, error) // ユーザーの一覧を取得する
 	UpdateUsers(updateUsers *models.Users) (*models.Users, error)
-	GetUserByDBID(dbId uint) (*models.Users, error)
+	GetUserByDBID(dbId uint) (*models.Users, error) // 主キーの取得
 	InsertUserRole(empID string, roleID uint) error
 	GetRoleIDByEmpID(empID string) (uint, error)
 	GetRoleNameByID(roleID uint) (string, error)
 	AddUsers(newUser *models.Users) (*models.Users, error)
+	DeleteUsers(dbId uint) error
 }
 
 type AdminsRepository struct {
@@ -185,4 +186,17 @@ func (r *AdminsRepository) AddUsers(newUser *models.Users) (*models.Users, error
 		return nil, result.Error
 	}
 	return newUser, nil
+}
+
+func (r *AdminsRepository) DeleteUsers(dbId uint) error {
+	deleteUsers, err := r.GetUserByDBID(dbId) // フロントからdbIdが送信できれば流用可能
+	if err != nil {
+		return err
+	}
+	result := r.db.Delete(&deleteUsers) //論理削除
+	// result := r.db.Unscoped().Delete(&deleteUsers) // 物理削除
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }

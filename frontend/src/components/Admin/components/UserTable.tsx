@@ -35,7 +35,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEditUser, onDeleteUser }
               <td>
                 <button className="edit-button" onClick={() => onEditUser(user)}>編集</button>
                 <br />
-                <button className="delete-button" onClick={() => onDeleteUser(user.empId)}>削除</button>
+                <button className="delete-button" onClick={() => onDeleteUser(user.dbId)}>削除</button>
               </td>
             </tr>
           ))}

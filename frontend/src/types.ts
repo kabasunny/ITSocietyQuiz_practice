@@ -128,7 +128,7 @@ export interface AdminsUser {
 export interface UserTableProps {
   users: AdminsUser[];
   onEditUser: (user: AdminsUser) => void;
-  onDeleteUser: (empid: string) => void;
+  onDeleteUser: (dbId: number) => void;
 }
 
 export interface UserFormProps {

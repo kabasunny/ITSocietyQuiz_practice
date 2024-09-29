@@ -24,6 +24,7 @@ type IAdminsService interface {
 	GetUsersInfomation() ([]*dto.AdmUserData, error)
 	UpdateUsers(dbId uint, updateUsers dto.AdmUserData) (*dto.AdmUserData, error)
 	AddUsers(newUsers dto.AdmUserData) (*dto.AdmUserData, error)
+	DeleteUsers(dbId uint) error
 }
 
 type AdminsService struct {
@@ -276,4 +277,8 @@ func (s *AdminsService) AddUsers(newUsers dto.AdmUserData) (*dto.AdmUserData, er
 	}
 
 	return addedUsersData, nil
+}
+
+func (s *AdminsService) DeleteUsers(dbId uint) error {
+	return s.repository.DeleteUsers(dbId)
 }

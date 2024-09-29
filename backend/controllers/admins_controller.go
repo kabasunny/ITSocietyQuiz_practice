@@ -19,6 +19,7 @@ type IAdminsController interface {
 	GetUsersInfomation(ctx *gin.Context)
 	UpdateUsers(ctx *gin.Context)
 	AddUsers(ctx *gin.Context)
+	DeleteUsers(ctx *gin.Context)
 }
 
 type AdminsController struct {
@@ -160,6 +161,11 @@ func (c *AdminsController) GetUsersInfomation(ctx *gin.Context) {
 
 func (c *AdminsController) UpdateUsers(ctx *gin.Context) {
 	dbId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid dbId"})
+		return
+	}
+
 	var updateUsers dto.AdmUserData
 	if err := ctx.ShouldBindJSON(&updateUsers); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -189,4 +195,23 @@ func (c *AdminsController) AddUsers(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, addedUsers)
+}
+
+func (c *AdminsController) DeleteUsers(ctx *gin.Context) {
+	dbId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid dbId"})
+		return
+	}
+
+	err = c.service.DeleteUsers(uint(dbId))
+	if err != nil {
+		if err.Error() == "User not found" {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
+		return
+	}
+	ctx.Status(http.StatusOK)
 }

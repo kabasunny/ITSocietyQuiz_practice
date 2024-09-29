@@ -211,8 +211,8 @@ func (s *AdminsService) UpdateUsers(dbId uint, updateUsers dto.AdmUserData) (*dt
 		Username:  &updatedUser.Username,
 		Email:     updatedUser.Email,
 		RoleName:  roleName,
-		CreatedAt: updatedUser.CreatedAt.String(),
-		UpdatedAt: updatedUser.UpdatedAt.String(),
+		CreatedAt: updatedUser.CreatedAt.Format(time.RFC3339),
+		UpdatedAt: updatedUser.UpdatedAt.Format(time.RFC3339),
 	}
 
 	return updatedUserData, nil
@@ -270,8 +270,8 @@ func (s *AdminsService) AddUser(newUsers dto.AdmUserData) (*dto.AdmUserData, err
 		Username:  &addedUsers.Username,
 		Email:     addedUsers.Email,
 		RoleName:  roleName,
-		CreatedAt: addedUsers.CreatedAt.String(),
-		UpdatedAt: addedUsers.UpdatedAt.String(),
+		CreatedAt: addedUsers.CreatedAt.Format(time.RFC3339),
+		UpdatedAt: addedUsers.UpdatedAt.Format(time.RFC3339),
 	}
 
 	return addedUsersData, nil

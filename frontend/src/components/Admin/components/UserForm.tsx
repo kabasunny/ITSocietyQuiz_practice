@@ -22,31 +22,31 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSave, onCancel, isEditing }
   };
 
   return (
-    <form className="user-form" onSubmit={handleSubmit(onSubmit)}>
+    <form className="user-form" onSubmit={handleSubmit(onSubmit)} autoComplete="off">{/* 自動補完をオフ */}
       <h3>ユーザー情報を{isEditing ? '編集' : '追加'}</h3>
       <div className="form-group">
         <label>社員ID : </label>
-        <input type="text" {...register('empId')} />
+        <input type="text" {...register('empId')} autoComplete="off" />
         {errors.empId && <p className="error-message">{errors.empId?.message}</p>}
       </div>
       <div className="form-group">
         <label>社員氏名 : </label>
-        <input type="text" {...register('name')} />
+        <input type="text" {...register('name')} autoComplete="off" />
         {errors.name && <p className="error-message">{errors.name?.message}</p>}
       </div>
       <div className="form-group">
         <label>Eメールアドレス : </label>
-        <input type="email" {...register('email')} />
+        <input type="email" {...register('email')} autoComplete="off" />
         {errors.email && <p className="error-message">{errors.email?.message}</p>}
       </div>
       <div className="form-group">
         <label>{isEditing ? '現在のパスワード' : 'パスワード'} : </label>
-        <input type="password" {...register('password_1')} />
+        <input type="password" {...register('password_1')} autoComplete="new-password" />
         {errors.password_1 && <p className="error-message">{errors.password_1?.message}</p>}
       </div>
       <div className="form-group">
         <label>{isEditing ? '新規パスワード' : 'パスワードの確認'} : </label>
-        <input type="password" {...register('password_2')} />
+        <input type="password" {...register('password_2')} autoComplete="new-password" />
         {errors.password_2 && <p className="error-message">{errors.password_2?.message}</p>}
       </div>
       <div className="form-group">
@@ -64,6 +64,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSave, onCancel, isEditing }
         キャンセル
       </button>
     </form>
+
   );
 };
 

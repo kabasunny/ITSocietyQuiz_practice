@@ -30,7 +30,6 @@ func main() {
 	// データの挿入順序を調整
 	dataLists := [][]interface{}{
 		// toInterfaceSlice関数を使用して、各データリストを[]interface{}型に変換
-		toInterfaceSlice(data.AnswersList),
 		toInterfaceSlice(data.QuestionsList),
 		toInterfaceSlice(data.GetHashedUsersList()),
 		toInterfaceSlice(data.RolesList),
@@ -49,6 +48,13 @@ func main() {
 	for _, data := range data.UsersRolesList {
 		if err := db.Create(&data).Error; err != nil { //引数はアドレスで
 			log.Printf("Failed to insert UsersRoles: %v", err)
+		}
+	}
+
+	// 依存関係のあるAnswersListを最後に挿入
+	for _, data := range data.AnswersList {
+		if err := db.Create(&data).Error; err != nil { //引数はアドレスで
+			log.Printf("Failed to insert Answers: %v", err)
 		}
 	}
 

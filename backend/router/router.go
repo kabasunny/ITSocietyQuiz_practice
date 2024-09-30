@@ -45,27 +45,26 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	}))
 
 	r.POST("/login", loginController.Login)
-
 	r.POST("/answers", answersController.SaveAnswers)
 
 	quizDataRouter := r.Group("/questions")
+	quizDataRouter.GET("oneday", quizDataController.GetOneDaysQuiz) // 1日分のクイズデータ返却メソッド
 
 	adminDataRouter := r.Group("/admins")
 	adminDataRouter.Use(middlewares.AuthMiddleware()) // ミドルウェアを適用
 
-	// quizDataRouter.GET("", quizDataController.FindAll)              // 全クイズデータ返却メソッド
-	quizDataRouter.GET("oneday", quizDataController.GetOneDaysQuiz) // 1日分のクイズデータ返却メソッド
-	// quizDataRouter.GET("/:id", quizDataController.FindById)
+	questionsDataRouter := adminDataRouter.Group("/questionsdata")
+	questionsDataRouter.POST("/import_csv", adminsController.ImportCSV)  // 新規クイズデータ挿入メソッド
+	questionsDataRouter.GET("/all", adminsController.FindAllQuestions)   // 全クイズデータ返却メソッド
+	questionsDataRouter.PUT("/:id", adminsController.UpdateQuestions)    // クイズデータの更新
+	questionsDataRouter.DELETE("/:id", adminsController.DeleteQuestions) // クイズデータの削除
 
-	adminDataRouter.POST("/import_csv", adminsController.ImportCSV)  // 新規クイズデータ挿入メソッド
-	adminDataRouter.GET("", adminsController.FindAllQuestions)       // 全クイズデータ返却メソッド
-	adminDataRouter.PUT("/:id", adminsController.UpdateQuestions)    // クイズデータの更新
-	adminDataRouter.DELETE("/:id", adminsController.DeleteQuestions) // クイズデータの削除
-
-	adminDataRouter.GET("/userslist", adminsController.GetUsersInfomation)  // ユーザーデータ一覧取得
-	adminDataRouter.PUT("/updateusers/:id", adminsController.UpdateUsers)   // ユーザーデータの更新
-	adminDataRouter.POST("/addusers", adminsController.AddUsers)            // ユーザーデータの追加
-	adminDataRouter.DELETE("/deleteuser/:id", adminsController.DeleteUsers) // ユーザーデータの削除
+	userDataRouter := adminDataRouter.Group("/userdata")
+	userDataRouter.GET("/userslist", adminsController.GetUsersInfomation)  // ユーザーデータ一覧取得
+	userDataRouter.PUT("/updateusers/:id", adminsController.UpdateUsers)   // ユーザーデータの更新
+	userDataRouter.POST("/addusers", adminsController.AddUsers)            // ユーザーデータの追加
+	userDataRouter.DELETE("/deleteuser/:id", adminsController.DeleteUsers) // ユーザーデータの削除
 
 	return r
+
 }

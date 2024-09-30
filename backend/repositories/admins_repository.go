@@ -47,8 +47,8 @@ func (r *AdminsRepository) DeleteQuestions(QuestionsId uint) error {
 	if err != nil {
 		return err
 	}
-	result := r.db.Delete(&deleteQuestions) //論理削除
-	// result := r.db.Unscoped().Delete(&deleteQuestions) // 物理削除
+	// result := r.db.Delete(&deleteQuestions) //論理削除
+	result := r.db.Unscoped().Delete(&deleteQuestions) // ユーザーの削除に合わせて、物理削除に変更
 	if result.Error != nil {
 		return result.Error
 	}
@@ -193,8 +193,8 @@ func (r *AdminsRepository) DeleteUsers(dbId uint) error {
 	if err != nil {
 		return err
 	}
-	result := r.db.Delete(&deleteUsers) //論理削除
-	// result := r.db.Unscoped().Delete(&deleteUsers) // 物理削除
+	// result := r.db.Delete(&deleteUsers) //論理削除
+	result := r.db.Unscoped().Delete(&deleteUsers) // 物理削除。論理削除では、削除後に同じユーザーIDを登録できない
 	if result.Error != nil {
 		return result.Error
 	}

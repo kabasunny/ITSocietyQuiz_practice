@@ -25,6 +25,14 @@ func NewAnswersService(repository repositories.IAnswersRepository) IAnswersServi
 }
 
 func (s *AnswersService) SaveAnswers(inputs []dto.AnswersInput, tokenString string) error {
+
+	// ブラウザ更新時に重複したデータを格納しないための実装
+	// 	// 「日付が本日」かつ「QuestionIDが一致」するレコードが存在する場合は、[]dto.AnswersInputの中から当該QuestionIDを持つインスタンスを削除
+	// 	「日付が本日」かつ「QuestionIDが一致」するレコードが存在する場合は、[]dto.AnswersInputの中から当該QuestionIDを持つインスタンスを除外する処理をAPIに追加しようと思います
+
+	// リポジトリに新規のメソッドを追加し
+	// サービス側から、[]dto.AnswersInputからQuestionIDを取り出し、リポジトリにQuestionIDを引数で渡す。
+
 	empID, valid, err := utils.ValidateToken(tokenString)
 	if err != nil || !valid {
 		fmt.Println("Error in ValidateToken:", err)

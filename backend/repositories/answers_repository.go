@@ -33,10 +33,25 @@ func (r *AnswersRepository) CreateAnswersBatch(answers []models.Answers) error {
 		}
 	}()
 
-	result := tx.Create(&answers) // コントローラ、サービスで繰り返し処理をしていたので、ここで一括して行う様変更
-	if result.Error != nil {
-		tx.Rollback()
-		return result.Error
+	for _, answer := range answers {
+		var existingAnswer models.Answers
+		// 「日付が本日」かつ「QuestionIDが一致」かつ「EmpIDが一致」するレコードが存在する場合は、データベースに追加を行わない処理
+		err := tx.Where("emp_id = ? AND question_id = ? AND DATE(created_at) = DATE(NOW())", answer.EmpID, answer.QuestionID).First(&existingAnswer).Error
+		if err == nil {
+			// 条件に一致するレコードが既に存在する場合、次のレコードに進む
+			continue
+		} else if err != gorm.ErrRecordNotFound {
+			// エラーが発生した場合、トランザクションをロールバックしてエラーを返す
+			tx.Rollback()
+			return err
+		}
+
+		// 条件に一致するレコードが存在しない場合、新しいレコードを作成
+		result := tx.Create(&answer)
+		if result.Error != nil {
+			tx.Rollback()
+			return result.Error
+		}
 	}
 
 	if err := tx.Commit().Error; err != nil {

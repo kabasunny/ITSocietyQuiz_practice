@@ -29,8 +29,14 @@ function App() {
 
   const [isSubmitAnsewr, setIsSubmitAnsewr] = useState<boolean>(false);
   const [todaysFinish, setTodaysFinish] = useState<boolean>(false); // 日のノルマフラグの状態管理
-  
-  const quizData = useQuizData(isLoggedIn, todaysFinish, isAdmin, isSubmitAnsewr, setTodaysFinish);
+
+  const quizData = useQuizData(
+    isLoggedIn,
+    todaysFinish,
+    isAdmin,
+    isSubmitAnsewr,
+    setTodaysFinish
+  );
   console.log('quizData:', quizData);
 
   const navigate = useNavigate();
@@ -49,7 +55,6 @@ function App() {
     }
   }, [token]); // `token` が変更されたときにのみ実行
 
-
   useEffect(() => {
     if (!isLoggedIn) {
       navigate('/'); // トークンがない場合はログインページにリダイレクト
@@ -62,9 +67,8 @@ function App() {
   //   }
   // }, [isAdmin, navigate]);
 
-
-   // コンポーネントがマウントされたときにセッションから `currentQuestion` を復元する
-   useEffect(() => {
+  // コンポーネントがマウントされたときにセッションから `currentQuestion` を復元する
+  useEffect(() => {
     const todaysFinish = sessionStorage.getItem('todays_finish') === 'true';
     setTodaysFinish(todaysFinish);
     console.log('todaysFinish:', todaysFinish);
@@ -80,21 +84,24 @@ function App() {
       setAnswers(JSON.parse(savedAnswers));
     }
     const savedScore = sessionStorage.getItem('score');
-  console.log('savedScore:', savedScore);
-  if (savedScore) {
-    setScore(JSON.parse(savedScore));
-  }
+    console.log('savedScore:', savedScore);
+    if (savedScore) {
+      setScore(JSON.parse(savedScore));
+    }
     setNext(false);
   }, []);
 
-
-
-  const handleBeforeUnload = useCallback((event: BeforeUnloadEvent) => {
-    // submitAnswers関数を呼び出す条件をチェック
-    if (isLoggedIn && !isAdmin && !todaysFinish && !showScore) {
+  // 以下のコードは、ブラウザ更新時にも実行されてしまう
+  // ...APIサーバー側で、リクエストの都度、データ重複がないか判定する
+  const handleBeforeUnload = useCallback(
+    (event: BeforeUnloadEvent) => {
+      // submitAnswers関数を呼び出す条件をチェック
+      if (isLoggedIn && !isAdmin && !todaysFinish && !showScore) {
         submitAnswers(answers, setIsSubmitAnsewr);
       }
-  }, [answers]);
+    },
+    [answers]
+  );
 
   useEffect(() => {
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -103,61 +110,118 @@ function App() {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [handleBeforeUnload]);
-  
-  
+
+  // 以下のコードは、戻るボタンによる管理者ログアウト後、一般ログインのバグ対策として
+  useEffect(() => {
+    // window.history.replaceState(null, document.title, window.location.href); // これは必要ないか？
+    window.onpopstate = () => {
+      // sessionStorage.clear(); // セッションはのこしつつ、
+      navigate('/'); // ログインページにリダイレクト
+    };
+  }, [navigate]);
 
   return (
     <div className="quiz-container">
       {isLoggedIn ? (
         isAdmin ? ( // 管理者の場合
-          <AdminScreen isAdmin={isAdmin} onLogout={() => handleLogout(setIsLoggedIn, setIsAdmin, setIsSubmitAnsewr, setShowScore, navigate)} /> // 管理者用画面を表示
-        ) : (
-          todaysFinish ? ( // 日のノルマが達成された場合
-            <div className="quota-met">
-              <h1>本日の受験は終了しました</h1><h1>┌┤´д`├┐ﾀﾞﾙ～</h1>
-              <button className="logout-button" onClick={() => handleLogout(setIsLoggedIn, setIsAdmin, setIsSubmitAnsewr, setShowScore, navigate)}>ログアウト</button>
-            </div>
-          ) : (
-            showScore ? (
-              <ScoreSection 
-                score={score} 
-                answers={answers} 
-                isSubmitAnsewr={isSubmitAnsewr} 
-                handleLogout={handleLogout} 
-                setIsLoggedIn={setIsLoggedIn}
-                setIsAdmin={setIsAdmin}
-                setIsSubmitAnsewr={setIsSubmitAnsewr}
-                setShowScore={setShowScore}
-                navigate={navigate}
-              />
-             ) : (
-              quizData.length > 0 ? (
-                <Quiz
-                  currentQuestion={currentQuestion}
-                  quizData={quizData}
-                  next={next}
-                  feedback={feedback}
-                  handleAnswer={(selectedAnswer: Option) => handleAnswer(
-                    selectedAnswer, quizData, currentQuestion, setCurrentQuestion, setScore, setFeedback, setAnswers, setNext, submitAnswers, setShowScore, setIsSubmitAnsewr, answers
-                  )}
-                  goToNextQuestion={() => goToNextQuestion(
-                    setNext, 
-                  )}
-                />
-              ) : (
-                <div className="loading">
-                  <p>Loading...</p>
-                  <p>⁽⁽*( ᐖ )*⁾⁾ ₍₍*( ᐛ )*₎₎</p>
-                </div>
+          <AdminScreen
+            isAdmin={isAdmin}
+            onLogout={() =>
+              handleLogout(
+                setIsLoggedIn,
+                setIsAdmin,
+                setIsSubmitAnsewr,
+                setShowScore,
+                navigate
               )
-            )
-          )
+            }
+          /> // 管理者用画面を表示
+        ) : todaysFinish ? ( // 日のノルマが達成された場合
+          <div className="quota-met">
+            <h1>本日の受験は終了しました</h1>
+            <h1>┌┤´д`├┐ﾀﾞﾙ～</h1>
+            <button
+              className="logout-button"
+              onClick={() =>
+                handleLogout(
+                  setIsLoggedIn,
+                  setIsAdmin,
+                  setIsSubmitAnsewr,
+                  setShowScore,
+                  navigate
+                )
+              }
+            >
+              ログアウト
+            </button>
+          </div>
+        ) : showScore ? (
+          <ScoreSection
+            score={score}
+            answers={answers}
+            isSubmitAnsewr={isSubmitAnsewr}
+            handleLogout={handleLogout}
+            setIsLoggedIn={setIsLoggedIn}
+            setIsAdmin={setIsAdmin}
+            setIsSubmitAnsewr={setIsSubmitAnsewr}
+            setShowScore={setShowScore}
+            navigate={navigate}
+          />
+        ) : quizData.length > 0 ? (
+          <Quiz
+            currentQuestion={currentQuestion}
+            quizData={quizData}
+            next={next}
+            feedback={feedback}
+            handleAnswer={(selectedAnswer: Option) =>
+              handleAnswer(
+                selectedAnswer,
+                quizData,
+                currentQuestion,
+                setCurrentQuestion,
+                setScore,
+                setFeedback,
+                setAnswers,
+                setNext,
+                submitAnswers,
+                setShowScore,
+                setIsSubmitAnsewr,
+                answers
+              )
+            }
+            goToNextQuestion={() => goToNextQuestion(setNext)}
+          />
+        ) : (
+          <div className="loading">
+            <p>Loading...</p>
+            <p>⁽⁽*( ᐖ )*⁾⁾ ₍₍*( ᐛ )*₎₎</p>
+          </div>
         )
       ) : (
-        <Login onLogin={(loginOK: boolean, isAdmin: boolean) => handleLogin(loginOK, setIsLoggedIn, setIsAdmin, isAdmin)} />
+        <Login
+          onLogin={(loginOK: boolean, isAdmin: boolean) =>
+            handleLogin(loginOK, setIsLoggedIn, setIsAdmin, isAdmin)
+          }
+        />
       )}
       <Routes>
-        <Route path="/admin" element={<AdminScreen isAdmin={isAdmin} onLogout={() => handleLogout(setIsLoggedIn, setIsAdmin, setIsSubmitAnsewr, setShowScore, navigate)} />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminScreen
+              isAdmin={isAdmin}
+              onLogout={() =>
+                handleLogout(
+                  setIsLoggedIn,
+                  setIsAdmin,
+                  setIsSubmitAnsewr,
+                  setShowScore,
+                  navigate
+                )
+              }
+            />
+          }
+        />
         <Route path="/add-question" element={<AddQuestion />} />
         <Route path="/edit-question" element={<UpdateDeleteQuestion />} />
         <Route path="/user-management" element={<UserManagement />} />

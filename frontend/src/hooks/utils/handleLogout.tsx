@@ -12,11 +12,8 @@ const handleLogout = (
   sessionStorage.removeItem('currentQuestion');
   sessionStorage.removeItem('answers');
 
-  // コンソールログで確認
-  console.log('quizdata:', sessionStorage.getItem('quizdata'));
-  console.log('todays_finish:', sessionStorage.getItem('todays_finish'));
-  console.log('currentQuestion:', sessionStorage.getItem('currentQuestion'));
-  console.log('answers:', sessionStorage.getItem('answers'));
+  // セッション情報をクリア...管理者ログアウト後、一般ログインのバグに効果なし
+  // sessionStorage.clear();
 
   setIsLoggedIn(false);
   setIsAdmin(false);

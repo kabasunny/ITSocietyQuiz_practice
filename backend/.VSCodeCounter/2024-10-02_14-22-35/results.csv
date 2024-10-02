@@ -1,0 +1,10 @@
+"filename", "language", "go", "comment", "blank", "total"
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\data\answers_data.go", "go", 33, 113, 5, 151
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\data\questions_data.go", "go", 87, 0, 23, 110
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\data\roles_data.go", "go", 12, 5, 3, 20
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\data\users_data.go", "go", 52, 4, 9, 65
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\data\users_roles_data.go", "go", 16, 0, 2, 18
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\data_insert\data_insert.go", "go", 43, 18, 13, 74
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\drop_table.go", "go", 17, 2, 5, 24
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\migrations\migration.go", "go", 47, 47, 14, 108
+"Total", "-", 307, 189, 74, 570

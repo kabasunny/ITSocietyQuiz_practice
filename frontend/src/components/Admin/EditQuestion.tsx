@@ -46,7 +46,7 @@ const EditQuestion: React.FC = () => {
     if (editingQuestion) {
       axios
         .put(
-          `http://localhost:8082/admins/questionsdata/${id}`,
+          `${process.env.REACT_APP_API_URL}/admins/questionsdata/${id}`,
           editingQuestion,
           {
             headers: {
@@ -70,7 +70,7 @@ const EditQuestion: React.FC = () => {
     const confirmDelete = window.confirm('本当にこの質問を削除しますか？'); // 確認ダイアログを表示
     if (confirmDelete) {
       axios
-        .delete(`http://localhost:8082/admins/questionsdata/${id}`, {
+        .delete(`${process.env.REACT_APP_API_URL}/admins/questionsdata/${id}`, {
           // 指定されたIDの質問を削除するためのDELETEリクエストを送信
           headers: {
             Authorization: `Bearer ${jwt}`, // 認証トークンをヘッダーに含める

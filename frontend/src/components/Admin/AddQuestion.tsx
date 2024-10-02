@@ -8,14 +8,6 @@ const UploadCSV: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null); // コンポーネントが再レンダリングされても参照が保持
-  // const navigate = useNavigate();
-  // const isAdmin = sessionStorage.getItem('admin') === 'true';
-
-  // useEffect(() => {
-  //   if (!isAdmin) {
-  //     navigate('/'); // 管理者でない場合はホームページにリダイレクト
-  //   }
-  // }, [isAdmin, navigate]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // ファイル入力フィールドで発生する変更イベント
@@ -37,7 +29,7 @@ const UploadCSV: React.FC = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:8082/admins/questionsdata/import_csv',
+        `${process.env.REACT_APP_API_URL}/admins/questionsdata/import_csv`,
         formData,
         {
           headers: {
@@ -52,10 +44,6 @@ const UploadCSV: React.FC = () => {
         setMessage('ファイルのアップロードに失敗しました。');
       }
       handleClear();
-      // setFile(null);
-      // if (fileInputRef.current) {
-      //   fileInputRef.current.value = '';
-      // }
     } catch (error) {
       console.error('Error uploading file:', error);
       setMessage('ファイルのアップロード中にエラーが発生しました。');

@@ -1,5 +1,5 @@
 package data // テスト用データ
-import "backend/models"
+import "backend/src/models"
 
 var RolesList = []models.Roles{
 	{

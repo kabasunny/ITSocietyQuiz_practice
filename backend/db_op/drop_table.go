@@ -1,7 +1,7 @@
 package db_op
 
 import (
-	"backend/infra"
+	"backend/src/infra"
 	"log"
 )
 

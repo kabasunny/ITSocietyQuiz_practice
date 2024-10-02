@@ -4,6 +4,7 @@ import './App.css';
 import Quiz from './components/Quiz';
 import ScoreSection from './components/ScoreSection';
 import Login from './components/Login';
+import Home from './components/Home'; // Homeコンポーネントをインポート
 import useQuizData from './hooks/useQuizData';
 import { Answer, Option } from './types';
 import handleLogin from './components/utils/handleLogin';
@@ -37,7 +38,7 @@ function App() {
     isSubmitAnsewr,
     setTodaysFinish
   );
-  console.log('quizData:', quizData);
+  // console.log('quizData:', quizData);
 
   const navigate = useNavigate();
   const token = sessionStorage.getItem('token'); // トークンを取得
@@ -61,64 +62,68 @@ function App() {
     }
   }, [isLoggedIn, navigate]);
 
-  // useEffect(() => {
-  //   if (!isAdmin) {
-  //     navigate('/'); // トークンがない場合はログインページにリダイレクト
-  //   }
-  // }, [isAdmin, navigate]);
-
-  // コンポーネントがマウントされたときにセッションから `currentQuestion` を復元する
   useEffect(() => {
     const todaysFinish = sessionStorage.getItem('todays_finish') === 'true';
     setTodaysFinish(todaysFinish);
-    console.log('todaysFinish:', todaysFinish);
+    // console.log('todaysFinish:', todaysFinish);
 
     const savedCurrentQuestion = sessionStorage.getItem('currentQuestion');
-    console.log('savedCurrentQuestion:', savedCurrentQuestion);
+    // console.log('savedCurrentQuestion:', savedCurrentQuestion);
     if (savedCurrentQuestion) {
       setCurrentQuestion(JSON.parse(savedCurrentQuestion));
     }
     const savedAnswers = sessionStorage.getItem('answers');
-    console.log('savedAnswers:', savedAnswers);
+    // console.log('savedAnswers:', savedAnswers);
     if (savedAnswers) {
       setAnswers(JSON.parse(savedAnswers));
     }
     const savedScore = sessionStorage.getItem('score');
-    console.log('savedScore:', savedScore);
+    // console.log('savedScore:', savedScore);
     if (savedScore) {
       setScore(JSON.parse(savedScore));
     }
     setNext(false);
   }, []);
 
-  // 以下のコードは、ブラウザ更新時にも実行されてしまう
-  // ...APIサーバー側で、リクエストの都度、データ重複がないか判定する
+  // ブラウザを閉じた際に実行させたいが、以下のコードは、ブラウザ更新時にも実行されてしまうので
+  // APIサーバー側で、リクエストの都度、データ重複がないか判定する
   const handleBeforeUnload = useCallback(
     (event: BeforeUnloadEvent) => {
+      // ブラウザを更新または閉じる操作で発火
       // submitAnswers関数を呼び出す条件をチェック
+      // ユーザーがログインしていて、管理者でなく、今日のクイズが終了しておらず、スコアが表示されていない場合にのみ実行
       if (isLoggedIn && !isAdmin && !todaysFinish && !showScore) {
         submitAnswers(answers, setIsSubmitAnsewr);
       }
     },
-    [answers]
+    [answers] // answersが変更された場合に関数を再生成
   );
 
+  // ブラウザを閉じた際に、回答状況を送信
   useEffect(() => {
+    // beforeunloadイベントリスナーを追加
+    // console.log('handleBeforeUnload:');
     window.addEventListener('beforeunload', handleBeforeUnload);
 
+    // クリーンアップ関数でbeforeunloadイベントリスナーを削除
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [handleBeforeUnload]);
+  }, [handleBeforeUnload]); // handleBeforeUnloadが変更された場合に再実行
 
   // 以下のコードは、戻るボタンによる管理者ログアウト後、一般ログインのバグ対策として
   useEffect(() => {
-    // window.history.replaceState(null, document.title, window.location.href); // これは必要ないか？
     window.onpopstate = () => {
-      // sessionStorage.clear(); // セッションはのこしつつ、
       navigate('/'); // ログインページにリダイレクト
     };
   }, [navigate]);
+
+  // 管理者の場合、デフォルトで /add-question にルーティング
+  useEffect(() => {
+    if (isAdmin) {
+      navigate('/add-question');
+    }
+  }, [isAdmin]);
 
   return (
     <div className="quiz-container">
@@ -205,6 +210,8 @@ function App() {
         />
       )}
       <Routes>
+        <Route path="/" element={<Home />} />{' '}
+        {/* Homeコンポーネントをルートに追加 */}
         <Route
           path="/admin"
           element={

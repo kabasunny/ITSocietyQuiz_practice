@@ -1,7 +1,7 @@
 package data // テスト用データ
 
 import (
-	"backend/models"
+	"backend/src/models"
 	"time"
 
 	"gorm.io/gorm"

@@ -6,12 +6,14 @@ interface QuizResponse {
   todays_finish: boolean;
 }
 
-const fetchQuizData = async (isSubmitAnswer: boolean): Promise<QuizResponse> => {
+const fetchQuizData = async (
+  isSubmitAnswer: boolean
+): Promise<QuizResponse> => {
   try {
     // まずセッションストレージに保存されているデータを確認
     const storedQuizData = sessionStorage.getItem('quizdata');
     const storedTodaysFinish = sessionStorage.getItem('todays_finish');
-    
+
     // 既にデータがある場合、そのまま返す
     if (storedQuizData && storedTodaysFinish && !isSubmitAnswer) {
       return {
@@ -24,28 +26,34 @@ const fetchQuizData = async (isSubmitAnswer: boolean): Promise<QuizResponse> => 
     const jwt = sessionStorage.getItem('token'); // ログイン時にAPIから取得したトークン
     const todaysCount = sessionStorage.getItem('todays_count'); // ローカルストレージからtodays_countを取得
 
-    const response = await axios.get(`http://localhost:8082/questions/oneday?todays_count=${todaysCount}`, {
-      headers: {
-        'Authorization': `Bearer ${jwt}`
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/questions/oneday?todays_count=${todaysCount}`,
+      {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
       }
-    });
+    );
 
     // 取得したデータをコンソールに出力
     console.log('APIレスポンス:', response.data);
 
     // 取得したデータをセッションストレージに保存
     sessionStorage.setItem('quizdata', JSON.stringify(response.data.quizdata));
-    sessionStorage.setItem('todays_finish', JSON.stringify(response.data.todays_finish));
+    sessionStorage.setItem(
+      'todays_finish',
+      JSON.stringify(response.data.todays_finish)
+    );
 
     return {
       quizdata: response.data.quizdata,
-      todays_finish: response.data.todays_finish
+      todays_finish: response.data.todays_finish,
     };
   } catch (error) {
     console.error('クイズデータの取得中にエラーが発生しました:', error);
     return {
       quizdata: null,
-      todays_finish: false
+      todays_finish: false,
     };
   }
 };

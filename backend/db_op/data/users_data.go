@@ -1,7 +1,7 @@
 package data // テスト用データ
 
 import (
-	"backend/models"
+	"backend/src/models"
 	"fmt"
 
 	"golang.org/x/crypto/bcrypt"

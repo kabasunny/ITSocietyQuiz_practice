@@ -2,8 +2,8 @@ package main
 
 import (
 	"backend/db_op"
-	"backend/infra"
-	"backend/models"
+	"backend/src/infra"
+	"backend/src/models"
 	"log"
 )
 

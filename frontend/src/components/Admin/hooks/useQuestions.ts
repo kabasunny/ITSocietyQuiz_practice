@@ -13,7 +13,7 @@ const useQuestions = (jwt: string | null) => {
     }
 
     axios
-      .get('http://localhost:8082/admins/questionsdata/all', {
+      .get(`${process.env.REACT_APP_API_URL}/admins/questionsdata/all`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },

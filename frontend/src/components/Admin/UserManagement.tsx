@@ -1,14 +1,20 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './css/AdminScreen.css'; // CSSファイルをインポート
-import './css/UserManagement.css'; // 新しいCSSファイルをインポート
+import './css/AdminScreen.css';
+import './css/UserManagement.css';
 import UserTable from './components/UserTable';
 import UserForm from './components/UserForm';
 import { AdminsUser } from '../../types';
+import { fetchUsers, addUser, updateUser, deleteUser } from './utils/userApi';
 
 const UserManagement: React.FC = () => {
-  const [users, setUsers] = useState<AdminsUser[]>([]);
-  const [editingUser, setEditingUser] = useState<AdminsUser | null>(null);
+  const [users, setUsers] = useState<AdminsUser[]>([]); // ユーザーリストの状態管理
+  const [editingUser, setEditingUser] = useState<AdminsUser | null>(null); // 編集中のユーザーの状態管理
+  const [showAddForm, setShowAddForm] = useState(false); // 新規ユーザー追加フォームの表示状態管理
+
+  const jwt = sessionStorage.getItem('token'); // セッションストレージからJWTトークンを取得
+
+  // 新規ユーザーのデフォルト値
   const newUser: AdminsUser = {
     dbId: 0,
     empId: '',
@@ -21,116 +27,36 @@ const UserManagement: React.FC = () => {
     updatedAt: '',
     createdAt: '',
   };
-  const [showAddForm, setShowAddForm] = useState(false); // 新しいユーザー追加フォームの表示状態
 
-  const jwt = sessionStorage.getItem('token');
-
+  // コンポーネントのマウント時および編集ユーザーの変更時にユーザーリストを取得
   useEffect(() => {
-    // ユーザー情報を取得するAPI呼び出し
-    axios
-      .get('http://localhost:8082/admins/userdata/userslist', {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-      .then((response) => {
-        setUsers(response.data.userlist);
-        console.log(users);
-      })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-      });
+    fetchUsers(jwt, setUsers);
   }, [jwt, editingUser]);
 
+  // 新規ユーザーを追加する関数
   const handleAddUser = (data: AdminsUser) => {
-    console.log(data);
-    // ユーザー情報を新規追加するAPI呼び出し
-    axios
-      .post('http://localhost:8082/admins/userdata/addusers', data, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((response) => {
-        setUsers([...users, response.data]);
-        alert('ユーザー情報が正常に更新されました。');
-        setShowAddForm(false); // フォームを閉じる
-      })
-      .catch((error) => {
-        console.error('Error adding user:', error);
-        console.error(
-          'Error details:',
-          error.response ? error.response.data : error.message
-        );
-      });
+    addUser(data, jwt, users, setUsers, setShowAddForm);
   };
 
+  // ユーザー編集を開始する関数
   const handleEditUser = (user: AdminsUser) => {
     setEditingUser(user);
   };
 
+  // ユーザー情報を更新する関数
   const handleUpdateUser = (data: AdminsUser) => {
-    if (editingUser) {
-      data.dbId = editingUser.dbId; // 初期に受け取った dbId を設定
-    }
-    axios
-      .put(
-        `http://localhost:8082/admins/userdata/updateusers/${data.dbId}`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        }
-      )
-      .then((response) => {
-        if (response.status === 200) {
-          const updatedUser = response.data;
-          setUsers(
-            users.map((user) =>
-              user.dbId === data.dbId ? { ...user, ...updatedUser } : user
-            )
-          );
-          console.log(updatedUser);
-          alert('ユーザー情報が正常に更新されました。');
-        } else {
-          console.error('Unexpected response status:', response.status);
-        }
-      })
-
-      .catch((error) => {
-        console.error('Error updating user:', error);
-      });
-    setEditingUser(null);
+    updateUser(data, editingUser, jwt, users, setUsers, setEditingUser);
   };
 
-  useEffect(() => {
-    console.log('Users updated:', users);
-  }, [users]);
-
+  // ユーザーを削除する関数
   const handleDeleteUser = (dbId: number) => {
-    const confirmDelete = window.confirm('本当にこのユーザーを削除しますか？'); // 確認ダイアログを表示
-    if (confirmDelete) {
-      // ユーザー情報を削除するAPI呼び出し
-      axios
-        .delete(`http://localhost:8082/admins/userdata/deleteuser/${dbId}`, {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        })
-        .then(() => {
-          setUsers(users.filter((user) => user.dbId !== dbId));
-        })
-        .catch((error) => {
-          console.error('Error deleting user:', error);
-        });
-    }
+    deleteUser(dbId, jwt, users, setUsers);
   };
 
   return (
     <div className="admin-container">
       <h2 className="admin-h2">ユーザー管理（社員情報を更新、削除、追加）</h2>
+      {/* 新規ユーザー追加フォームと編集フォームが表示されていない場合にユーザーテーブルを表示 */}
       {!showAddForm && !editingUser && (
         <UserTable
           users={users}
@@ -138,6 +64,7 @@ const UserManagement: React.FC = () => {
           onDeleteUser={handleDeleteUser}
         />
       )}
+      {/* 編集フォームを表示 */}
       {editingUser && (
         <UserForm
           user={editingUser}
@@ -146,6 +73,7 @@ const UserManagement: React.FC = () => {
           isEditing={true}
         />
       )}
+      {/* 新規ユーザー追加ボタンを表示 */}
       {!showAddForm && !editingUser && (
         <div className="add-user-button-container">
           <button
@@ -156,6 +84,7 @@ const UserManagement: React.FC = () => {
           </button>
         </div>
       )}
+      {/* 新規ユーザー追加フォームを表示 */}
       {showAddForm && (
         <UserForm
           user={newUser}

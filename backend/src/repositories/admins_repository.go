@@ -24,6 +24,9 @@ type IAdminsRepository interface {
 	GetRoleNameByID(roleID uint) (string, error)
 	AddUsers(newUser *models.Users) (*models.Users, error)
 	DeleteUsers(dbId uint) error
+	GetOverallPerformanceData(query string) (*models.Users, *models.Answers, error)    // 全体の傾向のデータを取得する
+	GetIndividualPerformanceData(empID string) (*models.Users, *models.Answers, error) // 個人の成績のデータを取得する
+
 }
 
 type AdminsRepository struct {
@@ -199,4 +202,13 @@ func (r *AdminsRepository) DeleteUsers(dbId uint) error {
 		return result.Error
 	}
 	return nil
+}
+
+func (r *AdminsRepository) GetOverallPerformanceData(query string) (*models.Users, *models.Answers, error) {
+	return nil, nil, nil
+}
+
+func (r *AdminsRepository) GetIndividualPerformanceData(empID string) (*models.Users, *models.Answers, error) {
+	return nil, nil, nil
+
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatDate } from '../utils/formatDate';
-import { AdminsUser, UserTableProps } from '../../../types'
+import { UserTableProps } from '../../../types'
 import { useEffect, useState } from 'react';
 
 const UserTable: React.FC<UserTableProps> = ({ users, onEditUser, onDeleteUser }) => {

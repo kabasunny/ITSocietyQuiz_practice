@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import './css/AdminScreen.css';
 import './css/UserManagement.css';
 import UserTable from './components/UserTable';

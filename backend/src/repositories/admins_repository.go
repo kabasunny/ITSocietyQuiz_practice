@@ -4,6 +4,7 @@ import (
 	"backend/src/dto"
 	"backend/src/models"
 	"errors"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -24,6 +25,7 @@ type IAdminsRepository interface {
 	GetRoleNameByID(roleID uint) (string, error)
 	AddUsers(newUser *models.Users) (*models.Users, error)
 	DeleteUsers(dbId uint) error
+	GetRanking(query string) ([]*dto.RankingData, error)                               // ランキングを取得する
 	GetOverallPerformanceData(query string) (*models.Users, *models.Answers, error)    // 全体の傾向のデータを取得する
 	GetIndividualPerformanceData(empID string) (*models.Users, *models.Answers, error) // 個人の成績のデータを取得する
 
@@ -202,6 +204,18 @@ func (r *AdminsRepository) DeleteUsers(dbId uint) error {
 		return result.Error
 	}
 	return nil
+}
+
+func (r *AdminsRepository) GetRanking(query string) ([]*dto.RankingData, error) {
+	var ranking []*dto.RankingData
+	if err := r.db.Raw(query).Scan(&ranking).Error; err != nil {
+		return nil, err
+	}
+	for _, data := range ranking {
+		fmt.Printf("EmpID: %s, Username: %s, CurrentQID: %d, CorrectAnswerRate: %f, PerformanceIndicator: %f, Rank: %d\n",
+			data.EmpID, *data.Username, data.CurrentQID, data.C, data.P, data.Rank) // correctAnswerRateやperformanceIndicatorでは、何故がうまくいかない
+	}
+	return ranking, nil
 }
 
 func (r *AdminsRepository) GetOverallPerformanceData(query string) (*models.Users, *models.Answers, error) {

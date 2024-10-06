@@ -25,6 +25,7 @@ type IAdminsService interface {
 	UpdateUsers(dbId uint, updateUsers dto.AdmUserData) (*dto.AdmUserData, error)
 	AddUsers(newUsers dto.AdmUserData) (*dto.AdmUserData, error)
 	DeleteUsers(dbId uint) error
+	GetRanking() ([]*dto.RankingData, error)
 }
 
 type AdminsService struct {
@@ -281,4 +282,19 @@ func (s *AdminsService) AddUsers(newUsers dto.AdmUserData) (*dto.AdmUserData, er
 
 func (s *AdminsService) DeleteUsers(dbId uint) error {
 	return s.repository.DeleteUsers(dbId)
+}
+
+func (s *AdminsService) GetRanking() ([]*dto.RankingData, error) {
+	// SQLクエリを読み込む
+	query, err := utils.LoadSQLFile("src/services/queries/ranking_query.sql")
+	if err != nil {
+		return nil, fmt.Errorf("failed to load SQL file: %w", err)
+	}
+
+	ranking, err := s.repository.GetRanking(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get ranking: %w", err)
+	}
+
+	return ranking, nil
 }

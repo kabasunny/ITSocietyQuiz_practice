@@ -20,6 +20,7 @@ type IAdminsController interface {
 	UpdateUsers(ctx *gin.Context)
 	AddUsers(ctx *gin.Context)
 	DeleteUsers(ctx *gin.Context)
+	GetRanking(ctx *gin.Context)
 }
 
 type AdminsController struct {
@@ -214,4 +215,15 @@ func (c *AdminsController) DeleteUsers(ctx *gin.Context) {
 		return
 	}
 	ctx.Status(http.StatusOK)
+}
+
+func (c *AdminsController) GetRanking(ctx *gin.Context) {
+	ranking, err := c.service.GetRanking()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"ranking": ranking,
+	})
 }

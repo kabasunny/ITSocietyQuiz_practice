@@ -3,9 +3,13 @@ package main
 import (
 	"backend/db_op/data"
 	"backend/src/infra"
+	"backend/src/models"
 	"fmt"
 	"log"
+	"math/rand"
 	"reflect"
+
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -13,25 +17,10 @@ func main() {
 
 	db := infra.SetupDB() //データベース接続を設定し、*gorm.DB オブジェクトを返す。このオブジェクトは、データベース操作を行うためのインターフェースを提供。
 
-	// insertData := data.AnswersList // data.～を切り替えて、データ挿入。
-	// insertData := data.QuestionsList // data.～を切り替えて、データ挿入。
-	// insertData := data.GetHashedUsersList() // data.～を切り替えて、データ挿入。ユーザーの登録時はパスワードをハッシュ化するので、関数を呼ぶ
-	// insertData := data.RolesList // data.～を切り替えて、データ挿入。
-	// insertData := data.UsersRolesList // data.～を切り替えて、データ挿入。
-
-	// for _, data := range insertData {
-	// 	if err := db.Create(&data).Error; err != nil {
-	// 		log.Printf("Failed to insert quiz: %v", err)
-	// 	}
-	// }
-
-	// 以下は一括で行うとき
-
 	// データの挿入順序を調整
 	dataLists := [][]interface{}{
-		// toInterfaceSlice関数を使用して、各データリストを[]interface{}型に変換
 		toInterfaceSlice(data.QuestionsList),
-		toInterfaceSlice(data.GetHashedUsersList()),
+		toInterfaceSlice(data.GenerateHashedUsersList()),
 		toInterfaceSlice(data.RolesList),
 	}
 
@@ -44,19 +33,22 @@ func main() {
 		}
 	}
 
-	// 依存関係のあるUsersRolesListを最後に挿入 UsersやRolesにcascadeしている
-	for _, data := range data.UsersRolesList {
-		if err := db.Create(&data).Error; err != nil { //引数はアドレスで
+	// 依存関係のあるUsersRolesListを最後に挿入
+	for _, data := range data.GenerateUsersRolesList() {
+		if err := db.Create(&data).Error; err != nil {
 			log.Printf("Failed to insert UsersRoles: %v", err)
 		}
 	}
 
 	// 依存関係のあるAnswersListを最後に挿入
 	for _, data := range data.AnswersList {
-		if err := db.Create(&data).Error; err != nil { //引数はアドレスで
+		if err := db.Create(&data).Error; err != nil {
 			log.Printf("Failed to insert Answers: %v", err)
 		}
 	}
+
+	// ダミーデータの挿入
+	insertDummyData(db)
 
 	fmt.Println("Data inserted successfully!")
 }
@@ -66,8 +58,26 @@ func toInterfaceSlice(slice interface{}) []interface{} {
 	v := reflect.ValueOf(slice)
 	result := make([]interface{}, v.Len())
 	for i := 0; i < v.Len(); i++ {
-		// ポインタを設定
 		result[i] = v.Index(i).Addr().Interface()
 	}
 	return result
+}
+
+// ダミーデータを挿入する関数
+func insertDummyData(db *gorm.DB) {
+	numEmployees := 200
+
+	for i := 0; i < numEmployees; i++ {
+		empID := fmt.Sprintf("EMP%d", 100+i) // EmpIDを100から始め、"EMP"を先頭に追加
+		correctAnswers := rand.Intn(601)     // 0から600の範囲でランダムな正答数を生成
+		performanceIndex := float64(rand.Intn(186)+15) * (float64(correctAnswers) / float64(rand.Intn(601)))
+
+		dimension := models.AnswersDimension{
+			EmpID:            empID,
+			CorrectAnswers:   correctAnswers,
+			PerformanceIndex: performanceIndex,
+		}
+
+		db.Create(&dimension)
+	}
 }

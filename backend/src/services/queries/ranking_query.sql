@@ -3,21 +3,25 @@ SELECT
     sub.emp_id,
     sub.username,
     sub.current_q_id,
-    sub.c,
-    sub.p
+    sub.total_questions,
+    sub.correct_answers,
+    ROUND(sub.c, 1) AS c, -- 小数第一位までに丸める
+    ROUND(sub.p, 1) AS p  -- 小数第一位までに丸める
 FROM (
     SELECT
         u.emp_id,
         u.username,
         u.current_q_id,
+        u.total_questions,
+        u.correct_answers,
         CASE 
             WHEN u.total_questions = 0 THEN 0 
-            ELSE (u.correct_answers * 100.0 / CAST(u.total_questions AS FLOAT))
-        END AS c, -- correctAnswerRateperでは、何故がうまくいかない
+            ELSE (u.correct_answers * 100.0 / u.total_questions)
+        END AS c,
         CASE 
             WHEN u.total_questions = 0 THEN 0
-            ELSE (u.current_q_id * (u.correct_answers * 1.0 / CAST(u.total_questions AS FLOAT)))
-        END AS p -- performanceIndicatorでは、何故がうまくいかない
+            ELSE (u.current_q_id * (u.correct_answers * 1.0 / u.total_questions))
+        END AS p
     FROM
         users u
     WHERE

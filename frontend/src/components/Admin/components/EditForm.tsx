@@ -70,12 +70,17 @@ const EditForm: React.FC<EditFormProps> = ({
         難度:
         <input
           type="number"
-          value={editingQuestion.difficulty !== undefined ? editingQuestion.difficulty.toString() : '' //表する際はstring型でデータとして扱うときは数値にする
+          value={
+            editingQuestion.difficulty !== undefined
+              ? editingQuestion.difficulty.toString()
+              : '' //表する際はstring型でデータとして扱うときは数値にする
           }
           onChange={(e) => handleInputChange(e, 'difficulty')}
         />
       </label>
-      <button onClick={() => handleSave(editingQuestion.id)}>保存 & 更新</button>
+      <button onClick={() => handleSave(editingQuestion.id)}>
+        保存 & 更新
+      </button>
       <button onClick={handleCancelEdit}>キャンセル</button>
     </div>
   );

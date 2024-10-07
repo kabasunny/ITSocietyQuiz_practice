@@ -16,10 +16,12 @@ type AdmUserData struct {
 
 // フロントへの管理者用ランキング一覧データ返却用
 type RankingData struct {
-	EmpID      string  `json:"empId"`
-	Username   *string `json:"name"`
-	CurrentQID uint    `json:"currentQID"` // 現在の最も進捗した問題の番号
-	C          float64 `json:"correctAnswerRate"`
-	P          float64 `json:"performanceIndicator"`
-	Rank       int     `json:"rank"` // 順位を追加
+	EmpID          string  `json:"empId"`
+	Username       *string `json:"name"`
+	CurrentQID     uint    `json:"currentQID"` // 現在の最も進捗した問題の番号
+	TotalQuestions int     `json:"totalQuestions"`
+	CorrectAnswers int     `json:"correctAnswers"`
+	C              float64 `json:"correctAnswerRate"`
+	P              float64 `json:"performanceIndicator"`
+	Rank           int     `json:"rank"` // 順位を追加
 }

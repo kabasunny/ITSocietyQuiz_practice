@@ -1,9 +1,0 @@
-"filename", "language", "TypeScript JSX", "TypeScript", "CSS", "comment", "blank", "total"
-"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\frontend\src\App.tsx", "TypeScript JSX", 8, 0, 0, -1, 1, 8
-"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\frontend\src\components\Home.css", "CSS", 0, 0, 6, 1, 0, 7
-"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\frontend\src\components\Home.tsx", "TypeScript JSX", 10, 0, 0, 0, 4, 14
-"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\frontend\src\components\Login.tsx", "TypeScript JSX", 2, 0, 0, 1, 0, 3
-"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\frontend\src\components\Quiz.tsx", "TypeScript JSX", 9, 0, 0, 6, -2, 13
-"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\frontend\src\components\admin\utils\userApi.ts", "TypeScript", 0, -1, 0, 1, 0, 0
-"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\frontend\src\hooks\utils\handleLogout.tsx", "TypeScript JSX", -3, 0, 0, 1, 0, -2
-"Total", "-", 26, -1, 6, 9, 3, 43

@@ -19,6 +19,7 @@ func main() {
 	db_op.DropTable("questions")
 	db_op.DropTable("users")
 	db_op.DropTable("roles")
+	db_op.DropTable("answers_dimensions")
 
 	// AutoMigrate:構造体を引数として渡し、構造体に定義されているフィールドに基づいて、データベースにテーブルを作成、更新
 	// 必要な順序でテーブルを作成する

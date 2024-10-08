@@ -17,7 +17,7 @@ func GenerateUsersRolesList() []models.UsersRoles {
 		},
 	}
 
-	for i := 0; i < 200; i++ {
+	for i := 1; i < 200; i++ {
 		empID := fmt.Sprintf("EMP%d", 100+i)
 
 		userRole := models.UsersRoles{

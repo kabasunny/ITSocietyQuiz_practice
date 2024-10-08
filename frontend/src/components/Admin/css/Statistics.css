@@ -1,0 +1,68 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .header {
+    margin-bottom: 20px;
+  }
+  
+  .content-container {
+    display: flex;
+    flex-direction: row; /* Arrange children in a row */
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .content {
+    flex: 1;
+  }
+  
+  .ranking {
+    flex: 1;
+    padding-right: 20px;
+  }
+  
+  .ranking-table-container {
+    max-height: 600px; /* Adjust the height as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+  }
+  
+  .ranking-table {
+    margin: 0 auto;
+    border-collapse: collapse; /* テーブルのボーダーを結合 */
+    width: 100%;
+  }
+  
+  .ranking-table th, .ranking-table td {
+    border: 1px solid #bbbaba; /* セルのボーダー */
+    padding: 8px; /* セルの内側の余白 */
+  }
+  
+  .ranking-table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: #ccccf7; /* ヘッダーの背景色 */
+    color: black; /* ヘッダーの文字色 */
+  }
+  
+  .ranking-table tr:nth-child(even) {
+    background-color: #d2dfe0; /* 偶数行の背景色を変更 */
+  }
+  
+  .ranking-table tr:nth-child(odd) {
+    background-color: #dbd9f3; /* 奇数行の背景色を変更 */
+  }
+  
+  .admin-h2 {
+    text-align: center;
+  }
+  
+  .graph-image {
+    width: 100%;
+    height: auto;
+    max-width: 600px;
+  }
+  

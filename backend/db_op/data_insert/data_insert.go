@@ -3,9 +3,14 @@ package main
 import (
 	"backend/db_op/data"
 	"backend/src/infra"
+	"backend/src/models"
 	"fmt"
 	"log"
+	"math/rand"
 	"reflect"
+	"time"
+
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -13,25 +18,10 @@ func main() {
 
 	db := infra.SetupDB() //データベース接続を設定し、*gorm.DB オブジェクトを返す。このオブジェクトは、データベース操作を行うためのインターフェースを提供。
 
-	// insertData := data.AnswersList // data.～を切り替えて、データ挿入。
-	// insertData := data.QuestionsList // data.～を切り替えて、データ挿入。
-	// insertData := data.GetHashedUsersList() // data.～を切り替えて、データ挿入。ユーザーの登録時はパスワードをハッシュ化するので、関数を呼ぶ
-	// insertData := data.RolesList // data.～を切り替えて、データ挿入。
-	// insertData := data.UsersRolesList // data.～を切り替えて、データ挿入。
-
-	// for _, data := range insertData {
-	// 	if err := db.Create(&data).Error; err != nil {
-	// 		log.Printf("Failed to insert quiz: %v", err)
-	// 	}
-	// }
-
-	// 以下は一括で行うとき
-
 	// データの挿入順序を調整
 	dataLists := [][]interface{}{
-		// toInterfaceSlice関数を使用して、各データリストを[]interface{}型に変換
 		toInterfaceSlice(data.QuestionsList),
-		toInterfaceSlice(data.GetHashedUsersList()),
+		toInterfaceSlice(data.GenerateHashedUsersList()),
 		toInterfaceSlice(data.RolesList),
 	}
 
@@ -44,19 +34,22 @@ func main() {
 		}
 	}
 
-	// 依存関係のあるUsersRolesListを最後に挿入 UsersやRolesにcascadeしている
-	for _, data := range data.UsersRolesList {
-		if err := db.Create(&data).Error; err != nil { //引数はアドレスで
+	// 依存関係のあるUsersRolesListを最後に挿入
+	for _, data := range data.GenerateUsersRolesList() {
+		if err := db.Create(&data).Error; err != nil {
 			log.Printf("Failed to insert UsersRoles: %v", err)
 		}
 	}
 
 	// 依存関係のあるAnswersListを最後に挿入
-	for _, data := range data.AnswersList {
-		if err := db.Create(&data).Error; err != nil { //引数はアドレスで
+	for _, data := range data.GenerateAnswersList() {
+		if err := db.Create(&data).Error; err != nil {
 			log.Printf("Failed to insert Answers: %v", err)
 		}
 	}
+
+	// Answers\dimensionテーブルにダミーデータの挿入
+	insertDummyData(db)
 
 	fmt.Println("Data inserted successfully!")
 }
@@ -66,8 +59,50 @@ func toInterfaceSlice(slice interface{}) []interface{} {
 	v := reflect.ValueOf(slice)
 	result := make([]interface{}, v.Len())
 	for i := 0; i < v.Len(); i++ {
-		// ポインタを設定
 		result[i] = v.Index(i).Addr().Interface()
 	}
 	return result
+}
+
+// Answers_dimensionテーブルにダミーデータを挿入する関数
+func insertDummyData(db *gorm.DB) {
+	numEmployees := 200
+	startDate := time.Date(2024, 4, 1, 0, 0, 0, 0, time.Local)
+	endDate := time.Date(2024, 9, 30, 0, 0, 0, 0, time.Local)
+	day := 0
+
+	for date := startDate; date.Before(endDate) || date.Equal(endDate); date = date.AddDate(0, 0, 1) {
+		// 休日を除外
+		if date.Weekday() == time.Saturday || date.Weekday() == time.Sunday {
+			continue
+		}
+
+		day++
+		for i := 0; i < numEmployees; i++ {
+			empID := fmt.Sprintf("EMP%d", 100+i) // EmpIDを100から始め、"EMP"を先頭に追加
+
+			// dayが0の場合を考慮して、最低値を1に設定
+			correctAnswers := rand.Intn(max(1, day/2+1)) + int(day/2) + 3
+			performanceIndex := float64(rand.Intn(max(1, day/2+1))+int(day/2)+3) * (float64(correctAnswers) / float64(day*4-(rand.Intn(5))+rand.Intn(max(1, day/10))+1))
+
+			dimension := models.AnswersDimension{
+				EmpID:            empID,
+				CorrectAnswers:   correctAnswers,
+				PerformanceIndex: performanceIndex,
+			}
+
+			// CreatedAtフィールドに日付を設定
+			dimension.CreatedAt = date
+
+			db.Create(&dimension)
+		}
+	}
+}
+
+// max関数を追加して、引数が0にならないようにする
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }

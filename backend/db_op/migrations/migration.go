@@ -13,12 +13,13 @@ func main() {
 
 	db := infra.SetupDB() // データベース接続を設定し、*gorm.DB オブジェクトを返す。このオブジェクトは、データベース操作を行うためのインターフェースを提供。
 
-	// 外部キー依存関係を考慮してテーブルを削除
-	db_op.DropTable("answers")     // 削除したいテーブルを引数に渡して削除できる "questions" "users" "answers" "users_roles"
-	db_op.DropTable("users_roles") // 削除したいテーブルを引数に渡して削除できる "questions" "users" "answers" "users_roles"
-	db_op.DropTable("questions")   // 削除したいテーブルを引数に渡して削除できる "questions" "users" "answers" "users_roles"
-	db_op.DropTable("users")       // 削除したいテーブルを引数に渡して削除できる "questions" "users" "answers" "users_roles"
-	db_op.DropTable("roles")       // 削除したいテーブルを引数に渡して削除できる "questions" "users" "answers" "users_roles" "roles"
+	// 外部キー依存関係を考慮してテーブルを削除、引数にテーブル名を渡す
+	db_op.DropTable("answers")
+	db_op.DropTable("users_roles")
+	db_op.DropTable("questions")
+	db_op.DropTable("users")
+	db_op.DropTable("roles")
+	db_op.DropTable("answers_dimensions")
 
 	// AutoMigrate:構造体を引数として渡し、構造体に定義されているフィールドに基づいて、データベースにテーブルを作成、更新
 	// 必要な順序でテーブルを作成する
@@ -37,8 +38,11 @@ func main() {
 	if err := db.AutoMigrate(&models.Answers{}); err != nil {
 		panic("Failed to migrate Answers table")
 	}
+	if err := db.AutoMigrate(&models.AnswersDimension{}); err != nil { // ディメンションテーブルを新規追加
+		panic("Failed to migrate Dimension table")
+	}
 
-	// 以下はコメントアウトされた個別のAutoMigrate文
+	// 以下は個別のAutoMigrate文
 	// if err := db.AutoMigrate(&models.Answers{}); err != nil {
 	// if err := db.AutoMigrate(&models.Users_roles{}); err != nil {
 	// if err := db.AutoMigrate(&models.Users{}); err != nil {
@@ -104,4 +108,5 @@ func main() {
 	// }
 
 	log.Println("Indexes and foreign key constraints added successfully!")
+
 }

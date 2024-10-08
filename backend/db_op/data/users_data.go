@@ -42,7 +42,7 @@ func GenerateHashedUsersList() []models.Users {
 	}
 
 	// 一般ユーザーを追加
-	for i := 0; i < 200; i++ {
+	for i := 1; i < 200; i++ {
 		empID := fmt.Sprintf("EMP%d", 100+i)
 		username := fmt.Sprintf("ITSocietyQuiz%d", i+1)
 		email := fmt.Sprintf("quize%d@example.com", i+1)

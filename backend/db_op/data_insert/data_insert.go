@@ -78,8 +78,14 @@ func insertDummyData(db *gorm.DB) {
 		}
 
 		day++
+		empIDs := make([]string, numEmployees)
+		empIDs[0] = "AVG100" // iが0の時はempIDを"AVG100"に設定
+		for i := 1; i < numEmployees; i++ {
+			empIDs[i] = fmt.Sprintf("EMP%d", 100+i) // EmpIDを100から始め、"EMP"を先頭に追加
+		}
+
 		for i := 0; i < numEmployees; i++ {
-			empID := fmt.Sprintf("EMP%d", 100+i) // EmpIDを100から始め、"EMP"を先頭に追加
+			empID := empIDs[i]
 
 			// dayが0の場合を考慮して、最低値を1に設定
 			correctAnswers := rand.Intn(max(1, day/2+1)) + int(day/2) + 3
@@ -97,6 +103,7 @@ func insertDummyData(db *gorm.DB) {
 			db.Create(&dimension)
 		}
 	}
+
 }
 
 // max関数を追加して、引数が0にならないようにする

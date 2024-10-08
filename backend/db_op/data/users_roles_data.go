@@ -31,6 +31,8 @@ func GenerateUsersRolesList() []models.UsersRoles {
 	return usersRolesList
 }
 
+var UsersRolesList = GenerateUsersRolesList()
+
 // var UsersRolesList = []models.UsersRoles{
 // 	{
 // 		EmpID:  "ADM1234",

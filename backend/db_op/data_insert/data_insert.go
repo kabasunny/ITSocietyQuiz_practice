@@ -21,7 +21,7 @@ func main() {
 	// データの挿入順序を調整
 	dataLists := [][]interface{}{
 		toInterfaceSlice(data.QuestionsList),
-		toInterfaceSlice(data.GenerateHashedUsersList()),
+		toInterfaceSlice(data.UsersList),
 		toInterfaceSlice(data.RolesList),
 	}
 
@@ -48,7 +48,7 @@ func main() {
 		}
 	}
 
-	// Answers\dimensionテーブルにダミーデータの挿入
+	// Answers_dimensionテーブルにダミーデータの挿入
 	insertDummyData(db)
 
 	fmt.Println("Data inserted successfully!")

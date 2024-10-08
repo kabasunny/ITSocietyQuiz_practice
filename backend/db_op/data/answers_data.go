@@ -37,7 +37,7 @@ func GenerateAnswersList() []models.Answers {
 	return answersList
 }
 
-// var AnswersList = GenerateAnswersList()
+var AnswersList = GenerateAnswersList()
 
 // 出題アルゴリズムの確認用
 // var AnswersList = []models.Answers{

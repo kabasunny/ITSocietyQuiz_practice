@@ -55,6 +55,9 @@ func GenerateHashedUsersList() []models.Users {
 		currentQID := uint(r.Intn(150) + 50)
 		totalQuestions := r.Intn(400) + 200
 		correctAnswers := r.Intn(350) + 150
+		if correctAnswers > totalQuestions {
+			correctAnswers = totalQuestions - int(correctAnswers/totalQuestions)
+		}
 
 		user := models.Users{
 			EmpID:          empID,
@@ -71,3 +74,5 @@ func GenerateHashedUsersList() []models.Users {
 
 	return usersList
 }
+
+var UsersList = GenerateHashedUsersList()

@@ -26,6 +26,7 @@ type IAdminsService interface {
 	AddUsers(newUsers dto.AdmUserData) (*dto.AdmUserData, error)
 	DeleteUsers(dbId uint) error
 	GetRanking() ([]*dto.RankingData, error)
+	GetGraphData(empID string) (map[string]interface{}, error)
 }
 
 type AdminsService struct {
@@ -297,4 +298,19 @@ func (s *AdminsService) GetRanking() ([]*dto.RankingData, error) {
 	}
 
 	return ranking, nil
+}
+
+func (s *AdminsService) GetGraphData(empID string) (map[string]interface{}, error) {
+	performanceData, err := s.repository.GetPerformanceData(empID)
+	if err != nil {
+		return nil, err
+	}
+
+	url := "http://127.0.0.1:5001/api/visualize"
+	visualizationData, err := utils.GetGraphVisualizationData(performanceData, url)
+	if err != nil {
+		return nil, err
+	}
+
+	return visualizationData, nil
 }

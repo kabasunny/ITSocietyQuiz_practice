@@ -5,6 +5,7 @@ import (
 	"backend/src/models"
 	"errors"
 	"fmt"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -25,9 +26,8 @@ type IAdminsRepository interface {
 	GetRoleNameByID(roleID uint) (string, error)
 	AddUsers(newUser *models.Users) (*models.Users, error)
 	DeleteUsers(dbId uint) error
-	GetRanking(query string) ([]*dto.RankingData, error)                               // ランキングを取得する
-	GetOverallPerformanceData(query string) (*models.Users, *models.Answers, error)    // 全体の傾向のデータを取得する
-	GetIndividualPerformanceData(empID string) (*models.Users, *models.Answers, error) // 個人の成績のデータを取得する
+	GetRanking(query string) ([]*dto.RankingData, error)                 // ランキングを取得する
+	GetPerformanceData(empID string) ([]*models.AnswersDimension, error) // 全体の傾向または個人の成績グラフのデータを取得する 全体の時はempID=AVG100とする
 
 }
 
@@ -218,11 +218,17 @@ func (r *AdminsRepository) GetRanking(query string) ([]*dto.RankingData, error) 
 	return ranking, nil
 }
 
-func (r *AdminsRepository) GetOverallPerformanceData(query string) (*models.Users, *models.Answers, error) {
-	return nil, nil, nil
-}
+func (r *AdminsRepository) GetPerformanceData(empID string) ([]*models.AnswersDimension, error) {
+	var answersDimension []*models.AnswersDimension
+	// result := r.db.Where("emp_id = ?", empID).Limit(60).Find(&answersDimension) // ここでデータ量を20個に制限
+	result := r.db.Where("emp_id = ?", empID).Find(&answersDimension)
+	if result.Error != nil {
+		return nil, result.Error
+	}
 
-func (r *AdminsRepository) GetIndividualPerformanceData(empID string) (*models.Users, *models.Answers, error) {
-	return nil, nil, nil
-
+	// デバッグ用のログ出力
+	for i, answer := range answersDimension {
+		log.Printf("Record %d: %+v\n", i+1, answer)
+	}
+	return answersDimension, nil
 }

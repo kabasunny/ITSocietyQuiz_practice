@@ -20,7 +20,9 @@ type IAdminsController interface {
 	UpdateUsers(ctx *gin.Context)
 	AddUsers(ctx *gin.Context)
 	DeleteUsers(ctx *gin.Context)
-	GetRanking(ctx *gin.Context)
+	GetRanking(ctx *gin.Context)     // ランキング取得用　後で消す
+	GetGraphData(ctx *gin.Context)   // 個人の成績グラフ取得用
+	GetInitialData(ctx *gin.Context) // ランキングと全体の傾向グラフ取得用
 }
 
 type AdminsController struct {
@@ -217,6 +219,7 @@ func (c *AdminsController) DeleteUsers(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
+// 後でなしにする
 func (c *AdminsController) GetRanking(ctx *gin.Context) {
 	ranking, err := c.service.GetRanking()
 	if err != nil {
@@ -225,5 +228,43 @@ func (c *AdminsController) GetRanking(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"ranking": ranking,
+	})
+}
+
+// ユーザー成績のグラフデータを返す
+func (c *AdminsController) GetGraphData(ctx *gin.Context) {
+	Id := ctx.Param("id")
+
+	graphData, err := c.service.GetGraphData(Id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get graph data"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, graphData)
+}
+
+// ランキングと全体の傾向グラフデータを返す
+func (c *AdminsController) GetInitialData(ctx *gin.Context) {
+	Id := ctx.Param("id")
+
+	// ランキングのデータを取得
+	ranking, err := c.service.GetRanking()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
+		return
+	}
+
+	// 全体の傾向グラフのデータを取得
+	graphData, err := c.service.GetGraphData(Id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get graph data"})
+		return
+	}
+
+	// JSONで返す
+	ctx.JSON(http.StatusOK, gin.H{
+		"ranking":   ranking,
+		"graphData": graphData,
 	})
 }

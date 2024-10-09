@@ -78,7 +78,9 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	userDataRouter.DELETE("/deleteuser/:id", adminsController.DeleteUsers) // ユーザーデータの削除
 
 	analizeDataRouter := adminDataRouter.Group("/analizedata")
-	analizeDataRouter.GET("/ranking", adminsController.GetRanking) // ランキングデータ一覧取得
+	analizeDataRouter.GET("/ranking", adminsController.GetRanking)             // ランキングデータ一覧取得　後で消す
+	analizeDataRouter.GET("/initialdata/:id", adminsController.GetInitialData) // ランキングと全体の傾向グラフデータを取得
+	analizeDataRouter.GET("/graphdata/:id", adminsController.GetGraphData)     // 個人の成績グラフデータを取得
 
 	return r
 

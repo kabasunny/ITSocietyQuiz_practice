@@ -16,7 +16,7 @@ var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 func GenerateAnswersList() []models.Answers {
 	var answersList []models.Answers
 
-	for i := 1; i < 200; i++ { // 社員200人分
+	for i := 1; i < 200; i++ { // 社員199人分
 		empID := fmt.Sprintf("EMP%d", 100+i)
 		for j := 0; j < 21; j++ { // 過去21日分
 			questionID := uint(r.Intn(3) + 1 + int(j/5))

@@ -41,6 +41,8 @@
   }
   
   .ranking-table th {
+    position: sticky; /* ヘッダーを固定 */
+    top: 0; /* ヘッダーをテーブルの上部に固定 */
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: center;

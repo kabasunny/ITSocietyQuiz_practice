@@ -44,9 +44,9 @@ func GenerateHashedUsersList() []models.Users {
 	// 一般ユーザーを追加
 	for i := 1; i < 200; i++ { // 社員199人分
 		empID := fmt.Sprintf("EMP%d", 100+i)
-		username := fmt.Sprintf("ITSocietyQuiz%d", i+1)
-		email := fmt.Sprintf("quize%d@example.com", i+1)
-		password := fmt.Sprintf("password%d", i+1)
+		username := fmt.Sprintf("ITSocietyQuiz%d", i)
+		email := fmt.Sprintf("quize%d@example.com", i)
+		password := fmt.Sprintf("password%d", i)
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 		if err != nil {
 			fmt.Printf("パスワードのハッシュ化に失敗しました: %v", err)

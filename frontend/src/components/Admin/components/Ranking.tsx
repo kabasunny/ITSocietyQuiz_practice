@@ -4,9 +4,10 @@ import '../css/Statistics.css'; // Statistics.cssをインポート
 
 interface RankingProps {
   ranking: any[];
+  setEmpID: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const Ranking: React.FC<RankingProps> = ({ ranking }) => {
+const Ranking: React.FC<RankingProps> = ({ ranking, setEmpID }) => {
   return (
     <div className="ranking">
       <h2 className="admin-h2">ランキング</h2>
@@ -26,7 +27,12 @@ const Ranking: React.FC<RankingProps> = ({ ranking }) => {
             {ranking.map((user) => (
               <tr key={user.empId}>
                 <td>{user.rank}</td>
-                <td>{user.empId}</td>
+                <td
+                  onClick={() => setEmpID(user.empId)}
+                  style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                >
+                  {user.empId}
+                </td>
                 <td>{user.totalQuestions}</td>
                 <td>{user.correctAnswerRate.toFixed(1)}%</td>
                 <td>{user.currentQID}</td>

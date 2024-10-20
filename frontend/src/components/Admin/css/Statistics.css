@@ -7,22 +7,25 @@
   .header {
     margin-bottom: 20px;
   }
-  
   .content-container {
     display: flex;
-    flex-direction: row; /* Arrange children in a row */
+    flex-direction: row; /* 子要素を横に並べる */
     justify-content: space-between;
     width: 100%;
   }
   
   .content {
+    display: flex;
+    flex-direction: column; /* 子要素を縦に並べる */
     flex: 1;
+    margin-bottom: 30px;
   }
   
   .ranking {
     flex: 1;
     padding-right: 20px;
   }
+  
   
   .ranking-table-container {
     max-height: 600px; /* Adjust the height as needed */

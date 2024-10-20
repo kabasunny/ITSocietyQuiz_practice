@@ -8,3 +8,5 @@ export const formatDate = (dateString: string) => {
     return `${year}年<br/>${month}月${day}日<br/>${hours}時${minutes}分`;
   };
   
+
+  // 日付のエラーが出たら、サーバ側のデータに .Format(time.RFC3339), を行っているか確認

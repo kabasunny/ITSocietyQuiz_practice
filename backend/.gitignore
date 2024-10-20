@@ -1,3 +1,6 @@
+/.VSCodeCounter
 /docker
 /tmp
 .env
+/src/python/__pycache__
+/src/python/venv

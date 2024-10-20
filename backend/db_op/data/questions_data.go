@@ -1,12 +1,12 @@
 package data // テスト用データ
 
 import (
-	"backend/models"
+	"backend/src/models"
 
 	"github.com/lib/pq"
 )
 
-var QuestionsList = []models.Questions{
+var originalQuestionsList = []models.Questions{
 	{Question: "悟りの第二段階の状態は？",
 		Options:    pq.StringArray{"一来果", "予流果", "不還果", "阿羅漢果"}, // pq.StringArrayは、PostgreSQLのtext[]型（文字列の配列）を扱う
 		Supplement: "欲界の煩悩を断じ終えた位のこと",
@@ -107,3 +107,14 @@ var QuestionsList = []models.Questions{
 		Supplement: "正定は、正しい精神統一を示します。",
 		Difficulty: 1},
 }
+
+// QuestionsListを30回繰り返して600レコード分を生成する関数
+func generateQuestionsList() []models.Questions {
+	var questionsList []models.Questions
+	for i := 0; i < 30; i++ {
+		questionsList = append(questionsList, originalQuestionsList...)
+	}
+	return questionsList
+}
+
+var QuestionsList = generateQuestionsList()

@@ -1,64 +1,78 @@
 package data // テスト用データ
-
 import (
-	"backend/models"
+	"backend/src/models"
 	"fmt"
+	"math/rand"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Usersのデータを格納する変数
-// ユーザーのデータ登録時は、パスワードハッシュ化するので、下方に定義した関数を呼び出す
-var UsersList = []models.Users{
-	{
-		EmpID:          "EMP1234",
-		Username:       "ITSocietyQuiz",
-		Email:          "quize@example.com",
-		Password:       "password",
-		TotalQuestions: 0,
-		CorrectAnswers: 0,
-	},
-	{
-		EmpID:          "EMP2345",
-		Username:       "ITSocietyQuiz_2",
-		Email:          "quize_2@example.com",
-		Password:       "password_2",
-		TotalQuestions: 0,
-		CorrectAnswers: 0,
-	},
-	{
-		EmpID:          "ADM1234",
-		Username:       "ITSocietyQuiz_adm",
-		Email:          "quize_adm@example.com",
-		Password:       "password_adm",
-		TotalQuestions: 0,
-		CorrectAnswers: 0,
-	},
-}
+// 200人分のユーザーデータを生成し、パスワードをハッシュ化する関数
+func GenerateHashedUsersList() []models.Users {
+	var usersList []models.Users
 
-// ハッシュ化されたパスワードを持つ新しいUsersListを返却する関数
-func GetHashedUsersList() []models.Users {
-	var hashedUsersList []models.Users
+	// ローカルなランダムジェネレータを作成
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	for _, user := range UsersList {
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-		//コストパラメータは、デフォルトだと10(範囲4～31)
-		if err != nil {
-			fmt.Printf("パスワードのハッシュ化に失敗しました: %v", err)
-			return nil
-		}
-
-		hashedUser := models.Users{
-			EmpID:          user.EmpID,
-			Username:       user.Username,
-			Email:          user.Email,
-			Password:       string(hashedPassword),
-			TotalQuestions: user.TotalQuestions,
-			CorrectAnswers: user.CorrectAnswers,
-		}
-
-		hashedUsersList = append(hashedUsersList, hashedUser)
+	// 管理者ユーザーを追加
+	adminUsers := []models.Users{
+		{
+			EmpID:    "ADM1234",
+			Username: "ITSocietyQuiz_adm1",
+			Email:    "quize_adm1@example.com",
+			Password: "password_a",
+		},
+		{
+			EmpID:    "ADM2345",
+			Username: "ITSocietyQuiz_adm2",
+			Email:    "quize_adm2@example.com",
+			Password: "password_b",
+		},
 	}
 
-	return hashedUsersList
+	for _, admin := range adminUsers {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(admin.Password), bcrypt.DefaultCost)
+		if err != nil {
+			fmt.Printf("パスワードのハッシュ化に失敗しました: %v", err)
+			continue
+		}
+		admin.Password = string(hashedPassword)
+		usersList = append(usersList, admin)
+	}
+
+	// 一般ユーザーを追加
+	for i := 1; i < 200; i++ { // 社員199人分
+		empID := fmt.Sprintf("EMP%d", 100+i)
+		username := fmt.Sprintf("ITSocietyQuiz%d", i)
+		email := fmt.Sprintf("quize%d@example.com", i)
+		password := fmt.Sprintf("password%d", i)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		if err != nil {
+			fmt.Printf("パスワードのハッシュ化に失敗しました: %v", err)
+			continue
+		}
+		currentQID := uint(r.Intn(150) + 50)
+		totalQuestions := r.Intn(400) + 200
+		correctAnswers := r.Intn(350) + 150
+		if correctAnswers > totalQuestions {
+			correctAnswers = totalQuestions - int(correctAnswers/totalQuestions)
+		}
+
+		user := models.Users{
+			EmpID:          empID,
+			Username:       username,
+			Email:          email,
+			Password:       string(hashedPassword),
+			CurrentQID:     currentQID,
+			TotalQuestions: totalQuestions,
+			CorrectAnswers: correctAnswers,
+		}
+
+		usersList = append(usersList, user)
+	}
+
+	return usersList
 }
+
+var UsersList = GenerateHashedUsersList()

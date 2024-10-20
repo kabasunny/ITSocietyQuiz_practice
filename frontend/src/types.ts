@@ -120,21 +120,21 @@ export interface AdminsUser {
   password_2: string;
   roleId: number; // APIに送信用
   roleName: string; // APIから受信用
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 
 export interface UserTableProps {
   users: AdminsUser[];
   onEditUser: (user: AdminsUser) => void;
-  onDeleteUser: (empid: string) => void;
+  onDeleteUser: (dbId: number) => void;
 }
 
 export interface UserFormProps {
     user: AdminsUser;
-    onChange: (e: ChangeEvent<HTMLInputElement>, field: keyof AdminsUser) => void;
-    onSave: () => void;
+    // onChange: (e: ChangeEvent<HTMLInputElement>, field: keyof AdminsUser) => void;
+    onSave: (data: AdminsUser) => void;
     onCancel: () => void;
     isEditing: boolean;
   }

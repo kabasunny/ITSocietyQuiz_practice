@@ -1,3 +1,4 @@
+import React from 'react';
 import { useForm } from 'react-hook-form'; //カスタムフックでフォームのバリデーションと送信を管理
 import { zodResolver } from '@hookform/resolvers/zod';
 import { validationSchema } from './utils/ValidationSchema';
@@ -12,7 +13,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     handleSubmit, // フォームが送信されたときに呼び出される関数
     formState: { errors },
   } = useForm<LoginForm>({
-    mode: "onChange", //バリデーション発火のタイミング
+    mode: 'onChange', //バリデーション発火のタイミング
     resolver: zodResolver(validationSchema),
   });
 
@@ -26,28 +27,29 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         <input
           type="text"
           id="empid"
-          {...register("empid")}
-          // autoComplete="off"
-          autoComplete="new-password"
+          {...register('empid')}
+          autoComplete="off"
         />
         {errors.empid && <p>{errors.empid.message as React.ReactNode}</p>}
-        
+
         {/* パスワードの入力フィールド */}
         <label htmlFor="password">パスワードを入力してね \( ᐛ )/</label>
         <input
           id="password"
           type="password"
-          {...register("password")}
-          // autoComplete="off"
+          {...register('password')}
           autoComplete="new-password"
         />
         {errors.password && <p>{errors.password.message as React.ReactNode}</p>}
 
-         {/* ログインボタン、onSubmit取得後にloadingはtrue*/}
-         <button type="submit" disabled={loading}>
-          {loading ? '送信中...' : (
+        {/* ログインボタン、onSubmit取得後にloadingはtrue*/}
+        <button type="submit" disabled={loading}>
+          {loading ? (
+            '送信中...'
+          ) : (
             <>
-              ログイン<br />& スタート！
+              ログイン
+              <br />& スタート！
             </>
           )}
         </button>
@@ -56,9 +58,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       {/* エラーメッセージの表示 */}
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
-      <p><br />60分以内に全問解答できない場合は、<br/>全問不正解になります。</p>
+      {/* <p><br />60分以内に全問解答できない場合は、<br/>全問不正解になります。</p> */}
     </div>
   );
-}
+};
 
 export default Login;

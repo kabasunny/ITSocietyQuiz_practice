@@ -1,0 +1,40 @@
+"filename", "language", "go", "MS SQL", "comment", "blank", "total"
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\data\answers_data.go", "go", -33, 0, -113, -5, -151
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\data\questions_data.go", "go", -87, 0, 0, -23, -110
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\data\roles_data.go", "go", -12, 0, -5, -3, -20
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\data\users_data.go", "go", -52, 0, -4, -9, -65
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\data\users_roles_data.go", "go", -16, 0, 0, -2, -18
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\data_insert\data_insert.go", "go", -43, 0, -18, -13, -74
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\drop_table.go", "go", -17, 0, -2, -5, -24
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\db_op\migrations\migration.go", "go", -47, 0, -47, -14, -108
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\controllers\admins_controller.go", "go", 168, 0, 17, 33, 218
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\controllers\answers_controller.go", "go", 38, 0, 2, 11, 51
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\controllers\login_controller.go", "go", 42, 0, 0, 10, 52
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\controllers\questions_controller.go", "go", 62, 0, 4, 16, 82
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\dto\answers_dto.go", "go", 5, 0, 6, 3, 14
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\dto\login_dto.go", "go", 10, 0, 2, 3, 15
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\dto\questions_dto.go", "go", 44, 0, 3, 6, 53
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\dto\users_dto.go", "go", 13, 0, 1, 2, 16
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\infra\db.go", "go", 21, 0, 1, 6, 28
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\infra\initializer.go", "go", 11, 0, 0, 4, 15
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\middlewares\middleware.go", "go", 26, 0, 0, 4, 30
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\models\answers.go", "go", 12, 0, 3, 3, 18
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\models\questions.go", "go", 13, 0, 1, 3, 17
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\models\roles.go", "go", 8, 0, 1, 3, 12
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\models\users.go", "go", 14, 0, 1, 3, 18
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\models\users_roles.go", "go", 11, 0, 2, 4, 17
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\repositories\admins_repository.go", "go", 167, 0, 12, 24, 203
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\repositories\answers_repository.go", "go", 96, 0, 6, 17, 119
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\repositories\login_repository.go", "go", 55, 0, 0, 11, 66
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\repositories\questions_repository.go", "go", 80, 0, 6, 13, 99
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\router\router.go", "go", 58, 0, 6, 19, 83
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\services\admins_service.go", "go", 214, 0, 30, 41, 285
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\services\answers_service.go", "go", 78, 0, 6, 23, 107
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\services\login_service.go", "go", 84, 0, 6, 16, 106
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\services\queries\select_questions_excluding_streak_3.sql", "MS SQL", 0, 30, 5, 1, 36
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\services\queries\select_users_with_roles.sql", "MS SQL", 0, 16, 0, 1, 17
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\services\questions_service.go", "go", 83, 0, 12, 20, 115
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\utils\csv_parser_utils.go", "go", 38, 0, 0, 8, 46
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\utils\sql_utils.go", "go", 11, 0, 1, 3, 15
+"c:\Users\kabas\Documents\APP\ITSocietyQuiz_practice\backend\src\utils\token_utils.go", "go", 40, 0, 7, 10, 57
+"Total", "-", 1195, 46, -48, 247, 1440

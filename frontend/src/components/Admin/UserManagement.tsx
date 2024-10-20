@@ -1,15 +1,22 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
-import axios from 'axios';
-import './css/AdminScreen.css'; // CSSファイルをインポート
-import './css/UserManagement.css'; // 新しいCSSファイルをインポート
+import React, { useState, useEffect } from 'react';
+import './css/AdminScreen.css';
+import './css/UserManagement.css';
 import UserTable from './components/UserTable';
 import UserForm from './components/UserForm';
 import { AdminsUser } from '../../types';
+import { fetchUsers, addUser, updateUser, deleteUser } from './utils/userApi';
 
 const UserManagement: React.FC = () => {
-  const [users, setUsers] = useState<AdminsUser[]>([]);
-  const [editingUser, setEditingUser] = useState<AdminsUser | null>(null);
-  const [newUser, setNewUser] = useState<AdminsUser>({
+  const [users, setUsers] = useState<AdminsUser[]>([]); // ユーザーリストの状態管理
+  const [editingUser, setEditingUser] = useState<AdminsUser | null>(null); // 編集中のユーザーの状態管理
+  const [showAddForm, setShowAddForm] = useState(false); // 新規ユーザー追加フォームの表示状態管理
+  const [currentPage, setCurrentPage] = useState(1); // 現在のページ番号の状態管理
+  const itemsPerPage = 20; // 1ページあたりのアイテム数
+
+  const jwt = sessionStorage.getItem('token'); // セッションストレージからJWTトークンを取得
+
+  // 新規ユーザーのデフォルト値
+  const newUser: AdminsUser = {
     dbId: 0,
     empId: '',
     name: '',
@@ -19,130 +26,99 @@ const UserManagement: React.FC = () => {
     roleId: 2, // 一般ユーザーのroleIdをデフォルトに設定
     roleName: '',
     updatedAt: '',
-    createdAt: ''
-  });
-  const [showAddForm, setShowAddForm] = useState(false); // 新しいユーザー追加フォームの表示状態
+    createdAt: '',
+  };
 
-  const jwt = sessionStorage.getItem('token');
-
+  // コンポーネントのマウント時および編集ユーザーの変更時にユーザーリストを取得
   useEffect(() => {
-    // ユーザー情報を取得するAPI呼び出し
-    axios.get('http://localhost:8082/admins/userslist', {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
-      .then(response => {
-        setUsers(response.data.userlist);
-      })
-      .catch(error => {
-        console.error('Error fetching users:', error);
-      });
-  }, [jwt]);
+    fetchUsers(jwt, setUsers);
+  }, [jwt, editingUser]);
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>, field: keyof AdminsUser) => {
-    if (editingUser) {
-      setEditingUser({ ...editingUser, [field]: e.target.value });
-    } else {
-      setNewUser({ ...newUser, [field]: e.target.value });
-    }
+  // 新規ユーザーを追加する関数
+  const handleAddUser = (data: AdminsUser) => {
+    addUser(data, jwt, users, setUsers, setShowAddForm);
   };
 
-  const handleAddUser = () => {
-    // ユーザー情報を新規追加するAPI呼び出し
-    axios.post('http://localhost:8082/admins/addusers', newUser, {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
-      .then(response => {
-        setUsers([...users, response.data.userlist]);
-        setNewUser({
-          dbId: 0,
-          empId: '',
-          name: '',
-          email: '',
-          password_1: '',
-          password_2: '',
-          roleId: 2, // 一般ユーザーのroleIdをデフォルトに設定
-          roleName: '',
-          updatedAt: '',
-          createdAt: ''
-        });
-        setShowAddForm(false); // フォームを閉じる
-      })
-      .catch(error => {
-        console.error('Error adding user:', error);
-      });
-  };
-
+  // ユーザー編集を開始する関数
   const handleEditUser = (user: AdminsUser) => {
     setEditingUser(user);
   };
 
-  const handleUpdateUser = () => {
-    // ユーザー情報を編集後、更新するAPI呼び出し
-    if (editingUser) {
-      axios.put(`http://localhost:8082/admins/updateusers/${editingUser.dbId}`, editingUser, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-        .then(response => {
-          setUsers(users.map(user => user.dbId === editingUser.dbId ? response.data : user));
-          setEditingUser(null);
-        })
-        .catch(error => {
-          console.error('Error updating user:', error);
-        });
-    }
+  // ユーザー情報を更新する関数
+  const handleUpdateUser = (data: AdminsUser) => {
+    updateUser(data, editingUser, jwt, users, setUsers, setEditingUser);
   };
-  
 
-  const handleDeleteUser = (empId: string) => {
-    const confirmDelete = window.confirm('本当にこのユーザーを削除しますか？'); // 確認ダイアログを表示
-    if (confirmDelete) {
-      // ユーザー情報を削除するAPI呼び出し
-      axios.delete(`http://localhost:8082/users/${empId}`, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-        .then(() => {
-          setUsers(users.filter(user => user.empId !== empId));
-        })
-        .catch(error => {
-          console.error('Error deleting user:', error);
-        });
-    }
+  // ユーザーを削除する関数
+  const handleDeleteUser = (dbId: number) => {
+    deleteUser(dbId, jwt, users, setUsers);
   };
+
+  // ページを変更する関数
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber); // 現在のページ番号を設定
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage; // 現在のページの最後のアイテムのインデックスを計算
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage; // 現在のページの最初のアイテムのインデックスを計算
+  const currentItems = users.slice(indexOfFirstItem, indexOfLastItem); // 現在のページに表示するアイテムを取得
 
   return (
     <div className="admin-container">
       <h2 className="admin-h2">ユーザー管理（社員情報を更新、削除、追加）</h2>
+      {/* 新規ユーザー追加フォームと編集フォームが表示されていない場合にユーザーテーブルを表示 */}
       {!showAddForm && !editingUser && (
-        <UserTable users={users} onEditUser={handleEditUser} onDeleteUser={handleDeleteUser} />
+        <UserTable
+          users={currentItems}
+          onEditUser={handleEditUser}
+          onDeleteUser={handleDeleteUser}
+        />
       )}
+      {/* 編集フォームを表示 */}
       {editingUser && (
         <UserForm
           user={editingUser}
-          onChange={handleInputChange}
           onSave={handleUpdateUser}
           onCancel={() => setEditingUser(null)}
           isEditing={true}
         />
       )}
+      {/* 新規ユーザー追加ボタンを表示 */}
       {!showAddForm && !editingUser && (
-        <button className="add-button" onClick={() => setShowAddForm(true)}>新規ユーザーの登録</button>
+        <div className="add-user-button-container">
+          <button
+            className="add-user-button"
+            onClick={() => setShowAddForm(true)}
+          >
+            新規ユーザーの登録
+          </button>
+        </div>
       )}
+      {/* 新規ユーザー追加フォームを表示 */}
       {showAddForm && (
         <UserForm
           user={newUser}
-          onChange={handleInputChange}
           onSave={handleAddUser}
           onCancel={() => setShowAddForm(false)}
           isEditing={false}
         />
+      )}
+      {/* ページネーションボタンを表示 */}
+      {!editingUser && (
+        <div className="pagination">
+          {Array.from(
+            { length: Math.ceil(users.length / itemsPerPage) },
+            (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => handlePageChange(index + 1)}
+                className={currentPage === index + 1 ? 'active' : ''}
+              >
+                {index + 1}
+              </button>
+            )
+          )}
+        </div>
       )}
     </div>
   );

@@ -1,7 +1,7 @@
 package db_op
 
 import (
-	"backend/infra"
+	"backend/src/infra"
 	"log"
 )
 
@@ -16,8 +16,8 @@ func DropTable(table string) {
 		if err := db.Migrator().DropTable(table); err != nil {
 			log.Fatalf("Failed to drop table: %v", err)
 		}
-		log.Println("Table dropped successfully!")
+		log.Printf("%s table dropped successfully!", table)
 	} else {
-		log.Println("Table does not exist, no need to drop.")
+		log.Printf("%s table does not exist, no need to drop.", table)
 	}
 }

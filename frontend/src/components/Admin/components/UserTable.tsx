@@ -1,10 +1,16 @@
 import React from 'react';
 import { formatDate } from '../utils/formatDate';
-import { AdminsUser, UserTableProps } from '../../../types' 
-
-
+import { UserTableProps } from '../../../types'
+import { useEffect, useState } from 'react';
 
 const UserTable: React.FC<UserTableProps> = ({ users, onEditUser, onDeleteUser }) => {
+  const [formattedUsers, setFormattedUsers] = useState(users);
+
+  useEffect(() => {
+    // usersが変更されたときにformattedUsersを更新する
+    setFormattedUsers(users);
+  }, [users]);
+
   return (
     <div className="admin-table-container">
       <table className="admin-user-table">
@@ -19,7 +25,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEditUser, onDeleteUser }
           </tr>
         </thead>
         <tbody>
-          {users.map(user => (
+          {formattedUsers.map(user => (
             <tr key={user.empId}>
               <td>{user.empId}</td>
               <td>{user.name}</td>
@@ -28,8 +34,8 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEditUser, onDeleteUser }
               <td dangerouslySetInnerHTML={{ __html: formatDate(user.updatedAt > user.createdAt ? user.updatedAt : user.createdAt) }}></td>
               <td>
                 <button className="edit-button" onClick={() => onEditUser(user)}>編集</button>
-                <br/>
-                <button className="delete-button" onClick={() => onDeleteUser(user.empId)}>削除</button>
+                <br />
+                <button className="delete-button" onClick={() => onDeleteUser(user.dbId)}>削除</button>
               </td>
             </tr>
           ))}

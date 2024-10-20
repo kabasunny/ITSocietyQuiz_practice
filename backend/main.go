@@ -1,8 +1,8 @@
 package main
 
 import (
-	"backend/infra"
-	"backend/router"
+	"backend/src/infra"
+	"backend/src/router"
 )
 
 func main() {

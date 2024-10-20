@@ -1,0 +1,7 @@
+  /* タイトル */
+  h4 {
+    color: forestgreen; /* #0e6627 */
+    margin: 5px 5px 5px;
+    font-weight: bold;
+    text-align: center;
+  }

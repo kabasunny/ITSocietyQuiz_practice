@@ -127,6 +127,7 @@ function App() {
 
   return (
     <div className="quiz-container">
+      <h2>E資格 試験出題範囲(シラバス 2024)対策</h2>
       {isLoggedIn ? (
         isAdmin ? ( // 管理者の場合
           <AdminScreen

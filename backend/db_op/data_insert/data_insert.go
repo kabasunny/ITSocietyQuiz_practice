@@ -20,7 +20,7 @@ func main() {
 
 	// データの挿入順序を調整
 	dataLists := [][]interface{}{
-		toInterfaceSlice(data.QuestionsList),
+		toInterfaceSlice(data.QuestionsListE),
 		toInterfaceSlice(data.UsersList),
 		toInterfaceSlice(data.RolesList),
 	}
@@ -34,14 +34,14 @@ func main() {
 		}
 	}
 
-	// 依存関係のあるUsersRolesListを最後に挿入
+	// 依存関係のあるUsersRolesListを挿入
 	for _, data := range data.GenerateUsersRolesList() {
 		if err := db.Create(&data).Error; err != nil {
 			log.Printf("Failed to insert UsersRoles: %v", err)
 		}
 	}
 
-	// 依存関係のあるAnswersListを最後に挿入
+	// 依存関係のあるAnswersListを挿入
 	for _, data := range data.GenerateAnswersList() {
 		if err := db.Create(&data).Error; err != nil {
 			log.Printf("Failed to insert Answers: %v", err)

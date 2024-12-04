@@ -38,7 +38,7 @@ const Quiz: React.FC<QuizProps> = ({
               <button
                 key={index}
                 onClick={() => handleAnswer(option)}
-                //className={`quiz-option-button option-${index}`} // cssでindexに対応した装飾
+                // className={`quiz-option-button option-${index}`} // cssでindexに対応した装飾
                 className={`quiz-option-button option-${option.index}`} // 答えが　赤色となる、本番時はindexのみとする
               >
                 {option.text}

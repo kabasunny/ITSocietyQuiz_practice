@@ -306,7 +306,7 @@ func (s *AdminsService) GetGraphData(empID string) (map[string]interface{}, erro
 		return nil, err
 	}
 
-	url := "http://127.0.0.1:5001/api/visualize"
+	url := "http://127.0.0.1:5009/api/visualize"
 	visualizationData, err := utils.GetGraphVisualizationData(performanceData, url)
 	if err != nil {
 		return nil, err

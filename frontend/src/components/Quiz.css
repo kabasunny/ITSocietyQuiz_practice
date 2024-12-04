@@ -40,27 +40,27 @@ button {
 }
 
 .option-0 {
-  background-color: lightcoral; /* rgb(237, 103, 103) */
+  background-color: rgb(90, 44, 44);
 }
 
 .option-1 {
-  background-color: mediumseagreen; /* rgb(79, 187, 151) */
+  background-color: rgb(37, 80, 56);
 }
 
 .option-2 {
-  background-color: lightslateblue; /* rgb(121, 121, 231) */
+  background-color: rgb(60, 40, 78);
 }
 
 .option-3 {
-  background-color: mediumorchid; /* rgb(177, 106, 199) */
+  background-color: rgb(45, 53, 94);
 }
 
 .option-4 {
-  background-color: tomato; /* そのまま */
+  background-color: rgb(218, 90, 67);
 }
 
 .option-5 {
-  background-color: orange; /* #ffaa00 */
+  background-color: rgb(207, 152, 56);
 }
 
 /* ボタンの共通スタイル */

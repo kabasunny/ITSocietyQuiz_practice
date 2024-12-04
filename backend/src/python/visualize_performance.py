@@ -10,12 +10,13 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)  # CORSを有効にする
 
-
 @app.route("/api/visualize", methods=["POST"])
 def visualize():
     try:
         # クライアントから送信されたJSONデータを辞書型として取得
         data = request.json
+        print("Received data:", data)  # 受信データをターミナルに表示
+        
         # 取得した辞書型データをPandas DataFrameに変換
         df = pd.DataFrame(data)
 
@@ -50,16 +51,21 @@ def visualize():
         img.seek(0)
         img_base64 = base64.b64encode(img.getvalue()).decode("utf8")
 
+        # 画像生成成功メッセージをターミナルに表示
+        print("Image successfully generated and encoded.")
+
         # エンコードされた画像データをJSON形式で返す
         return jsonify({"image": img_base64})
     except Exception as e:
         # エラーが発生した場合、エラーメッセージを返す
+        print("Error:", str(e))  # エラーメッセージをターミナルに表示
         return jsonify({"error": str(e)}), 500
 
-
 if __name__ == "__main__":
+    print("Starting server...どーんとこい(´◉◞౪◟◉)")  # サーバー起動メッセージを表示
     # 本番環境用: Waitressサーバーでアプリを起動
-    # serve(app, host='0.0.0.0', port=5001)
+    serve(app, host='0.0.0.0', port=5001)
+    print("Server running on http://0.0.0.0:5009")  # サーバー稼働メッセージを表示
 
     # 開発環境用: Flaskのデバッグサーバーで起動
-    app.run(debug=True, host="0.0.0.0", port=5001)
+    # app.run(debug=True, host="0.0.0.0", port=5001)

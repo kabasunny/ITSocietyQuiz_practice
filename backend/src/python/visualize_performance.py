@@ -64,8 +64,8 @@ def visualize():
 if __name__ == "__main__":
     print("Starting server...どーんとこい(´◉◞౪◟◉)")  # サーバー起動メッセージを表示
     # 本番環境用: Waitressサーバーでアプリを起動
-    serve(app, host='0.0.0.0', port=5001)
+    serve(app, host='0.0.0.0', port=5009)
     print("Server running on http://0.0.0.0:5009")  # サーバー稼働メッセージを表示
 
     # 開発環境用: Flaskのデバッグサーバーで起動
-    # app.run(debug=True, host="0.0.0.0", port=5001)
+    # app.run(debug=True, host="0.0.0.0", port=5009)

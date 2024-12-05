@@ -201,6 +201,20 @@ function App() {
           <div className="loading">
             <p>Loading...</p>
             <p>⁽⁽*( ᐖ )*⁾⁾ ₍₍*( ᐛ )*₎₎</p>
+            <button
+              className="logout-button"
+              onClick={() =>
+                handleLogout(
+                  setIsLoggedIn,
+                  setIsAdmin,
+                  setIsSubmitAnsewr,
+                  setShowScore,
+                  navigate
+                )
+              }
+            >
+              ログアウト
+            </button>
           </div>
         )
       ) : (

@@ -5,7 +5,7 @@ const handleAnswer = (
   selectedAnswer: Option,
   quizData: QuizData[],
   currentQuestion: number,
-  setCurrentQuestion: Dispatch<SetStateAction<number>>,
+  // setCurrentQuestion: Dispatch<SetStateAction<number>>,
   setScore: Dispatch<SetStateAction<number>>,
   setFeedback: Dispatch<SetStateAction<string | null>>,
   setAnswers: Dispatch<SetStateAction<Answer[]>>,
@@ -47,13 +47,21 @@ const handleAnswer = (
     sessionStorage.setItem('currentQuestion', JSON.stringify(question));
   };
 
-  if (updatedAnswers.length < quizData.length) { // 次の問題がまだある場合
-    setCurrentQuestion(() => {
-      const updatedQuestion = updatedAnswers.length;
-      saveCurrentQuestionToSession(updatedQuestion); // セッションに保存
-      return updatedQuestion;
-    });
-  } else {
+  // if (updatedAnswers.length < quizData.length) { // 次の問題がまだある場合
+  //   setCurrentQuestion(() => {
+  //     const updatedQuestion = updatedAnswers.length;
+  //     saveCurrentQuestionToSession(updatedQuestion); // セッションに保存
+  //     return updatedQuestion;
+  //   });
+  // } else {
+  //   submitAnswers(updatedAnswers, setIsSubmitAnsewr); // APIに結果を送信
+  //   setShowScore(true); // 結果のスコアを表示するためのフラグ
+  // }
+
+  const updatedQuestion = updatedAnswers.length;
+  saveCurrentQuestionToSession(updatedQuestion); // セッションに保存
+
+  if (updatedAnswers.length >= quizData.length) { // 最後の問題の回答後
     submitAnswers(updatedAnswers, setIsSubmitAnsewr); // APIに結果を送信
     setShowScore(true); // 結果のスコアを表示するためのフラグ
   }

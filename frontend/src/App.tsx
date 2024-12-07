@@ -184,7 +184,7 @@ function App() {
                 selectedAnswer,
                 quizData,
                 currentQuestion,
-                setCurrentQuestion,
+                // setCurrentQuestion,
                 setScore,
                 setFeedback,
                 setAnswers,
@@ -195,7 +195,12 @@ function App() {
                 answers
               )
             }
-            goToNextQuestion={() => goToNextQuestion(setNext)}
+            goToNextQuestion={() => goToNextQuestion(
+              setNext,
+              setCurrentQuestion,
+              answers,
+              quizData
+            )}
           />
         ) : (
           <div className="loading">

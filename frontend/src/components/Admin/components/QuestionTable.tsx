@@ -9,8 +9,11 @@ interface QuestionTableProps {
 }
 
 const QuestionTable: React.FC<QuestionTableProps> = ({ questions, handleEdit, handleDelete }) => {
-  // questions配列をid順にソート
-  const sortedQuestions = questions.sort((a, b) => a.id - b.id);
+  // questions配列をコピーしてid順にソート...なぜか編集後にソートがうまく行かない⁉
+  const sortedQuestions = [...questions].sort((a, b) => {
+    return Number(a.id) - Number(b.id);
+  });
+  console.log(sortedQuestions)
 
   return (
     <table className="admin-table">

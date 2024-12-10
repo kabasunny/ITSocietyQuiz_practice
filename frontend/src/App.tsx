@@ -190,7 +190,7 @@ function App() {
                 setAnswers,
                 setNext,
                 submitAnswers,
-                setShowScore,
+                // setShowScore,
                 setIsSubmitAnsewr,
                 answers
               )
@@ -198,6 +198,7 @@ function App() {
             goToNextQuestion={() => goToNextQuestion(
               setNext,
               setCurrentQuestion,
+              setShowScore,
               answers,
               quizData
             )}

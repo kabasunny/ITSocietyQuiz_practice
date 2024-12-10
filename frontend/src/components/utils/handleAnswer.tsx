@@ -11,7 +11,7 @@ const handleAnswer = (
   setAnswers: Dispatch<SetStateAction<Answer[]>>,
   setNext: Dispatch<SetStateAction<boolean>>,
   submitAnswers: (answers: Answer[], setIsSubmitAnsewr: Dispatch<SetStateAction<boolean>> ) => void,
-  setShowScore: Dispatch<SetStateAction<boolean>>,
+  // setShowScore: Dispatch<SetStateAction<boolean>>,
   setIsSubmitAnsewr: Dispatch<SetStateAction<boolean>>,
   answers: Answer[]
 ) => {
@@ -63,7 +63,7 @@ const handleAnswer = (
 
   if (updatedAnswers.length >= quizData.length) { // 最後の問題の回答後
     submitAnswers(updatedAnswers, setIsSubmitAnsewr); // APIに結果を送信
-    setShowScore(true); // 結果のスコアを表示するためのフラグ
+    // setShowScore(true); // 結果のスコアを表示するためのフラグ
   }
   
   setNext(true);

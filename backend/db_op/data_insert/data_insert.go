@@ -113,3 +113,5 @@ func max(a, b int) int {
 	}
 	return b
 }
+
+// go run ./db_op/data_insert/data_insert.go

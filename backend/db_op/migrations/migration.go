@@ -110,3 +110,5 @@ func main() {
 	log.Println("Indexes and foreign key constraints added successfully!")
 
 }
+
+// go run ./db_op/migrations/migration.go
